@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.mm</groupId>
+  <artifactId>mapping-master-integration-tests</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+  <name>Mapping Master Integration Tests</name>
+  <description>Integration tests for Mapping Master</description>
+
+  <properties>
+
+    <mapping-master.version>1.0.0</mapping-master.version>
+
+    <slf4j.version>1.6.1</slf4j.version>
+    <junit.version>4.7</junit.version>
+
+    <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
+    <maven.failsafe.plugin.version>2.6</maven.failsafe.plugin.version>
+    <maven.jar.plugin.version>2.4</maven.jar.plugin.version>
+    <maven.install.plugin.version>2.4</maven.install.plugin.version>
+    
+    <java.version>1.8</java.version> 
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+  </properties>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.mm</groupId>
+      <artifactId>mapping-master</artifactId>
+      <version>${mapping-master.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+
+    <plugins>
+
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven.compiler.plugin.version}</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven.jar.plugin.version}</version>
+        <executions> <!-- Attach this plugin to the 'none' phase so it never runs -->
+          <execution>
+            <id>default-jar</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>  
+
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${maven.failsafe.plugin.version}</version>
+        <configuration>
+          <!-- SWRLAPIIntegrationTestBase not currently set up to allow parallel tests -->
+          <!-- <parallel>methods</parallel> -->
+          <encoding>UTF-8</encoding>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>${maven.install.plugin.version}</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+</project>
