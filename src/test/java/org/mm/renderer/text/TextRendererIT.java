@@ -100,20 +100,6 @@ public class TextRendererIT extends IntegrationTestBase
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
 	}
 
-	@Test public void TestXSDStringReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
-	{
-		String expression = "Individual: Fred Facts: hasName @A1(xsd:string)";
-		String expectedRendering = "Individual: Fred Facts: hasName \"Fred\"";
-		Label cellA1 = createCell("Fred", 1, 1);
-		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
-				expression);
-
-		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
-	}
-
 	@Test public void TestXSDByteReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
@@ -162,6 +148,48 @@ public class TextRendererIT extends IntegrationTestBase
 		String expression = "Individual: Fred Facts: hasSalary @A1(xsd:float)";
 		String expectedRendering = "Individual: Fred Facts: hasSalary 34000.0";
 		Label cellA1 = createCell("34000.0", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
+				expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestReferenceRDFSLabelAssignment()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A1(rdfs:label=(\"Big\"))";
+		String expectedRendering = "Class: Big";
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
+				expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestReferenceRDFSLabelAssignmentWithConcatenatedParameters()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A1(rdfs:label=(\"Big\", \"Car\"))";
+		String expectedRendering = "Class: BigCar";
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
+				expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestReferenceRDFSLabelAssignmentWithReferenceParameter()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A1(rdfs:label=(\"Big\", @A1))";
+		String expectedRendering = "Class: BigCar";
+		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
 				expression);
