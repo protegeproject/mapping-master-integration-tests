@@ -1,18 +1,15 @@
-package org.mm.renderer.text;
+package org.mm.renderer.owlapi;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class OWLAPIRendererIT 
+public class OWLAPIRendererIT
 {
-  @Before
-  public void setUp() 
+  @Before public void setUp()
   {
   }
 
-  @Test
-  public void TestOWLClassDeclaration()
+  @Test public void TestOWLClassDeclaration()
   {
   }
 }
