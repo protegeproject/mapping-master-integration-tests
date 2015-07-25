@@ -375,6 +375,18 @@ public class TextRendererIT extends IntegrationTestBase
 		createTextRendering(SHEET_NAME1, cells, this.currentLocation, expression);
 	}
 
+	@Test public void TestErrorIfEmptyLiteralDirectiveInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		this.thrown.expect(RendererException.class);
+		this.thrown.expectMessage("empty literal in reference");
+
+		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:ErrorIfEmptyLiteral)";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		createTextRendering(SHEET_NAME1, cells, this.currentLocation, expression);
+	}
+
 	@Test public void TestErrorIfEmptyRDFSLabelDirectiveInReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
@@ -398,6 +410,127 @@ public class TextRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		createTextRendering(SHEET_NAME1, cells, this.currentLocation, expression);
 	}
+
+	@Test public void TestSkipIfEmptyLocationInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:SkipIfEmptyLocation)";
+		String expectedRendering = "Individual: Fred";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+				expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestSkipIfEmptyLiteralInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:SkipIfEmptyLiteral)";
+		String expectedRendering = "Individual: Fred";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+				expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestSkipIfEmptyRDFSLabelDirectiveInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A1(mm:SkipIfEmptyLabel)";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+				expression);
+
+		Assert.assertFalse(textRendering.isPresent());
+	}
+
+	@Test public void TestSkipIfEmptyRDFIDDirectiveInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A1(rdf:ID mm:SkipIfEmptyID)";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+				expression);
+
+		Assert.assertFalse(textRendering.isPresent());
+	}
+
+	@Test public void TestWarningIfEmptyLocationInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:WarningIfEmptyLocation)";
+		String expectedRendering = "Individual: Fred";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+				expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestWarningIfEmptyLiteralInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:WarningIfEmptyLiteral)";
+		String expectedRendering = "Individual: Fred";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+				expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestWarningIfEmptyRDFSLabelDirectiveInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A1(mm:WarningIfEmptyLabel)";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+				expression);
+
+		Assert.assertFalse(textRendering.isPresent());
+	}
+
+	@Test public void TestWarningIfEmptyRDFIDDirectiveInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A1(rdf:ID mm:WarningIfEmptyID)";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+				expression);
+
+		Assert.assertFalse(textRendering.isPresent());
+	}
+
+
+
+	@Test public void TestProcessIfEmptyLiteralInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:ProcessIfEmptyLiteral)";
+		String expectedRendering = "Individual: Fred Facts: hasName \"\"";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+				expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
 
 	@Test public void TestOutOfRangeColumnInReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
