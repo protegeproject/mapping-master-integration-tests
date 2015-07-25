@@ -293,11 +293,39 @@ public class TextRendererIT extends IntegrationTestBase
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
 	}
 
-	@Test public void TestToUpperCaseLiteralInReference()
+	@Test public void TestToLowerCaseInReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
-		String expression = "Class: @A1(mm:toUpperCase(\"car\"))";
-		String expectedRendering = "Class: CAR";
+		String expression = "Class: @A1(mm:toLowerCase(\"CAR\"))";
+		String expectedRendering = "Class: car";
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
+				expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestTrimInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A1(mm:trim(\"  Car  \"))";
+		String expectedRendering = "Class: Car";
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
+				expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestReverseInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A1(mm:reverse(\"raC\"))";
+		String expectedRendering = "Class: Car";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
@@ -355,6 +383,48 @@ public class TextRendererIT extends IntegrationTestBase
 		String expression = "Class: @A1(rdfs:label=[\":(\\S+)\"])";
 		String expectedRendering = "Class: Zyvox";
 		Label cellA1 = createCell("Pfizer:Zyvox", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
+				expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestCapturingExpressionMethodInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A1(rdfs:label=mm:capturing(\":(\\S+)\"))";
+		String expectedRendering = "Class: Zyvox";
+		Label cellA1 = createCell("Pfizer:Zyvox", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
+				expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+	
+	@Test public void TestDefaultLocationValueInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A1(mm:DefaultLocationValue=\"Unknown\")";
+		String expectedRendering = "Class: Unknown";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
+				expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestDefaultLabelInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A1(rdfs:label mm:DefaultLabel=\"Unknown\")";
+		String expectedRendering = "Class: Unknown";
+		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
 				expression);
@@ -515,8 +585,6 @@ public class TextRendererIT extends IntegrationTestBase
 		Assert.assertFalse(textRendering.isPresent());
 	}
 
-
-
 	@Test public void TestProcessIfEmptyLiteralInReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
@@ -530,7 +598,6 @@ public class TextRendererIT extends IntegrationTestBase
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
 	}
-
 
 	@Test public void TestOutOfRangeColumnInReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
