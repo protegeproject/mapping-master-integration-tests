@@ -363,6 +363,42 @@ public class TextRendererIT extends IntegrationTestBase
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
 	}
 
+	@Test public void TestErrorIfEmptyLocationDirectiveInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		this.thrown.expect(RendererException.class);
+		this.thrown.expectMessage("empty location");
+
+		String expression = "Class: @A1(mm:ErrorIfEmptyLocation)";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		createTextRendering(SHEET_NAME1, cells, this.currentLocation, expression);
+	}
+
+	@Test public void TestErrorIfEmptyRDFSLabelDirectiveInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		this.thrown.expect(RendererException.class);
+		this.thrown.expectMessage("empty RDFS label in reference");
+
+		String expression = "Class: @A1(mm:ErrorIfEmptyLabel)";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		createTextRendering(SHEET_NAME1, cells, this.currentLocation, expression);
+	}
+
+	@Test public void TestErrorIfEmptyRDFIDDirectiveInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		this.thrown.expect(RendererException.class);
+		this.thrown.expectMessage("empty RDF ID in reference");
+
+		String expression = "Class: @A1(rdf:ID=@A1 mm:ErrorIfEmptyID)";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		createTextRendering(SHEET_NAME1, cells, this.currentLocation, expression);
+	}
+
 	@Test public void TestOutOfRangeColumnInReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
