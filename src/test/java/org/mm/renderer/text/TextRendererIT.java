@@ -72,7 +72,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Assert.assertEquals(expression, textRendering.get().getTextRendering());
 	}
 
-	@Test public void TestEquivalentClass()
+	@Test public void TestEquivalentToClass()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		String expression = "Class: Car EquivalentTo: Automobile";
@@ -82,10 +82,20 @@ public class TextRendererIT extends IntegrationTestBase
 		Assert.assertEquals(expression, textRendering.get().getTextRendering());
 	}
 
+	@Test public void TestEquivalentToClassExpression()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: Car EquivalentTo: (hasEngine EXACTLY 1)";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
 	@Test public void TestMultipleEquivalentClass()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
-		String expression = "Class: Car EquivalentTo: Automobile, Auto";
+		String expression = "Class: Car EquivalentTo: Automobile, Auto, (hasEngine EXACTLY 1)";
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -95,7 +105,27 @@ public class TextRendererIT extends IntegrationTestBase
 	@Test public void TestMaxCardinalityRestriction()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
-		String expression = "Class: Car SubClassOf: (hasSSN MAX 1)";
+		String expression = "Class: Car SubClassOf: (hasEngine MAX 1)";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestObjectHasValueRestriction()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: Catamaran SubClassOf: (hasHull VALUE 2)";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestDataHasValueRestriction()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: Car SubClassOf: (hasEngine VALUE 1)";
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
