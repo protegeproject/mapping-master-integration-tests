@@ -32,26 +32,6 @@ public class TextRendererIT extends IntegrationTestBase
 		Assert.assertEquals(expression, textRendering.get().getTextRendering());
 	}
 
-	@Test public void TestClassDeclarationWithAnnotations()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
-	{
-		String expression = "Class: Car Annotations: hasAuthor Bob";
-		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
-
-		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
-	}
-
-	@Test public void TestClassDeclarationWithMultipleAnnotations()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
-	{
-		String expression = "Class: Car Annotations: hasAuthor Bob, hasDate \"1990-10-10\"";
-		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
-
-		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
-	}
-
 	@Test public void TestSubClassOf()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
@@ -96,6 +76,26 @@ public class TextRendererIT extends IntegrationTestBase
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		String expression = "Class: Car EquivalentTo: Automobile, Auto, (hasEngine EXACTLY 1)";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestClassDeclarationWithAnnotations()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: Car Annotations: hasAuthor Bob";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestClassDeclarationWithMultipleAnnotations()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: Car Annotations: hasAuthor Bob, hasDate \"1990-10-10\"";
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
