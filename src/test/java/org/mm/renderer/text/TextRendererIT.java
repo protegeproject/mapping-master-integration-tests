@@ -213,6 +213,26 @@ public class TextRendererIT extends IntegrationTestBase
 		Assert.assertEquals(expression, textRendering.get().getTextRendering());
 	}
 
+	@Test public void TestUnionClassExpression()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: A SubClassOf: ((hasP1 EXACTLY 2) OR (hasP2 EXACTLY 3))";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestIntersectionClassExpression()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: A SubClassOf: ((hasP1 EXACTLY 2) AND (hasP2 EXACTLY 3))";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
 	@Test public void TestAbsoluteReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
