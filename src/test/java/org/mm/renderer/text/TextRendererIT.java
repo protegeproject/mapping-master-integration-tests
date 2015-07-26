@@ -243,7 +243,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Assert.assertEquals(expression, textRendering.get().getTextRendering());
 	}
 
-	@Test public void TestIndividualDeclarationWithType()
+	@Test public void TestIndividualDeclarationWithTypes()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		String expression = "Individual: Fred Types: Person";
@@ -257,6 +257,86 @@ public class TextRendererIT extends IntegrationTestBase
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		String expression = "Individual: Fred Types: Person, (hasParent ONLY Human)";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestIndividualDeclarationWithFacts()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred Facts: hasName \"Fred\"";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestIndividualDeclarationWithMultipleFacts()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred Facts: hasName \"Fred\", hasAge 23";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestIndividualDeclarationWithAnnotations()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred Annotations: hasName \"Fred\"";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestIndividualDeclarationWithMultipleAnnotations()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred Annotations: hasName \"Fred\", hasAge 23";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestIndividualDeclarationWithSameIndividual()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred SameAs: Freddy";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestIndividualDeclarationWithMultipleSameIndividual()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred SameAs: Freddy, F";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestIndividualDeclarationWithDifferentIndividuals()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred DifferentFrom: Bob";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestIndividualDeclarationWithMultipleDifferentIndividuals()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred DifferentFrom: Bob, Bobby";
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
