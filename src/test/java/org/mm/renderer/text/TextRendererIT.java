@@ -233,6 +233,36 @@ public class TextRendererIT extends IntegrationTestBase
 		Assert.assertEquals(expression, textRendering.get().getTextRendering());
 	}
 
+	@Test public void TestIndividualDeclaration()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestIndividualDeclarationWithType()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred Types: Person";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestIndividualDeclarationWithMultipleTypes()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred Types: Person, (hasParent ONLY Human)";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
 	@Test public void TestAbsoluteReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
