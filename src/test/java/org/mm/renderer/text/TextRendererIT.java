@@ -192,6 +192,27 @@ public class TextRendererIT extends IntegrationTestBase
 		Assert.assertEquals(expression, textRendering.get().getTextRendering());
 	}
 
+	// TODO The grammar is incorrect here - parenthesis should not be required around the {}.
+	@Test public void TestOWLObjectOneOf()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: Person SubClassOf: (hasGender ONLY ({Male, Female, Other}))";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestNegatedClassExpression()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: Car EquivalentTo: NOT (hasEngine EXACTLY 2)";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
 	@Test public void TestAbsoluteReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
