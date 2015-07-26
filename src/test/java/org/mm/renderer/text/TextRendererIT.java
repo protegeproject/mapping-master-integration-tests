@@ -42,6 +42,46 @@ public class TextRendererIT extends IntegrationTestBase
 		Assert.assertEquals(expression, textRendering.get().getTextRendering());
 	}
 
+	@Test public void TestEquivalentClass()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: Car EquivalentTo: Automobile";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestMaxCardinalityRestriction()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: Car SubClassOf: (hasSSN MAX 1)";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestMinCardinalityRestriction()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: Car SubClassOf: (hasSSN MIN 1)";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestExactCardinalityRestriction()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: Car SubClassOf: (hasSSN EXACTLY 1)";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
 	@Test public void TestAbsoluteReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
