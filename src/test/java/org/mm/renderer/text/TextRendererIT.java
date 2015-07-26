@@ -145,17 +145,47 @@ public class TextRendererIT extends IntegrationTestBase
 	@Test public void TestDataHasValueRestriction()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
-		String expression = "Class: Car SubClassOf: (hasEngine VALUE 1)";
+		String expression = "Class: BMW SubClassOf: (hasOrigin VALUE \"Germany\")";
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expression, textRendering.get().getTextRendering());
 	}
 
-	@Test public void TestDataHasValueQuotedValueRestriction()
+	@Test public void TestObjectSomeValueRestriction()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
-		String expression = "Class: BMW SubClassOf: (hasOrigin VALUE \"Germany\")";
+		String expression = "Class: ChildOfDoctor SubClassOf: (hasParent SOME Physician)";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestDataSomeValueRestriction()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: Car SubClassOf: (hasName SOME xsd:string)";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestObjectAllValuesFromRestriction()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: Person SubClassOf: (hasSSN ONLY xsd:string)";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestDataAllValuesFromRestriction()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: Person SubClassOf: (hasParent ONLY Human)";
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
