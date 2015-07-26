@@ -21,9 +21,9 @@ import java.util.Set;
 
 public class TextRendererIT extends IntegrationTestBase
 {
-	private static final String SHEET_NAME1 = "Sheet1";
+	private static final String SHEET1 = "Sheet1";
 	private static final Set<Label> emptyCellSet = Collections.emptySet();
-	private final SpreadsheetLocation currentLocation = new SpreadsheetLocation(SHEET_NAME1, 1, 1);
+	private final SpreadsheetLocation currentLocation = new SpreadsheetLocation(SHEET1, 1, 1);
 
 	@Rule public final ExpectedException thrown = ExpectedException.none();
 
@@ -34,7 +34,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: Car";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -46,8 +46,8 @@ public class TextRendererIT extends IntegrationTestBase
 	{
 		String expression = "Class: @\"Car\"";
 		String expectedRendering = "Class: Car";
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, emptyCellSet,
-				this.currentLocation, expression);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, emptyCellSet, this.currentLocation,
+				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
@@ -56,11 +56,11 @@ public class TextRendererIT extends IntegrationTestBase
 	@Test public void TestAbsoluteReferenceWithSheetName()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
-		String expression = "Class: @'" + SHEET_NAME1 + "'!A1";
+		String expression = "Class: @'" + SHEET1 + "'!A1";
 		String expectedRendering = "Class: Car";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -74,9 +74,8 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: Car";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		SpreadsheetLocation currentLocation = new SpreadsheetLocation(SHEET_NAME1, 1, 1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
-				expression);
+		SpreadsheetLocation currentLocation = new SpreadsheetLocation(SHEET1, 1, 1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
@@ -89,9 +88,8 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: Car";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		SpreadsheetLocation currentLocation = new SpreadsheetLocation(SHEET_NAME1, 1, 1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
-				expression);
+		SpreadsheetLocation currentLocation = new SpreadsheetLocation(SHEET1, 1, 1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
@@ -104,7 +102,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Individual: Fred Facts: hasSSN true";
 		Label cellA1 = createCell("true", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -118,7 +116,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Individual: Fred Facts: hasSalary 34";
 		Label cellA1 = createCell("34", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -132,7 +130,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Individual: Fred Facts: hasSalary 34";
 		Label cellA1 = createCell("34", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -146,7 +144,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Individual: Fred Facts: hasSalary 34";
 		Label cellA1 = createCell("34", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -160,7 +158,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Individual: Fred Facts: hasSalary 34000.0";
 		Label cellA1 = createCell("34000.0", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -174,7 +172,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Individual: Fred Facts: hasName \"Fred\"";
 		Label cellA1 = createCell("Fred", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -188,7 +186,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Individual: Fred Facts: hasDOB \"1999-01-01\"";
 		Label cellA1 = createCell("1999-01-01", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -202,7 +200,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Individual: Fred Facts: hasDOB \"1999-01-01T10:10:10\"";
 		Label cellA1 = createCell("1999-01-01T10:10:10", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -216,7 +214,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Individual: Fred Facts: hasBedTime \"21:00\"";
 		Label cellA1 = createCell("21:00", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -230,7 +228,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: Big";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -244,7 +242,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: BigCar";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -258,8 +256,21 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: BigCar";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestRDFSLabelAppendInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A1(rdfs:label=mm:append(\"Big\"))";
+		String expectedRendering = "Class: CarBig";
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
@@ -272,8 +283,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: BigCar";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
-				expression);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
@@ -286,8 +296,71 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: BigCar";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
-				expression);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestShiftUpInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A4(mm:ShiftUp)";
+		String expectedRendering = "Class: Car";
+		Label cellA1 = createCell("Car", 1, 1);
+		Label cellA2 = createCell("", 1, 2);
+		Label cellA3 = createCell("", 1, 3);
+		Label cellA4 = createCell("", 1, 4);
+		Set<Label> cells = createCells(cellA1, cellA2, cellA3, cellA4);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestShiftDownInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A1(mm:ShiftDown)";
+		String expectedRendering = "Class: Car";
+		Label cellA1 = createCell("", 1, 1);
+		Label cellA2 = createCell("", 1, 2);
+		Label cellA3 = createCell("", 1, 3);
+		Label cellA4 = createCell("Car", 1, 4);
+		Set<Label> cells = createCells(cellA1, cellA2, cellA3, cellA4);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestShiftRightInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A1(mm:ShiftRight)";
+		String expectedRendering = "Class: Car";
+		Label cellA1 = createCell("", 1, 1);
+		Label cellB1 = createCell("", 2, 1);
+		Label cellC1 = createCell("", 3, 1);
+		Label cellD1 = createCell("Car", 4, 1);
+		Set<Label> cells = createCells(cellA1, cellB1, cellC1, cellD1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestShiftLeftInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @D1(mm:ShiftLeft)";
+		String expectedRendering = "Class: Car";
+		Label cellA1 = createCell("Car", 1, 1);
+		Label cellB1 = createCell("", 2, 1);
+		Label cellC1 = createCell("", 3, 1);
+		Label cellD1 = createCell("", 4, 1);
+		Set<Label> cells = createCells(cellA1, cellB1, cellC1, cellD1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
@@ -300,8 +373,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: car";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
-				expression);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
@@ -314,8 +386,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: Car";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
-				expression);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
@@ -328,8 +399,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: Car";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
-				expression);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
@@ -342,8 +412,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: CAR";
 		Label cellA1 = createCell("car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
-				expression);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
@@ -356,8 +425,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: CAR";
 		Label cellA1 = createCell("car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
-				expression);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
@@ -370,8 +438,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Individual: Fred Facts: hasItem \"bag\"";
 		Label cellA1 = createCell(")(*bag%^&$#@!", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
-				expression);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
@@ -384,8 +451,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: Zyvox";
 		Label cellA1 = createCell("Pfizer:Zyvox", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
-				expression);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
@@ -398,13 +464,12 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: Zyvox";
 		Label cellA1 = createCell("Pfizer:Zyvox", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
-				expression);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
 	}
-	
+
 	@Test public void TestDefaultLocationValueInReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
@@ -412,8 +477,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: Unknown";
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
-				expression);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
@@ -426,8 +490,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Class: Unknown";
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, currentLocation,
-				expression);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
@@ -442,7 +505,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expression = "Class: @A1(mm:ErrorIfEmptyLocation)";
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		createTextRendering(SHEET_NAME1, cells, this.currentLocation, expression);
+		createTextRendering(SHEET1, cells, this.currentLocation, expression);
 	}
 
 	@Test public void TestErrorIfEmptyLiteralDirectiveInReference()
@@ -454,7 +517,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:ErrorIfEmptyLiteral)";
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		createTextRendering(SHEET_NAME1, cells, this.currentLocation, expression);
+		createTextRendering(SHEET1, cells, this.currentLocation, expression);
 	}
 
 	@Test public void TestErrorIfEmptyRDFSLabelDirectiveInReference()
@@ -466,7 +529,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expression = "Class: @A1(mm:ErrorIfEmptyLabel)";
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		createTextRendering(SHEET_NAME1, cells, this.currentLocation, expression);
+		createTextRendering(SHEET1, cells, this.currentLocation, expression);
 	}
 
 	@Test public void TestErrorIfEmptyRDFIDDirectiveInReference()
@@ -478,7 +541,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expression = "Class: @A1(rdf:ID=@A1 mm:ErrorIfEmptyID)";
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		createTextRendering(SHEET_NAME1, cells, this.currentLocation, expression);
+		createTextRendering(SHEET1, cells, this.currentLocation, expression);
 	}
 
 	@Test public void TestSkipIfEmptyLocationInReference()
@@ -488,7 +551,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Individual: Fred";
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -502,7 +565,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Individual: Fred";
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -515,7 +578,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expression = "Class: @A1(mm:SkipIfEmptyLabel)";
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertFalse(textRendering.isPresent());
@@ -527,7 +590,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expression = "Class: @A1(rdf:ID mm:SkipIfEmptyID)";
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertFalse(textRendering.isPresent());
@@ -540,7 +603,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Individual: Fred";
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -554,7 +617,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Individual: Fred";
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -567,7 +630,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expression = "Class: @A1(mm:WarningIfEmptyLabel)";
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertFalse(textRendering.isPresent());
@@ -579,7 +642,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expression = "Class: @A1(rdf:ID mm:WarningIfEmptyID)";
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertFalse(textRendering.isPresent());
@@ -592,7 +655,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expectedRendering = "Individual: Fred Facts: hasName \"\"";
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET_NAME1, cells, this.currentLocation,
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, this.currentLocation,
 				expression);
 
 		Assert.assertTrue(textRendering.isPresent());
@@ -608,7 +671,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expression = "Class: @D1";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		createTextRendering(SHEET_NAME1, cells, this.currentLocation, expression);
+		createTextRendering(SHEET1, cells, this.currentLocation, expression);
 	}
 
 	@Test public void TestOutOfRangeRowInReference()
@@ -620,7 +683,7 @@ public class TextRendererIT extends IntegrationTestBase
 		String expression = "Class: @A3";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		createTextRendering(SHEET_NAME1, cells, this.currentLocation, expression);
+		createTextRendering(SHEET1, cells, this.currentLocation, expression);
 	}
 
 	@Test public void TestInvalidSheetNameInReference()
@@ -630,7 +693,7 @@ public class TextRendererIT extends IntegrationTestBase
 		this.thrown.expectMessage("invalid sheet name fff");
 
 		String expression = "Class: @'fff'!A3";
-		createTextRendering(SHEET_NAME1, emptyCellSet, this.currentLocation, expression);
+		createTextRendering(SHEET1, emptyCellSet, this.currentLocation, expression);
 	}
 
 	@Test public void TestParseException()
@@ -639,6 +702,6 @@ public class TextRendererIT extends IntegrationTestBase
 		this.thrown.expect(ParseException.class);
 
 		String expression = "Class: @";
-		createTextRendering(SHEET_NAME1, emptyCellSet, this.currentLocation, expression);
+		createTextRendering(SHEET1, emptyCellSet, this.currentLocation, expression);
 	}
 }
