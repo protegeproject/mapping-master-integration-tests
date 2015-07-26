@@ -4,9 +4,7 @@ import junit.framework.Assert;
 import jxl.read.biff.BiffException;
 import jxl.write.Label;
 import jxl.write.WriteException;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ParseException;
 import org.mm.renderer.RendererException;
@@ -20,8 +18,16 @@ import java.util.Set;
 
 public class TextRendererIT extends IntegrationTestBase
 {
+	@Test public void TestClassDeclaration()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: Car";
+		String expectedRendering = "Class: Car";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
-	@Rule public final ExpectedException thrown = ExpectedException.none();
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+	}
 
 	@Test public void TestAbsoluteReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
@@ -41,7 +47,7 @@ public class TextRendererIT extends IntegrationTestBase
 	{
 		String expression = "Class: @\"Car\"";
 		String expectedRendering = "Class: Car";
-		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, emptyCellSet, expression);
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
 		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
@@ -665,7 +671,7 @@ public class TextRendererIT extends IntegrationTestBase
 		this.thrown.expectMessage("invalid sheet name fff");
 
 		String expression = "Class: @'fff'!A3";
-		createTextRendering(SHEET1, emptyCellSet, expression);
+		createTextRendering(SHEET1, expression);
 	}
 
 	@Test public void TestParseException()
@@ -674,6 +680,6 @@ public class TextRendererIT extends IntegrationTestBase
 		this.thrown.expect(ParseException.class);
 
 		String expression = "Class: @";
-		createTextRendering(SHEET1, emptyCellSet, expression);
+		createTextRendering(expression);
 	}
 }
