@@ -4,7 +4,9 @@ import junit.framework.Assert;
 import jxl.read.biff.BiffException;
 import jxl.write.Label;
 import jxl.write.WriteException;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ParseException;
 import org.mm.renderer.RendererException;
@@ -18,15 +20,26 @@ import java.util.Set;
 
 public class TextRendererIT extends IntegrationTestBase
 {
+	@Rule public final ExpectedException thrown = ExpectedException.none();
+
 	@Test public void TestClassDeclaration()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		String expression = "Class: Car";
-		String expectedRendering = "Class: Car";
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+	}
+
+	@Test public void TestSubClassOf()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: Car SubClassOf: Vehicle";
+		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expression, textRendering.get().getTextRendering());
 	}
 
 	@Test public void TestAbsoluteReference()
