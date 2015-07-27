@@ -47,4 +47,9 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		// Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		// TODO Test that we have the expected declaration axiom for the class Car
 	}
+
+	// TODO Tests for the following directives:
+	// mm:Location, mm:ResolveIfOWLEntityExists, mm:SkipIfOWLEntityExists, mm:WarningIfOWLEntityExists,
+	// mm:ErrorIfOWLEntityExists, mm:CreateIfOWLEntityDoesNotExist, mm:SkipIfOWLEntityDoesNotExist,
+	// mm:WarningIfOWLEntityDoesNotExist, mm:ErrorIfOWLEntityDoesNotExist
 }
