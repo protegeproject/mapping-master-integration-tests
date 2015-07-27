@@ -29,7 +29,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestSubClassOf()
@@ -39,7 +39,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestMultipleSubClassOf()
@@ -49,7 +49,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestEquivalentToClass()
@@ -59,7 +59,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestEquivalentToClassExpression()
@@ -69,7 +69,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestMultipleEquivalentClass()
@@ -79,7 +79,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestClassDeclarationWithAnnotations()
@@ -89,7 +89,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestClassDeclarationWithMultipleAnnotations()
@@ -99,7 +99,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestMaxCardinalityRestriction()
@@ -109,7 +109,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestMinCardinalityRestriction()
@@ -119,7 +119,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestExactCardinalityRestriction()
@@ -129,7 +129,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestObjectHasValueRestriction()
@@ -139,7 +139,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestDataHasValueRestriction()
@@ -149,7 +149,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestObjectSomeValueRestriction()
@@ -159,7 +159,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestDataSomeValueRestriction()
@@ -169,7 +169,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestObjectAllValuesFromRestriction()
@@ -179,7 +179,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestDataAllValuesFromRestriction()
@@ -189,7 +189,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	// TODO The grammar is incorrect here - parenthesis should not be required around the {}.
@@ -200,7 +200,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestNegatedClassExpression()
@@ -210,7 +210,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestUnionClassExpression()
@@ -220,7 +220,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestIntersectionClassExpression()
@@ -230,7 +230,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestIndividualDeclaration()
@@ -240,7 +240,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestIndividualDeclarationWithTypes()
@@ -250,7 +250,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestIndividualDeclarationWithMultipleTypes()
@@ -260,7 +260,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestIndividualDeclarationWithFacts()
@@ -270,7 +270,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestIndividualDeclarationWithMultipleFacts()
@@ -280,7 +280,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestIndividualDeclarationWithAnnotations()
@@ -290,7 +290,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestIndividualDeclarationWithMultipleAnnotations()
@@ -300,7 +300,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestIndividualDeclarationWithSameIndividual()
@@ -310,7 +310,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestIndividualDeclarationWithMultipleSameIndividual()
@@ -320,7 +320,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestIndividualDeclarationWithDifferentIndividuals()
@@ -330,7 +330,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestIndividualDeclarationWithMultipleDifferentIndividuals()
@@ -340,7 +340,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expression, textRendering.get().getTextRendering());
+		Assert.assertEquals(expression, textRendering.get().getRendering());
 	}
 
 	@Test public void TestAbsoluteReference()
@@ -353,7 +353,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestLiteralReference()
@@ -364,7 +364,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestAbsoluteReferenceWithSheetName()
@@ -377,7 +377,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestColumnWildcardInReference()
@@ -391,7 +391,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestRowWildcardInReference()
@@ -405,7 +405,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestXSDBooleanInReference()
@@ -418,7 +418,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestXSDByteInReference()
@@ -431,7 +431,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestXSDShortInReference()
@@ -444,7 +444,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestXSDIntInReference()
@@ -457,7 +457,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestXSDFloatInReference()
@@ -470,7 +470,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestXSDStringInReference()
@@ -483,7 +483,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestXSDDateInReference()
@@ -496,7 +496,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestXSDDateTimeInReference()
@@ -509,7 +509,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestXSDTimeInReference()
@@ -522,7 +522,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestRDFSLabelAssignmentInReference()
@@ -535,7 +535,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestRDFSLabelAssignmentWithConcatenatedParametersInReference()
@@ -548,7 +548,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestRDFSLabelAssignmentWithReferenceParameterInReference()
@@ -561,7 +561,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestRDFSLabelAppendInReference()
@@ -574,7 +574,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestRDFSLabelPrependInReference()
@@ -587,7 +587,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestDefaultPrependInReference()
@@ -600,7 +600,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestShiftUpInReference()
@@ -616,7 +616,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestShiftDownInReference()
@@ -632,7 +632,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestShiftRightInReference()
@@ -648,7 +648,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestShiftLeftInReference()
@@ -664,7 +664,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestToLowerCaseInReference()
@@ -677,7 +677,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestTrimInReference()
@@ -690,7 +690,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestReverseInReference()
@@ -703,7 +703,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestToUpperCaseInReference()
@@ -716,7 +716,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestToUpperCaseImplicitInReference()
@@ -729,7 +729,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestReplaceAllInReference()
@@ -742,7 +742,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestCapturingExpressionInReference()
@@ -755,7 +755,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestCapturingExpressionMethodInReference()
@@ -768,7 +768,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestDefaultLocationValueInReference()
@@ -781,7 +781,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestDefaultLabelInReference()
@@ -794,7 +794,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestErrorIfEmptyLocationDirectiveInReference()
@@ -855,7 +855,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestSkipIfEmptyLiteralInReference()
@@ -868,7 +868,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestSkipIfEmptyRDFSLabelDirectiveInReference()
@@ -903,7 +903,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestWarningIfEmptyLiteralInReference()
@@ -916,7 +916,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestWarningIfEmptyRDFSLabelDirectiveInReference()
@@ -951,7 +951,7 @@ public class TextRendererIT extends IntegrationTestBase
 		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
 
 		Assert.assertTrue(textRendering.isPresent());
-		Assert.assertEquals(expectedRendering, textRendering.get().getTextRendering());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
 	@Test public void TestOutOfRangeColumnInReference()
