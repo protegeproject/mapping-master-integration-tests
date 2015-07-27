@@ -41,7 +41,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		String expression = "Class: @A1";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		//Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
 
 		// Assert.assertTrue(owlapiRendering.isPresent());
 		// Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
