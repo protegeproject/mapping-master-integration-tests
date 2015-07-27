@@ -635,6 +635,27 @@ public class TextRendererIT extends IntegrationTestBase
 		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
 	}
 
+	@Test public void TestReferencesInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @A*(mm:append(@B*(mm:ShiftDown), @C*(mm:ShiftRight)))";
+		String expectedRendering = "Class: BMWGermany";
+		Label cellA1 = createCell("Car", 1, 1);
+		Label cellB1 = createCell("", 2, 2);
+		Label cellB2 = createCell("", 2, 3);
+		Label cellB3 = createCell("", 3, 4);
+		Label cellB4 = createCell("BMW", 2, 4);
+		Label cellC1 = createCell("", 3, 1);
+		Label cellD1 = createCell("", 4, 1);
+		Label cellE1 = createCell("", 5, 1);
+		Label cellF1 = createCell("Germany", 6, 1);
+		Set<Label> cells = createCells(cellA1, cellB1, cellB2, cellB3, cellB4, cellC1, cellD1, cellE1, cellF1);
+		Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
+
+		Assert.assertTrue(textRendering.isPresent());
+		Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
+	}
+
 	@Test public void TestShiftRightInReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
