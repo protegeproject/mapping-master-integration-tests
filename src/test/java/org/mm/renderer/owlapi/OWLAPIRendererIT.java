@@ -6,13 +6,11 @@ import jxl.write.WriteException;
 import org.junit.Test;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ParseException;
-import org.mm.rendering.owlapi.OWLAPIRendering;
 import org.mm.test.IntegrationTestBase;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import java.io.IOException;
-import java.util.Optional;
 import java.util.Set;
 
 // TODO Take integration tests from text render and repurpose for OWLAPI renderer
@@ -48,8 +46,10 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		// TODO Test that we have the expected declaration axiom for the class Car
 	}
 
+  // TODO Different rdfs:label and rdf:id, e.g., Class: @A5(rdf:ID=@B5 rdfs:label=@A5)
 	// TODO Tests for the following directives:
-	// mm:Location, mm:ResolveIfOWLEntityExists, mm:SkipIfOWLEntityExists, mm:WarningIfOWLEntityExists,
+	// mm:Location, mm:Prefix, mm:Namespace
+	// mm:ResolveIfOWLEntityExists, mm:SkipIfOWLEntityExists, mm:WarningIfOWLEntityExists,
 	// mm:ErrorIfOWLEntityExists, mm:CreateIfOWLEntityDoesNotExist, mm:SkipIfOWLEntityDoesNotExist,
 	// mm:WarningIfOWLEntityDoesNotExist, mm:ErrorIfOWLEntityDoesNotExist
 }

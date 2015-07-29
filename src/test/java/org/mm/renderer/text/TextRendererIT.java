@@ -922,6 +922,23 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
   }
 
+  @Test public void TestMultipleCapturingExpressionsInReference()
+      throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+  {
+    String expression = "Individual: Fred  " +
+        "Facts: " +
+        "hasMin @A1(xsd:int [\"(\\d+)\\s+\"]), " +
+        "hasMax @A1(xsd:int [\"\\s+(\\d+)\"])" +
+        "Types: Person";
+    String expectedRendering = "Individual: Fred Facts: hasMin 23, hasMax 44 Types: Person";
+    Label cellA1 = createCell("23 44", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
+  }
+
   @Test public void TestDefaultLocationValueInReference()
       throws WriteException, BiffException, MappingMasterException, ParseException, IOException
   {
@@ -947,7 +964,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertTrue(textRendering.isPresent());
     Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
   }
-  
+
   @Test public void TestResolveIfOWLEntityExistsInReference()
       throws WriteException, BiffException, MappingMasterException, ParseException, IOException
   {
@@ -974,7 +991,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
   }
 
-  @Test public void TestWarniningIfOWLEntityExistsInReference()
+  @Test public void TestWarningIfOWLEntityExistsInReference()
       throws WriteException, BiffException, MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(mm:WarningIfOWLEntityExists)";
@@ -1051,7 +1068,6 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertTrue(textRendering.isPresent());
     Assert.assertEquals(expectedRendering, textRendering.get().getRendering());
   }
-
 
   @Test public void TestErrorIfEmptyLocationDirectiveInReference()
       throws WriteException, BiffException, MappingMasterException, ParseException, IOException
