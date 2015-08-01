@@ -24,7 +24,7 @@ import jxl.write.WriteException;
 public class OWLAPIRendererIT extends IntegrationTestBase
 {
 	private OWLOntology ontology;
-	
+
 	@Before
 	public void setUp() throws OWLOntologyCreationException
 	{
@@ -32,56 +32,103 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	}
 
 	@Test
-	public void TestClassDeclaration() throws WriteException, BiffException, MappingMasterException, ParseException,
-			IOException
+	public void TestClassDeclaration()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		String expression = "Class: Car";
-		
+
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
-		
+
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(1));
-		
-		System.out.println(owlapiRendering.get().getOWLAxioms());
-	}
-	
-	@Test
-	public void TestSubClassOf() throws WriteException, BiffException, MappingMasterException, ParseException,
-			IOException
-	{
-		declareOWLClasses(ontology, "Car", "Vehicle");
-		String expression = "Class: Car SubClassOf: Vehicle";
-		
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
-		assertThat(owlapiRendering.isPresent(), is(true));
-		
-		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
-		assertThat(axioms, hasSize(1));
-		
+
 		System.out.println(owlapiRendering.get().getOWLAxioms());
 	}
 
 	@Test
-	public void TestMultipleSubClassOf() throws WriteException, BiffException, MappingMasterException, ParseException,
-			IOException
+	public void TestSubClassOf()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
-		declareOWLClasses(ontology, "Car", "Vehicle", "Device");
-		String expression = "Class: Car SubClassOf: Vehicle, Device";
-		
+		declareOWLClasses(ontology, "Car", "Vehicle");
+		String expression = "Class: Car SubClassOf: Vehicle";
+
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(2));
-		
+
 		System.out.println(owlapiRendering.get().getOWLAxioms());
 	}
 
 	@Test
-	public void TestAbsoluteReference() throws OWLOntologyCreationException, WriteException,
-	        MappingMasterException, ParseException, IOException
+	public void TestMultipleSubClassOf()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car", "Vehicle", "Device");
+		String expression = "Class: Car SubClassOf: Vehicle, Device";
+
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(3));
+
+		System.out.println(owlapiRendering.get().getOWLAxioms());
+	}
+
+	@Test
+	public void TestEquivalentToClass()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car", "Automobile");
+		String expression = "Class: Car EquivalentTo: Automobile";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+
+		System.out.println(owlapiRendering.get().getOWLAxioms());
+	}
+
+	@Test
+	public void TestEquivalentToClassExpression()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car");
+		declareOWLObjectProperties(ontology, "hasEngine");
+		String expression = "Class: Car EquivalentTo: (hasEngine EXACTLY 1)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+
+		System.out.println(owlapiRendering.get().getOWLAxioms());
+	}
+
+	@Test
+	public void TestMultipleEquivalentClass()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car", "Automobile", "Auto");
+		declareOWLObjectProperties(ontology, "hasEngine");
+		String expression = "Class: Car EquivalentTo: Automobile, Auto, (hasEngine EXACTLY 1)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(4));
+
+		System.out.println(owlapiRendering.get().getOWLAxioms());
+	}
+
+	@Test
+	public void TestAbsoluteReference()
+			throws OWLOntologyCreationException, WriteException, MappingMasterException, ParseException, IOException
 	{
 		OWLOntology ontology = createOWLOntology();
 		String expression = "Class: @A1";
@@ -94,10 +141,13 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		// Car
 	}
 
-  // TODO Different rdfs:label and rdf:id, e.g., Class: @A5(rdf:ID=@B5 rdfs:label=@A5)
+	// TODO Different rdfs:label and rdf:id, e.g., Class: @A5(rdf:ID=@B5
+	// rdfs:label=@A5)
 	// TODO Tests for the following directives:
 	// mm:Location, mm:Prefix, mm:Namespace
-	// mm:ResolveIfOWLEntityExists, mm:SkipIfOWLEntityExists, mm:WarningIfOWLEntityExists,
-	// mm:ErrorIfOWLEntityExists, mm:CreateIfOWLEntityDoesNotExist, mm:SkipIfOWLEntityDoesNotExist,
+	// mm:ResolveIfOWLEntityExists, mm:SkipIfOWLEntityExists,
+	// mm:WarningIfOWLEntityExists,
+	// mm:ErrorIfOWLEntityExists, mm:CreateIfOWLEntityDoesNotExist,
+	// mm:SkipIfOWLEntityDoesNotExist,
 	// mm:WarningIfOWLEntityDoesNotExist, mm:ErrorIfOWLEntityDoesNotExist
 }
