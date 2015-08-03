@@ -26,7 +26,6 @@ import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Objec
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectMaxCardinality;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectProperty;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectSomeValuesFrom;
-import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.PlainLiteral;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SubClassOf;
 
 import java.io.IOException;
@@ -89,7 +88,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLDataProperty HAS_ORIGIN = DataProperty(IRI("hasOrigin"));
 	private static final OWLDataProperty HAS_NAME = DataProperty(IRI("hasName"));
 	private static final OWLIndividual DOUBLE_HULL = NamedIndividual(IRI("double-hull"));
-
+	
 	private static final OWLAnnotationSubject CAR_ANNOTATION = IRI("Car");
 	private static final OWLAnnotationProperty HAS_AUTHOR_ANNOTATION = AnnotationProperty(IRI("hasAuthor"));
 	private static final OWLAnnotationProperty HAS_DATE_ANNOTATION = AnnotationProperty(IRI("hasDate"));
@@ -97,12 +96,13 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLAnnotationValue DATE_VALUE = Literal("1990-10-10");
 	private static final OWLLiteral GERMANY_LITERAL = Literal("Germany");
 	
+	private static final OWLDatatype RDFS_LITERAL = Datatype(IRI(Namespaces.RDFS + "Literal"));
 	private static final OWLDatatype XSD_STRING = Datatype(IRI(Namespaces.XSD + "string"));
 	
 	private static final OWLObjectExactCardinality HAS_ENGINE_EXACT = ObjectExactCardinality(1, HAS_ENGINE, OWLThing());
 	private static final OWLObjectMaxCardinality HAS_ENGINE_MAX = ObjectMaxCardinality(1, HAS_ENGINE, OWLThing());
-	private static final OWLDataMinCardinality HAS_SSN_MIN = DataMinCardinality (1, HAS_SSN, PlainLiteral());
-	private static final OWLDataExactCardinality HAS_SSN_EXACT = DataExactCardinality(1, HAS_SSN, PlainLiteral());
+	private static final OWLDataMinCardinality HAS_SSN_MIN = DataMinCardinality (1, HAS_SSN, RDFS_LITERAL);
+	private static final OWLDataExactCardinality HAS_SSN_EXACT = DataExactCardinality(1, HAS_SSN, RDFS_LITERAL);
 	
 	private static final OWLObjectHasValue HAS_HAUL_HAS_VALUE = ObjectHasValue(HAS_HULL, DOUBLE_HULL);
 	private static final OWLDataHasValue HAS_ORIGIN_HAS_VALUE = DataHasValue(HAS_ORIGIN, GERMANY_LITERAL);
@@ -127,9 +127,9 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLAxiom CAR_SUBCLASS_DATA_SOME_VALUE = SubClassOf(CAR, HAS_NAME_SOME_VALUE);
 	private static final OWLAxiom PERSON_SUBCLASS_OBJECT_ALL_VALUE = SubClassOf(PERSON, HAS_PARENT_ALL_VALUE);
 	private static final OWLAxiom PERSON_SUBCLASS_DATA_ALL_VALUE = SubClassOf(PERSON, HAS_SSN_ALL_VALUE);
-	
 	private static final OWLAxiom CAR_EQUIVALENT_AUTOMOBILE = EquivalentClasses(CAR, AUTOMOBILE);
 	private static final OWLAxiom CAR_EQUIVALENT_AUTO = EquivalentClasses(CAR, AUTO);
+	
 	private static final OWLAnnotationAssertionAxiom CAR_ANNOTATION_IRI = AnnotationAssertion(HAS_AUTHOR_ANNOTATION, CAR_ANNOTATION, IRI_VALUE);
 	private static final OWLAnnotationAssertionAxiom CAR_ANNOTATION_DATE = AnnotationAssertion(HAS_DATE_ANNOTATION, CAR_ANNOTATION, DATE_VALUE);
 
@@ -205,7 +205,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLObjectProperties(ontology, "hasEngine");
-		String expression = "Class: Car EquivalentTo: (hasEngine EXACTLY 1)";
+		String expression = "Class: Car EquivalentTo: hasEngine EXACTLY 1";
 
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
@@ -222,7 +222,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLClasses(ontology, "Car", "Automobile", "Auto");
 		declareOWLObjectProperties(ontology, "hasEngine");
-		String expression = "Class: Car EquivalentTo: Automobile, Auto, (hasEngine EXACTLY 1)";
+		String expression = "Class: Car EquivalentTo: Automobile, Auto, hasEngine EXACTLY 1";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
@@ -267,7 +267,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLObjectProperties(ontology, "hasEngine");
-		String expression = "Class: Car SubClassOf: (hasEngine MAX 1)";
+		String expression = "Class: Car SubClassOf: hasEngine MAX 1";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
@@ -282,7 +282,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLDataProperties(ontology, "hasAuthor", "hasSSN");
-		String expression = "Class: Car SubClassOf: (hasSSN MIN 1)";
+		String expression = "Class: Car SubClassOf: hasSSN MIN 1";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
@@ -297,7 +297,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLDataProperties(ontology, "hasAuthor", "hasSSN");
-		String expression = "Class: Car SubClassOf: (hasSSN EXACTLY 1)";
+		String expression = "Class: Car SubClassOf: hasSSN EXACTLY 1";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
@@ -313,7 +313,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Catamaran", "DoubleHull");
 		declareOWLObjectProperties(ontology, "hasHull");
 		declareOWLNamedIndividual(ontology, "double-hull");
-		String expression = "Class: Catamaran SubClassOf: (hasHull VALUE double-hull)";
+		String expression = "Class: Catamaran SubClassOf: hasHull VALUE double-hull";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
@@ -328,7 +328,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLClasses(ontology, "BMW");
 		declareOWLDataProperties(ontology, "hasOrigin");
-		String expression = "Class: BMW SubClassOf: (hasOrigin VALUE \"Germany\")";
+		String expression = "Class: BMW SubClassOf: hasOrigin VALUE \"Germany\"";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
@@ -343,7 +343,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLClasses(ontology, "ChildOfDoctor", "Physician");
 		declareOWLObjectProperties(ontology, "hasParent");
-		String expression = "Class: ChildOfDoctor SubClassOf: (hasParent SOME Physician)";
+		String expression = "Class: ChildOfDoctor SubClassOf: hasParent SOME Physician";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
@@ -358,7 +358,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLDataProperties(ontology, "hasName");
-		String expression = "Class: Car SubClassOf: (hasName SOME xsd:string)";
+		String expression = "Class: Car SubClassOf: hasName SOME xsd:string";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
@@ -373,7 +373,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLClasses(ontology, "Person", "Human");
 		declareOWLObjectProperties(ontology, "hasParent");
-		String expression = "Class: Person SubClassOf: (hasParent ONLY Human)";
+		String expression = "Class: Person SubClassOf: hasParent ONLY Human";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
@@ -388,7 +388,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLClasses(ontology, "Person");
 		declareOWLDataProperties(ontology, "hasSSN");
-		String expression = "Class: Person SubClassOf: (hasSSN ONLY xsd:string)";
+		String expression = "Class: Person SubClassOf: hasSSN ONLY xsd:string";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
