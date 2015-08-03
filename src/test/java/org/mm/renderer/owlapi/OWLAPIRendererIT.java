@@ -127,6 +127,38 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	}
 
 	@Test
+	public void TestClassDeclarationWithAnnotations()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car");
+		declareOWLAnnotationProperties(ontology, "hasAuthor");
+		String expression = "Class: Car Annotations: hasAuthor Bob";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+
+		System.out.println(owlapiRendering.get().getOWLAxioms());
+	}
+
+	@Test
+	public void TestClassDeclarationWithMultipleAnnotations()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car");
+		declareOWLAnnotationProperties(ontology, "hasAuthor", "hasDate");
+		String expression = "Class: Car Annotations: hasAuthor Bob, hasDate \"1990-10-10\"";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(3));
+
+		System.out.println(owlapiRendering.get().getOWLAxioms());
+	}
+
+	@Test
 	public void TestAbsoluteReference()
 			throws OWLOntologyCreationException, WriteException, MappingMasterException, ParseException, IOException
 	{
