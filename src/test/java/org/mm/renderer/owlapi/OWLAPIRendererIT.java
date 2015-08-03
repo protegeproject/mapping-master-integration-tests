@@ -1,8 +1,20 @@
 package org.mm.renderer.owlapi;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.AnnotationAssertion;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.AnnotationProperty;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Class;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Declaration;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.EquivalentClasses;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.IRI;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Literal;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.OWLThing;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectExactCardinality;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectProperty;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SubClassOf;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -14,7 +26,14 @@ import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ParseException;
 import org.mm.rendering.owlapi.OWLAPIRendering;
 import org.mm.test.IntegrationTestBase;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLAnnotationSubject;
+import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLObjectExactCardinality;
+import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
@@ -24,6 +43,28 @@ import jxl.write.WriteException;
 public class OWLAPIRendererIT extends IntegrationTestBase
 {
 	private OWLOntology ontology;
+
+	private static final OWLClass CAR = Class(IRI("Car"));
+	private static final OWLClass VEHICLE = Class(IRI("Vehicle"));
+	private static final OWLClass DEVICE = Class(IRI("Device"));
+	private static final OWLClass AUTOMOBILE = Class(IRI("Automobile"));
+	private static final OWLClass AUTO = Class(IRI("Auto"));
+	private static final OWLObjectProperty HAS_ENGINE = ObjectProperty(IRI("hasEngine"));
+	
+	private static final OWLAnnotationSubject CAR_ANNOTATION = IRI("Car");
+	private static final OWLAnnotationProperty HAS_AUTHOR_ANNOTATION = AnnotationProperty(IRI("hasAuthor"));
+	private static final OWLAnnotationProperty HAS_DATE_ANNOTATION = AnnotationProperty(IRI("hasDate"));
+	private static final OWLAnnotationValue IRI_VALUE = IRI("Bob");
+	private static final OWLAnnotationValue DATE_VALUE = Literal("1990-10-10");
+	
+	private static final OWLAxiom CAR_DECLARATION = Declaration(CAR);
+	private static final OWLAxiom CAR_SUBCLASS_VEHICLE = SubClassOf(CAR, VEHICLE);
+	private static final OWLAxiom CAR_SUBCLASS_DEVICE = SubClassOf(CAR, DEVICE);
+	private static final OWLAxiom CAR_EQUIVALENT_AUTOMOBILE = EquivalentClasses(CAR, AUTOMOBILE);
+	private static final OWLAxiom CAR_EQUIVALENT_AUTO = EquivalentClasses(CAR, AUTO);
+	private static final OWLObjectExactCardinality CAR_EQUIVALENT_EXACTLY = ObjectExactCardinality(1, HAS_ENGINE, OWLThing());
+	private static final OWLAnnotationAssertionAxiom CAR_ANNOTATION_IRI = AnnotationAssertion(HAS_AUTHOR_ANNOTATION, CAR_ANNOTATION, IRI_VALUE);
+	private static final OWLAnnotationAssertionAxiom CAR_ANNOTATION_DATE = AnnotationAssertion(HAS_DATE_ANNOTATION, CAR_ANNOTATION, DATE_VALUE);
 
 	@Before
 	public void setUp() throws OWLOntologyCreationException
@@ -43,8 +84,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(1));
-
-		System.out.println(owlapiRendering.get().getOWLAxioms());
+		assertThat(axioms, containsInAnyOrder(CAR_DECLARATION));
 	}
 
 	@Test
@@ -59,8 +99,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(2));
-
-		System.out.println(owlapiRendering.get().getOWLAxioms());
+		assertThat(axioms, containsInAnyOrder(CAR_DECLARATION, CAR_SUBCLASS_VEHICLE));
 	}
 
 	@Test
@@ -75,8 +114,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(3));
-
-		System.out.println(owlapiRendering.get().getOWLAxioms());
+		assertThat(axioms, containsInAnyOrder(CAR_DECLARATION, CAR_SUBCLASS_VEHICLE, CAR_SUBCLASS_DEVICE));
 	}
 
 	@Test
@@ -91,7 +129,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(2));
 
-		System.out.println(owlapiRendering.get().getOWLAxioms());
+		assertThat(axioms, containsInAnyOrder(CAR_DECLARATION, CAR_EQUIVALENT_AUTOMOBILE));
 	}
 
 	@Test
@@ -101,13 +139,14 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Car");
 		declareOWLObjectProperties(ontology, "hasEngine");
 		String expression = "Class: Car EquivalentTo: (hasEngine EXACTLY 1)";
+
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(2));
 
-		System.out.println(owlapiRendering.get().getOWLAxioms());
+		assertThat(axioms, containsInAnyOrder(CAR_DECLARATION, CAR_EQUIVALENT_EXACTLY));
 	}
 
 	@Test
@@ -122,8 +161,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(4));
-
-		System.out.println(owlapiRendering.get().getOWLAxioms());
+		assertThat(axioms, containsInAnyOrder(CAR_DECLARATION, CAR_EQUIVALENT_AUTOMOBILE, CAR_EQUIVALENT_AUTO, CAR_EQUIVALENT_EXACTLY));
 	}
 
 	@Test
@@ -138,8 +176,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(2));
-
-		System.out.println(owlapiRendering.get().getOWLAxioms());
+		assertThat(axioms, containsInAnyOrder(CAR_DECLARATION, CAR_ANNOTATION_IRI));
 	}
 
 	@Test
@@ -154,8 +191,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(3));
-
-		System.out.println(owlapiRendering.get().getOWLAxioms());
+		assertThat(axioms, containsInAnyOrder(CAR_DECLARATION, CAR_ANNOTATION_IRI, CAR_ANNOTATION_DATE));
 	}
 
 	@Test
