@@ -8,14 +8,17 @@ import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Annot
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.AnnotationProperty;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Class;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataExactCardinality;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataHasValue;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataMinCardinality;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataProperty;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Declaration;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.EquivalentClasses;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.IRI;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Literal;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.NamedIndividual;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.OWLThing;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectExactCardinality;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectHasValue;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectMaxCardinality;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectProperty;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.PlainLiteral;
@@ -38,9 +41,13 @@ import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataExactCardinality;
+import org.semanticweb.owlapi.model.OWLDataHasValue;
 import org.semanticweb.owlapi.model.OWLDataMinCardinality;
 import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLIndividual;
+import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLObjectExactCardinality;
+import org.semanticweb.owlapi.model.OWLObjectHasValue;
 import org.semanticweb.owlapi.model.OWLObjectMaxCardinality;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -53,31 +60,44 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 {
 	private OWLOntology ontology;
 
+	private static final OWLClass BMW = Class(IRI("BMW"));
 	private static final OWLClass CAR = Class(IRI("Car"));
+	private static final OWLClass CATAMARAN = Class(IRI("Catamaran"));
 	private static final OWLClass VEHICLE = Class(IRI("Vehicle"));
 	private static final OWLClass DEVICE = Class(IRI("Device"));
 	private static final OWLClass AUTOMOBILE = Class(IRI("Automobile"));
 	private static final OWLClass AUTO = Class(IRI("Auto"));
 	private static final OWLObjectProperty HAS_ENGINE = ObjectProperty(IRI("hasEngine"));
+	private static final OWLObjectProperty HAS_HULL = ObjectProperty(IRI("hasHull"));
 	private static final OWLDataProperty HAS_SSN = DataProperty(IRI("hasSSN"));
-	
+	private static final OWLDataProperty HAS_ORIGIN = DataProperty(IRI("hasOrigin"));
+	private static final OWLIndividual DOUBLE_HULL = NamedIndividual(IRI("double-hull"));
+
 	private static final OWLAnnotationSubject CAR_ANNOTATION = IRI("Car");
 	private static final OWLAnnotationProperty HAS_AUTHOR_ANNOTATION = AnnotationProperty(IRI("hasAuthor"));
 	private static final OWLAnnotationProperty HAS_DATE_ANNOTATION = AnnotationProperty(IRI("hasDate"));
 	private static final OWLAnnotationValue IRI_VALUE = IRI("Bob");
 	private static final OWLAnnotationValue DATE_VALUE = Literal("1990-10-10");
+	private static final OWLLiteral GERMANY_LITERAL = Literal("Germany");
 	
 	private static final OWLObjectExactCardinality HAS_ENGINE_EXACT = ObjectExactCardinality(1, HAS_ENGINE, OWLThing());
 	private static final OWLObjectMaxCardinality HAS_ENGINE_MAX = ObjectMaxCardinality(1, HAS_ENGINE, OWLThing());
 	private static final OWLDataMinCardinality HAS_SSN_MIN = DataMinCardinality (1, HAS_SSN, PlainLiteral());
 	private static final OWLDataExactCardinality HAS_SSN_EXACT = DataExactCardinality(1, HAS_SSN, PlainLiteral());
 	
+	private static final OWLObjectHasValue HAS_HAUL_HAS_VALUE = ObjectHasValue(HAS_HULL, DOUBLE_HULL);
+	private static final OWLDataHasValue HAS_ORIGIN_HAS_VALUE = DataHasValue(HAS_ORIGIN, GERMANY_LITERAL);
+	
+	private static final OWLAxiom BMW_DECLARATION = Declaration(BMW);
 	private static final OWLAxiom CAR_DECLARATION = Declaration(CAR);
+	private static final OWLAxiom CATAMARAN_DECLARATION = Declaration(CATAMARAN);
 	private static final OWLAxiom CAR_SUBCLASS_VEHICLE = SubClassOf(CAR, VEHICLE);
 	private static final OWLAxiom CAR_SUBCLASS_DEVICE = SubClassOf(CAR, DEVICE);
 	private static final OWLAxiom CAR_SUBCLASS_MAX = SubClassOf(CAR, HAS_ENGINE_MAX);
 	private static final OWLAxiom CAR_SUBCLASS_MIN = SubClassOf(CAR, HAS_SSN_MIN);
 	private static final OWLAxiom CAR_SUBCLASS_EXACT = SubClassOf(CAR, HAS_SSN_EXACT);
+	private static final OWLAxiom CATAMARAN_SUBCLASS_HAS_VALUE = SubClassOf(CATAMARAN, HAS_HAUL_HAS_VALUE);
+	private static final OWLAxiom BMW_SUBCLASS_HAS_VALUE = SubClassOf(BMW, HAS_ORIGIN_HAS_VALUE);
 	
 	private static final OWLAxiom CAR_EQUIVALENT_AUTOMOBILE = EquivalentClasses(CAR, AUTOMOBILE);
 	private static final OWLAxiom CAR_EQUIVALENT_AUTO = EquivalentClasses(CAR, AUTO);
@@ -255,6 +275,37 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(2));
 		assertThat(axioms, containsInAnyOrder(CAR_DECLARATION, CAR_SUBCLASS_EXACT));
+	}
+
+	@Test
+	public void TestObjectHasValueRestriction()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Catamaran", "DoubleHull");
+		declareOWLObjectProperties(ontology, "hasHull");
+		declareOWLNamedIndividual(ontology, "double-hull");
+		String expression = "Class: Catamaran SubClassOf: (hasHull VALUE double-hull)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(CATAMARAN_DECLARATION, CATAMARAN_SUBCLASS_HAS_VALUE));
+	}
+
+	@Test
+	public void TestDataHasValueRestriction()
+			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+	{
+		declareOWLClasses(ontology, "BMW");
+		declareOWLDataProperties(ontology, "hasOrigin");
+		String expression = "Class: BMW SubClassOf: (hasOrigin VALUE \"Germany\")";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(BMW_DECLARATION, BMW_SUBCLASS_HAS_VALUE));
 	}
 
 	@Test
