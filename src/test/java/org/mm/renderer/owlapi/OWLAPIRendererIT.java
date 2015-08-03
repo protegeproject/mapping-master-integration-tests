@@ -129,6 +129,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLAxiom PERSON_SUBCLASS_DATA_ALL_VALUE = SubClassOf(PERSON, HAS_SSN_ALL_VALUE);
 	private static final OWLAxiom CAR_EQUIVALENT_AUTOMOBILE = EquivalentClasses(CAR, AUTOMOBILE);
 	private static final OWLAxiom CAR_EQUIVALENT_AUTO = EquivalentClasses(CAR, AUTO);
+	private static final OWLAxiom CAR_EQUIVALENT_HAS_ENGINE_EXACT = EquivalentClasses(CAR, HAS_ENGINE_EXACT);
 	
 	private static final OWLAnnotationAssertionAxiom CAR_ANNOTATION_IRI = AnnotationAssertion(HAS_AUTHOR_ANNOTATION, CAR_ANNOTATION, IRI_VALUE);
 	private static final OWLAnnotationAssertionAxiom CAR_ANNOTATION_DATE = AnnotationAssertion(HAS_DATE_ANNOTATION, CAR_ANNOTATION, DATE_VALUE);
@@ -213,7 +214,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(2));
 
-		assertThat(axioms, containsInAnyOrder(CAR_DECLARATION, HAS_ENGINE_EXACT));
+		assertThat(axioms, containsInAnyOrder(CAR_DECLARATION, CAR_EQUIVALENT_HAS_ENGINE_EXACT));
 	}
 
 	@Test
@@ -228,7 +229,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(4));
-		assertThat(axioms, containsInAnyOrder(CAR_DECLARATION, CAR_EQUIVALENT_AUTOMOBILE, CAR_EQUIVALENT_AUTO, HAS_ENGINE_EXACT));
+		assertThat(axioms, containsInAnyOrder(CAR_DECLARATION, CAR_EQUIVALENT_AUTOMOBILE, CAR_EQUIVALENT_AUTO, CAR_EQUIVALENT_HAS_ENGINE_EXACT));
 	}
 
 	@Test

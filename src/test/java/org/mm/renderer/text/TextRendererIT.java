@@ -135,7 +135,7 @@ public class TextRendererIT extends IntegrationTestBase
   @Test public void TestObjectHasValueRestriction()
       throws WriteException, BiffException, MappingMasterException, ParseException, IOException
   {
-    String expression = "Class: Catamaran SubClassOf: (hasHull VALUE 2)";
+    String expression = "Class: Catamaran SubClassOf: (hasHull VALUE 2)"; // XXX: Should be Individual
     Optional<? extends TextRendering> textRendering = createTextRendering(expression);
 
     Assert.assertTrue(textRendering.isPresent());
@@ -172,7 +172,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, textRendering.get().getRendering());
   }
 
-  @Test public void TestObjectAllValuesFromRestriction()
+  @Test public void TestObjectAllValuesFromRestriction() // XXX: Minor mistake on naming method
       throws WriteException, BiffException, MappingMasterException, ParseException, IOException
   {
     String expression = "Class: Person SubClassOf: (hasSSN ONLY xsd:string)";
