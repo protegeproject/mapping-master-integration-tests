@@ -21,11 +21,15 @@ import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Liter
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.NamedIndividual;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.OWLThing;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectAllValuesFrom;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectComplementOf;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectExactCardinality;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectHasValue;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectIntersectionOf;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectMaxCardinality;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectOneOf;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectProperty;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectSomeValuesFrom;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectUnionOf;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SubClassOf;
 
 import java.io.IOException;
@@ -54,11 +58,15 @@ import org.semanticweb.owlapi.model.OWLDatatype;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLObjectAllValuesFrom;
+import org.semanticweb.owlapi.model.OWLObjectComplementOf;
 import org.semanticweb.owlapi.model.OWLObjectExactCardinality;
 import org.semanticweb.owlapi.model.OWLObjectHasValue;
+import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLObjectMaxCardinality;
+import org.semanticweb.owlapi.model.OWLObjectOneOf;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
+import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.vocab.Namespaces;
@@ -81,13 +89,20 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLClass CHILD_OF_DOCTOR = Class(IRI("ChildOfDoctor"));
 	private static final OWLClass PERSON = Class(IRI("Person"));
 	private static final OWLClass HUMAN = Class(IRI("Human"));
+	private static final OWLClass A = Class(IRI("A"));
 	private static final OWLObjectProperty HAS_ENGINE = ObjectProperty(IRI("hasEngine"));
 	private static final OWLObjectProperty HAS_HULL = ObjectProperty(IRI("hasHull"));
 	private static final OWLObjectProperty HAS_PARENT = ObjectProperty(IRI("hasParent"));
+	private static final OWLObjectProperty HAS_GENDER = ObjectProperty(IRI("hasGender"));
+	private static final OWLObjectProperty HAS_P1 = ObjectProperty(IRI("hasP1"));
+	private static final OWLObjectProperty HAS_P2 = ObjectProperty(IRI("hasP2"));
 	private static final OWLDataProperty HAS_SSN = DataProperty(IRI("hasSSN"));
 	private static final OWLDataProperty HAS_ORIGIN = DataProperty(IRI("hasOrigin"));
 	private static final OWLDataProperty HAS_NAME = DataProperty(IRI("hasName"));
 	private static final OWLIndividual DOUBLE_HULL = NamedIndividual(IRI("double-hull"));
+	private static final OWLIndividual MALE = NamedIndividual(IRI("male"));
+	private static final OWLIndividual FEMALE = NamedIndividual(IRI("female"));
+	private static final OWLIndividual OTHER = NamedIndividual(IRI("other"));
 	
 	private static final OWLAnnotationSubject CAR_ANNOTATION = IRI("Car");
 	private static final OWLAnnotationProperty HAS_AUTHOR_ANNOTATION = AnnotationProperty(IRI("hasAuthor"));
@@ -100,9 +115,13 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLDatatype XSD_STRING = Datatype(IRI(Namespaces.XSD + "string"));
 	
 	private static final OWLObjectExactCardinality HAS_ENGINE_EXACT = ObjectExactCardinality(1, HAS_ENGINE, OWLThing());
+	private static final OWLObjectExactCardinality HAS_ENGINE_EXACT2 = ObjectExactCardinality(2, HAS_ENGINE, OWLThing());
+	private static final OWLObjectExactCardinality HAS_P1_EXACT = ObjectExactCardinality(2, HAS_P1, OWLThing());
+	private static final OWLObjectExactCardinality HAS_P2_EXACT = ObjectExactCardinality(3, HAS_P2, OWLThing());
 	private static final OWLObjectMaxCardinality HAS_ENGINE_MAX = ObjectMaxCardinality(1, HAS_ENGINE, OWLThing());
 	private static final OWLDataMinCardinality HAS_SSN_MIN = DataMinCardinality (1, HAS_SSN, RDFS_LITERAL);
 	private static final OWLDataExactCardinality HAS_SSN_EXACT = DataExactCardinality(1, HAS_SSN, RDFS_LITERAL);
+	private static final OWLObjectOneOf HAS_GENDER_ONE_OF = ObjectOneOf(MALE, FEMALE, OTHER);
 	
 	private static final OWLObjectHasValue HAS_HAUL_HAS_VALUE = ObjectHasValue(HAS_HULL, DOUBLE_HULL);
 	private static final OWLDataHasValue HAS_ORIGIN_HAS_VALUE = DataHasValue(HAS_ORIGIN, GERMANY_LITERAL);
@@ -110,12 +129,17 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLDataSomeValuesFrom HAS_NAME_SOME_VALUE = DataSomeValuesFrom(HAS_NAME, XSD_STRING);
 	private static final OWLObjectAllValuesFrom HAS_PARENT_ALL_VALUE = ObjectAllValuesFrom(HAS_PARENT, HUMAN);
 	private static final OWLDataAllValuesFrom HAS_SSN_ALL_VALUE = DataAllValuesFrom(HAS_SSN, XSD_STRING);
+	private static final OWLObjectSomeValuesFrom HAS_GENDER_ONE_OF_SOME_VALUE = ObjectSomeValuesFrom(HAS_GENDER, HAS_GENDER_ONE_OF);
+	private static final OWLObjectComplementOf HAS_ENGINE_COMPLEMENT = ObjectComplementOf(HAS_ENGINE_EXACT2);
+	private static final OWLObjectUnionOf HAS_P1_UNION_P2 = ObjectUnionOf(HAS_P1_EXACT, HAS_P2_EXACT);
+	private static final OWLObjectIntersectionOf HAS_P1_INTERSECT_P2 = ObjectIntersectionOf(HAS_P1_EXACT, HAS_P2_EXACT);
 	
 	private static final OWLAxiom BMW_DECLARATION = Declaration(BMW);
 	private static final OWLAxiom CAR_DECLARATION = Declaration(CAR);
 	private static final OWLAxiom CATAMARAN_DECLARATION = Declaration(CATAMARAN);
 	private static final OWLAxiom CHILD_OF_DOCTOR_DECLARATION = Declaration(CHILD_OF_DOCTOR);
 	private static final OWLAxiom PERSON_DECLARATION = Declaration(PERSON);
+	private static final OWLAxiom A_DECLARATION = Declaration(A);
 	private static final OWLAxiom CAR_SUBCLASS_VEHICLE = SubClassOf(CAR, VEHICLE);
 	private static final OWLAxiom CAR_SUBCLASS_DEVICE = SubClassOf(CAR, DEVICE);
 	private static final OWLAxiom CAR_SUBCLASS_MAX = SubClassOf(CAR, HAS_ENGINE_MAX);
@@ -127,10 +151,14 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLAxiom CAR_SUBCLASS_DATA_SOME_VALUE = SubClassOf(CAR, HAS_NAME_SOME_VALUE);
 	private static final OWLAxiom PERSON_SUBCLASS_OBJECT_ALL_VALUE = SubClassOf(PERSON, HAS_PARENT_ALL_VALUE);
 	private static final OWLAxiom PERSON_SUBCLASS_DATA_ALL_VALUE = SubClassOf(PERSON, HAS_SSN_ALL_VALUE);
+	private static final OWLAxiom PERSON_SUBCLASS_OBJECT_ONE_OF = SubClassOf(PERSON, HAS_GENDER_ONE_OF_SOME_VALUE);
+	private static final OWLAxiom A_SUBCLASS_HAS_P1_UNION_HAS_P2 = SubClassOf(A, HAS_P1_UNION_P2);
+	private static final OWLAxiom A_SUBCLASS_HAS_P1_INTERSECT_HAS_P2 = SubClassOf(A, HAS_P1_INTERSECT_P2);
 	private static final OWLAxiom CAR_EQUIVALENT_AUTOMOBILE = EquivalentClasses(CAR, AUTOMOBILE);
 	private static final OWLAxiom CAR_EQUIVALENT_AUTO = EquivalentClasses(CAR, AUTO);
+	private static final OWLAxiom CAR_EQUIVALENT_HAS_ENGINE_COMPLEMENT = EquivalentClasses(CAR, HAS_ENGINE_COMPLEMENT);
 	private static final OWLAxiom CAR_EQUIVALENT_HAS_ENGINE_EXACT = EquivalentClasses(CAR, HAS_ENGINE_EXACT);
-	
+
 	private static final OWLAnnotationAssertionAxiom CAR_ANNOTATION_IRI = AnnotationAssertion(HAS_AUTHOR_ANNOTATION, CAR_ANNOTATION, IRI_VALUE);
 	private static final OWLAnnotationAssertionAxiom CAR_ANNOTATION_DATE = AnnotationAssertion(HAS_DATE_ANNOTATION, CAR_ANNOTATION, DATE_VALUE);
 
@@ -396,6 +424,69 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(2));
 		assertThat(axioms, containsInAnyOrder(PERSON_DECLARATION, PERSON_SUBCLASS_DATA_ALL_VALUE));
+	}
+
+	@Test
+	public void TestOWLObjectOneOf()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Person");
+		declareOWLObjectProperties(ontology, "hasGender");
+		declareOWLNamedIndividual(ontology, "male");
+		declareOWLNamedIndividual(ontology, "female");
+		declareOWLNamedIndividual(ontology, "other");
+		String expression = "Class: Person SubClassOf: hasGender ONLY {male, female, other}";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(PERSON_DECLARATION, PERSON_SUBCLASS_OBJECT_ONE_OF));
+	}
+
+	@Test
+	public void TestNegatedClassExpression()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car");
+		declareOWLObjectProperties(ontology, "hasEngine");
+		String expression = "Class: Car EquivalentTo: NOT hasEngine EXACTLY 2";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(CAR_DECLARATION, CAR_EQUIVALENT_HAS_ENGINE_COMPLEMENT));
+	}
+
+	@Test
+	public void TestUnionClassExpression()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "A");
+		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
+		String expression = "Class: A SubClassOf: hasP1 EXACTLY 2 OR hasP2 EXACTLY 3";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(A_DECLARATION, A_SUBCLASS_HAS_P1_UNION_HAS_P2));
+	}
+
+	@Test
+	public void TestIntersectionClassExpression()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "A");
+		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
+		String expression = "Class: A SubClassOf: hasP1 EXACTLY 2 AND hasP2 EXACTLY 3";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(A_DECLARATION, A_SUBCLASS_HAS_P1_INTERSECT_HAS_P2));
 	}
 
 	@Test
