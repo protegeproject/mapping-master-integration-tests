@@ -7,11 +7,13 @@ import static org.hamcrest.Matchers.is;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.AnnotationAssertion;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.AnnotationProperty;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Class;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ClassAssertion;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataAllValuesFrom;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataExactCardinality;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataHasValue;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataMinCardinality;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataProperty;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataPropertyAssertion;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataSomeValuesFrom;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Datatype;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Declaration;
@@ -48,7 +50,7 @@ import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDatatype;
-import org.semanticweb.owlapi.model.OWLIndividual;
+import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -82,10 +84,12 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLDataProperty HAS_SSN = DataProperty(IRI("hasSSN"));
 	private static final OWLDataProperty HAS_ORIGIN = DataProperty(IRI("hasOrigin"));
 	private static final OWLDataProperty HAS_NAME = DataProperty(IRI("hasName"));
-	private static final OWLIndividual DOUBLE_HULL = NamedIndividual(IRI("double-hull"));
-	private static final OWLIndividual MALE = NamedIndividual(IRI("male"));
-	private static final OWLIndividual FEMALE = NamedIndividual(IRI("female"));
-	private static final OWLIndividual OTHER = NamedIndividual(IRI("other"));
+	private static final OWLDataProperty HAS_AGE = DataProperty(IRI("hasAge"));
+	private static final OWLNamedIndividual DOUBLE_HULL = NamedIndividual(IRI("double-hull"));
+	private static final OWLNamedIndividual MALE = NamedIndividual(IRI("male"));
+	private static final OWLNamedIndividual FEMALE = NamedIndividual(IRI("female"));
+	private static final OWLNamedIndividual OTHER = NamedIndividual(IRI("other"));
+	private static final OWLNamedIndividual FRED = NamedIndividual(IRI("Fred"));
 	private static final OWLAnnotationSubject CAR_ANNOTATION = IRI("Car");
 	private static final OWLAnnotationProperty HAS_AUTHOR_ANNOTATION = AnnotationProperty(IRI("hasAuthor"));
 	private static final OWLAnnotationProperty HAS_DATE_ANNOTATION = AnnotationProperty(IRI("hasDate"));
@@ -477,6 +481,93 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(axioms, containsInAnyOrder(
 				Declaration(A),
 				SubClassOf(A, ObjectIntersectionOf(ObjectExactCardinality(2, HAS_P1, OWLThing()), ObjectExactCardinality(3, HAS_P2, OWLThing())))
+		));
+	}
+
+	@Test
+	public void TestIndividualDeclaration()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED)
+		));
+	}
+
+	@Test
+	public void TestIndividualDeclarationWithTypes()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Person");
+		String expression = "Individual: Fred Types: Person";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				ClassAssertion(PERSON, FRED)
+		));
+	}
+
+	@Test
+	public void TestIndividualDeclarationWithMultipleTypes()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Person", "Human");
+		declareOWLObjectProperty(ontology, "hasParent");
+		String expression = "Individual: Fred Types: Person, (hasParent ONLY Human)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(3));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				ClassAssertion(PERSON, FRED),
+				ClassAssertion(ObjectAllValuesFrom(HAS_PARENT, HUMAN), FRED)
+		));
+	}
+
+	@Test
+	public void TestIndividualDeclarationWithFacts()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLDataProperty(ontology, "hasName");
+		String expression = "Individual: Fred Facts: hasName \"Fred\"";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_NAME, FRED, Literal("Fred"))
+		));
+	}
+
+	@Test
+	public void TestIndividualDeclarationWithMultipleFacts()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLDataProperty(ontology, "hasName");
+		declareOWLDataProperty(ontology, "hasAge");
+		String expression = "Individual: Fred Facts: hasName \"Fred\", hasAge 23";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(3));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_NAME, FRED, Literal("Fred")),
+				DataPropertyAssertion(HAS_AGE, FRED, Literal(23))
 		));
 	}
 
