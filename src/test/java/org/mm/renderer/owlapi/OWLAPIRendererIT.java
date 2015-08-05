@@ -91,8 +91,11 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLNamedIndividual OTHER = NamedIndividual(IRI("other"));
 	private static final OWLNamedIndividual FRED = NamedIndividual(IRI("Fred"));
 	private static final OWLAnnotationSubject CAR_ANNOTATION = IRI("Car");
+	private static final OWLAnnotationSubject FRED_ANNOTATION = IRI("Fred");
 	private static final OWLAnnotationProperty HAS_AUTHOR_ANNOTATION = AnnotationProperty(IRI("hasAuthor"));
 	private static final OWLAnnotationProperty HAS_DATE_ANNOTATION = AnnotationProperty(IRI("hasDate"));
+	private static final OWLAnnotationProperty HAS_NAME_ANNOTATION = AnnotationProperty(IRI("hasName"));
+	private static final OWLAnnotationProperty HAS_AGE_ANNOTATION = AnnotationProperty(IRI("hasAge"));
 	private static final OWLDatatype RDFS_LITERAL = Datatype(IRI(Namespaces.RDFS + "Literal"));
 	private static final OWLDatatype XSD_STRING = Datatype(IRI(Namespaces.XSD + "string"));
 
@@ -556,8 +559,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	public void TestIndividualDeclarationWithMultipleFacts()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
-		declareOWLDataProperty(ontology, "hasName");
-		declareOWLDataProperty(ontology, "hasAge");
+		declareOWLDataProperties(ontology, "hasName", "hasAge");
 		String expression = "Individual: Fred Facts: hasName \"Fred\", hasAge 23";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
@@ -568,6 +570,41 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 				Declaration(FRED),
 				DataPropertyAssertion(HAS_NAME, FRED, Literal("Fred")),
 				DataPropertyAssertion(HAS_AGE, FRED, Literal(23))
+		));
+	}
+
+	@Test
+	public void TestIndividualDeclarationWithAnnotations()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLAnnotationProperty(ontology, "hasName");
+		String expression = "Individual: Fred Annotations: hasName \"Fred\"";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				AnnotationAssertion(HAS_NAME_ANNOTATION, FRED_ANNOTATION, Literal("Fred"))
+		));
+	}
+
+	@Test
+	public void TestIndividualDeclarationWithMultipleAnnotations()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLAnnotationProperties(ontology, "hasName", "hasAge");
+		String expression = "Individual: Fred Annotations: hasName \"Fred\", hasAge 23";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(3));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				AnnotationAssertion(HAS_NAME_ANNOTATION, FRED_ANNOTATION, Literal("Fred")),
+				AnnotationAssertion(HAS_AGE_ANNOTATION, FRED_ANNOTATION, Literal(23))
 		));
 	}
 
