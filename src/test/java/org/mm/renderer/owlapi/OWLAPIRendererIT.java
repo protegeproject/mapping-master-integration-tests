@@ -46,7 +46,6 @@ import org.junit.Test;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ParseException;
 import org.mm.rendering.owlapi.OWLAPIRendering;
-import org.mm.rendering.text.TextRendering;
 import org.mm.test.IntegrationTestBase;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAnnotationSubject;
@@ -60,7 +59,6 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.vocab.Namespaces;
 
-import junit.framework.Assert;
 import jxl.read.biff.BiffException;
 import jxl.write.Label;
 import jxl.write.WriteException;
@@ -73,6 +71,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLClass CAR = Class(IRI("Car"));
 	private static final OWLClass BIG_CAR = Class(IRI("BigCar"));
 	private static final OWLClass CAR_BIG = Class(IRI("CarBig"));
+	private static final OWLClass CAR_BMW_GERMANY = Class(IRI("CarBMWGermany"));
 	private static final OWLClass CATAMARAN = Class(IRI("Catamaran"));
 	private static final OWLClass VEHICLE = Class(IRI("Vehicle"));
 	private static final OWLClass DEVICE = Class(IRI("Device"));
@@ -1245,13 +1244,123 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		
-	    String expression = "Class: @A1(mm:prepend(\"Big\"))";
+		String expression = "Class: @A1(mm:prepend(\"Big\"))";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(1));
 		assertThat(axioms, containsInAnyOrder(Declaration(BIG_CAR)));
+	}
+
+	@Test
+	public void TestShiftUpInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car");
+		
+		Label cellA1 = createCell("Car", 1, 1);
+		Label cellA2 = createCell("", 1, 2);
+		Label cellA3 = createCell("", 1, 3);
+		Label cellA4 = createCell("", 1, 4);
+		Set<Label> cells = createCells(cellA1, cellA2, cellA3, cellA4);
+		
+		String expression = "Class: @A4(mm:ShiftUp)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+	}
+
+	@Test
+	public void TestShiftDownInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car");
+		
+		Label cellA1 = createCell("", 1, 1);
+		Label cellA2 = createCell("", 1, 2);
+		Label cellA3 = createCell("", 1, 3);
+		Label cellA4 = createCell("Car", 1, 4);
+		Set<Label> cells = createCells(cellA1, cellA2, cellA3, cellA4);
+		
+		String expression = "Class: @A1(mm:ShiftDown)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+	}
+
+	@Test
+	public void TestShiftRightInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car");
+		
+		Label cellA1 = createCell("", 1, 1);
+		Label cellB1 = createCell("", 2, 1);
+		Label cellC1 = createCell("", 3, 1);
+		Label cellD1 = createCell("Car", 4, 1);
+		Set<Label> cells = createCells(cellA1, cellB1, cellC1, cellD1);
+		
+		String expression = "Class: @A1(mm:ShiftRight)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+	}
+
+	@Test
+	public void TestShiftLeftInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car");
+		
+		Label cellA1 = createCell("Car", 1, 1);
+		Label cellB1 = createCell("", 2, 1);
+		Label cellC1 = createCell("", 3, 1);
+		Label cellD1 = createCell("", 4, 1);
+		Set<Label> cells = createCells(cellA1, cellB1, cellC1, cellD1);
+		
+		String expression = "Class: @D1(mm:ShiftLeft)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+	}
+
+	@Test
+	public void TestReferencesInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "CarBMWGermany");
+		
+		Label cellA1 = createCell("Car", 1, 1);
+		Label cellB1 = createCell("", 2, 1);
+		Label cellB2 = createCell("", 2, 2);
+		Label cellB3 = createCell("", 3, 3);
+		Label cellB4 = createCell("BMW", 2, 4);
+		Label cellC1 = createCell("", 3, 1);
+		Label cellD1 = createCell("", 4, 1);
+		Label cellE1 = createCell("", 5, 1);
+		Label cellF1 = createCell("Germany", 6, 1);
+		Set<Label> cells = createCells(cellA1, cellB1, cellB2, cellB3, cellB4, cellC1, cellD1, cellE1, cellF1);
+		
+		String expression = "Class: @A*(mm:append(@B*(mm:ShiftDown), @C*(mm:ShiftRight)))";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR_BMW_GERMANY)));
 	}
 
 	// TODO Different rdfs:label and rdf:id, e.g., Class: @A5(rdf:ID=@B5
