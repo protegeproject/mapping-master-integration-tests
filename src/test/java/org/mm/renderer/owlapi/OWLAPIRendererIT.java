@@ -810,6 +810,42 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
 	}
 
+	@Test
+	public void TestColumnWildcardInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car");
+		
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @*1";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+	}
+
+	@Test
+	public void TestRowWildcardInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car");
+		
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A*";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+	}
+
 	// TODO Different rdfs:label and rdf:id, e.g., Class: @A5(rdf:ID=@B5
 	// rdfs:label=@A5)
 	// TODO Tests for the following directives:
