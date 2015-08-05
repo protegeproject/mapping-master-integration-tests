@@ -17,6 +17,7 @@ import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataP
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataSomeValuesFrom;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Datatype;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Declaration;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DifferentIndividuals;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.EquivalentClasses;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.IRI;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Literal;
@@ -32,7 +33,8 @@ import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Objec
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectProperty;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectSomeValuesFrom;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectUnionOf;
-import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.*;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SameIndividual;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SubClassOf;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -92,6 +94,8 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLNamedIndividual FRED = NamedIndividual(IRI("Fred"));
 	private static final OWLNamedIndividual FREDDY = NamedIndividual(IRI("Freddy"));
 	private static final OWLNamedIndividual F = NamedIndividual(IRI("F"));
+	private static final OWLNamedIndividual BOB = NamedIndividual(IRI("Bob"));
+	private static final OWLNamedIndividual BOBBY = NamedIndividual(IRI("Bobby"));
 	private static final OWLAnnotationSubject CAR_ANNOTATION = IRI("Car");
 	private static final OWLAnnotationSubject FRED_ANNOTATION = IRI("Fred");
 	private static final OWLAnnotationProperty HAS_AUTHOR_ANNOTATION = AnnotationProperty(IRI("hasAuthor"));
@@ -640,6 +644,39 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 				Declaration(FRED),
 				SameIndividual(FRED, FREDDY),
 				SameIndividual(FRED, F)
+		));
+	}
+
+	@Test
+	public void TestIndividualDeclarationWithDifferentIndividuals()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred DifferentFrom: Bob";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DifferentIndividuals(FRED, BOB)
+		));
+	}
+
+	@Test
+	public void TestIndividualDeclarationWithMultipleDifferentIndividuals()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred DifferentFrom: Bob, Bobby";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(3));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DifferentIndividuals(FRED, BOB),
+				DifferentIndividuals(FRED, BOBBY)
 		));
 	}
 
