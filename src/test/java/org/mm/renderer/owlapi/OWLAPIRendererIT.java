@@ -31,10 +31,11 @@ import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Objec
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectMaxCardinality;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectOneOf;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectProperty;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectPropertyAssertion;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectSomeValuesFrom;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectUnionOf;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SameIndividual;
-import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.*;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SubClassOf;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -45,7 +46,6 @@ import org.junit.Test;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ParseException;
 import org.mm.rendering.owlapi.OWLAPIRendering;
-import org.mm.rendering.text.TextRendering;
 import org.mm.test.IntegrationTestBase;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAnnotationSubject;
@@ -59,7 +59,6 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.vocab.Namespaces;
 
-import junit.framework.Assert;
 import jxl.read.biff.BiffException;
 import jxl.write.Label;
 import jxl.write.WriteException;
@@ -721,7 +720,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	public void TestAbsoluteObjectPropertyReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
-		declareOWLObjectProperties(ontology, "hasParent");
+		declareOWLObjectProperty(ontology, "hasParent");
 		
 		Label cellA1 = createCell("hasParent", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -742,7 +741,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	public void TestAbsoluteDataPropertyReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
-		declareOWLDataProperties(ontology, "hasAge");
+		declareOWLDataProperty(ontology, "hasAge");
 		
 		Label cellA1 = createCell("hasAge", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -756,6 +755,27 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(axioms, containsInAnyOrder(
 				Declaration(FRED),
 				DataPropertyAssertion(HAS_AGE, FRED, Literal(23))
+		));
+	}
+
+	@Test
+	public void TestAbsoluteAnnotationPropertyReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLAnnotationProperty(ontology, "hasAge");
+		
+		Label cellA1 = createCell("hasAge", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Annotations: @A1 23";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				AnnotationAssertion(HAS_AGE_ANNOTATION, FRED_ANNOTATION, Literal(23))
 		));
 	}
 
