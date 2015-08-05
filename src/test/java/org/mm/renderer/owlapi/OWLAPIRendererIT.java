@@ -46,6 +46,7 @@ import org.junit.Test;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ParseException;
 import org.mm.rendering.owlapi.OWLAPIRendering;
+import org.mm.rendering.text.TextRendering;
 import org.mm.test.IntegrationTestBase;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAnnotationSubject;
@@ -59,6 +60,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.vocab.Namespaces;
 
+import junit.framework.Assert;
 import jxl.read.biff.BiffException;
 import jxl.write.Label;
 import jxl.write.WriteException;
@@ -70,6 +72,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLClass BMW = Class(IRI("BMW"));
 	private static final OWLClass CAR = Class(IRI("Car"));
 	private static final OWLClass BIG_CAR = Class(IRI("BigCar"));
+	private static final OWLClass CAR_BIG = Class(IRI("CarBig"));
 	private static final OWLClass CATAMARAN = Class(IRI("Catamaran"));
 	private static final OWLClass VEHICLE = Class(IRI("Vehicle"));
 	private static final OWLClass DEVICE = Class(IRI("Device"));
@@ -1197,7 +1200,23 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(axioms, containsInAnyOrder(Declaration(BIG_CAR)));
 	}
 
-	
+	@Test
+	public void TestRDFSLabelAppendInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "CarBig");
+		
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(rdfs:label=mm:append(\"Big\"))";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR_BIG)));
+	}
 
 	// TODO Different rdfs:label and rdf:id, e.g., Class: @A5(rdf:ID=@B5
 	// rdfs:label=@A5)
