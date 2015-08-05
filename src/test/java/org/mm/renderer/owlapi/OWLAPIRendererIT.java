@@ -59,6 +59,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.vocab.Namespaces;
 
 import jxl.read.biff.BiffException;
+import jxl.write.Label;
 import jxl.write.WriteException;
 
 public class OWLAPIRendererIT extends IntegrationTestBase
@@ -682,17 +683,20 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestAbsoluteReference()
-			throws OWLOntologyCreationException, WriteException, MappingMasterException, ParseException, IOException
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
-		OWLOntology ontology = createOWLOntology();
+		declareOWLClasses(ontology, "Car");
+		
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
 		String expression = "Class: @A1";
-		// Optional<? extends OWLAPIRendering> owlapiRendering =
-		// createOWLAPIRendering(ontology, SHEET1, cells, expression);
-
-		// Assert.assertTrue(owlapiRendering.isPresent());
-		// Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
-		// TODO Test that we have the expected declaration axiom for the class
-		// Car
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
 	}
 
 	// TODO Different rdfs:label and rdf:id, e.g., Class: @A5(rdf:ID=@B5
