@@ -846,6 +846,103 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
 	}
 
+	@Test
+	public void TestClassQualifiedInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car");
+		
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(Class)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+	}
+
+	@Test
+	public void TestIndividualInQualifiedReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("Fred", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: @A1(Individual)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(FRED)));
+	}
+
+	@Test
+	public void TestObjectPropertyInQualifiedReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLObjectProperty(ontology, "hasParent");
+		
+		Label cellA1 = createCell("hasParent", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: @A1(ObjectProperty) Bob";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				ObjectPropertyAssertion(HAS_PARENT, FRED, BOB)
+		));
+	}
+
+	@Test
+	public void TestDataPropertyQualifiedInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLDataProperty(ontology, "hasAge");
+		
+		Label cellA1 = createCell("hasAge", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: @A1(DataProperty) 23";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_AGE, FRED, Literal(23))
+		));
+	}
+
+	@Test
+	public void TestAnnotationPropertyQualifiedReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLAnnotationProperty(ontology, "hasAge");
+		
+		Label cellA1 = createCell("hasAge", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Annotations: @A1(AnnotationProperty) 23";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				AnnotationAssertion(HAS_AGE_ANNOTATION, FRED_ANNOTATION, Literal(23))
+		));
+	}
+
 	// TODO Different rdfs:label and rdf:id, e.g., Class: @A5(rdf:ID=@B5
 	// rdfs:label=@A5)
 	// TODO Tests for the following directives:
