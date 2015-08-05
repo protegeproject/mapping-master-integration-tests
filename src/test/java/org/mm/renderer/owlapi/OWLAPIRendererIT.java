@@ -46,6 +46,7 @@ import org.junit.Test;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ParseException;
 import org.mm.rendering.owlapi.OWLAPIRendering;
+import org.mm.rendering.text.TextRendering;
 import org.mm.test.IntegrationTestBase;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAnnotationSubject;
@@ -59,6 +60,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.vocab.Namespaces;
 
+import junit.framework.Assert;
 import jxl.read.biff.BiffException;
 import jxl.write.Label;
 import jxl.write.WriteException;
@@ -84,6 +86,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLClass PERSON = Class(IRI("Person"));
 	private static final OWLClass HUMAN = Class(IRI("Human"));
 	private static final OWLClass A = Class(IRI("A"));
+	private static final OWLClass ZYVOX = Class(IRI("Zyvox"));
 	private static final OWLObjectProperty HAS_ENGINE = ObjectProperty(IRI("hasEngine"));
 	private static final OWLObjectProperty HAS_HULL = ObjectProperty(IRI("hasHull"));
 	private static final OWLObjectProperty HAS_PARENT = ObjectProperty(IRI("hasParent"));
@@ -1507,6 +1510,106 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(1));
 		assertThat(axioms, containsInAnyOrder(Declaration(CAR_UPPERCASE)));
+	}
+
+	@Test
+	public void TestReplaceAllInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLDataProperty(ontology, "hasName");
+		
+		Label cellA1 = createCell(")(*Fred%^&$#@!", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: hasName @A1(mm:replaceAll(\"[^a-zA-Z0-9]\",\"\"))";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_NAME, FRED, Literal("Fred"))
+		));
+	}
+
+	@Test
+	public void TestCapturingExpressionInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Zyvox");
+		
+		Label cellA1 = createCell("Pfizer:Zyvox", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(rdfs:label=[\":(\\S+)\"])";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(ZYVOX)));
+	}
+
+	@Test
+	public void TestCapturingExpressionStandaloneInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Zyvox");
+		
+		Label cellA1 = createCell("Pfizer:Zyvox", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1([\":(\\S+)\"])";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(ZYVOX)));
+	}
+
+	@Test
+	public void TestCapturingExpressionMethodInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Zyvox");
+		
+		Label cellA1 = createCell("Pfizer:Zyvox", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(rdfs:label=mm:capturing(\":(\\S+)\"))";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(ZYVOX)));
+	}
+
+	@Test
+	public void TestMultipleCapturingExpressionsInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClass(ontology, "Person");
+		declareOWLDataProperties(ontology, "hasAge", "hasSalary");
+		
+		Label cellA1 = createCell("23 44", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred  " + "Facts: " + "hasAge @A1(xsd:int [\"(\\d+)\\s+\"]), "
+				+ "hasSalary @A1(xsd:int [\"\\s+(\\d+)\"])" + "Types: Person";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(4));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_AGE, FRED, Literal("23", XSD_INT)),
+				DataPropertyAssertion(HAS_SALARY, FRED, Literal("44", XSD_INT)),
+				ClassAssertion(PERSON, FRED)
+		));
 	}
 
 	// TODO Different rdfs:label and rdf:id, e.g., Class: @A5(rdf:ID=@B5
