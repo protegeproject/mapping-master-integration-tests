@@ -69,6 +69,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	private static final OWLClass BMW = Class(IRI("BMW"));
 	private static final OWLClass CAR = Class(IRI("Car"));
+	private static final OWLClass BIG_CAR = Class(IRI("BigCar"));
 	private static final OWLClass CATAMARAN = Class(IRI("Catamaran"));
 	private static final OWLClass VEHICLE = Class(IRI("Vehicle"));
 	private static final OWLClass DEVICE = Class(IRI("Device"));
@@ -1141,6 +1142,62 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 				DataPropertyAssertion(HAS_BEDTIME, FRED, Literal("21:00", XSD_TIME))
 		));
 	}
+
+	@Test
+	public void TestRDFSLabelAssignmentInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "BMW");
+		
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(rdfs:label=(\"BMW\"))";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(BMW)));
+	}
+
+	@Test
+	public void TestRDFSLabelAssignmentWithConcatenatedParametersInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "BigCar");
+		
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(rdfs:label=(\"Big\", \"Car\"))";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(BIG_CAR)));
+	}
+
+	@Test
+	public void TestRDFSLabelAssignmentWithReferenceParameterInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "BigCar");
+		
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(rdfs:label=(\"Big\", @A1))";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(BIG_CAR)));
+	}
+
+	
 
 	// TODO Different rdfs:label and rdf:id, e.g., Class: @A5(rdf:ID=@B5
 	// rdfs:label=@A5)
