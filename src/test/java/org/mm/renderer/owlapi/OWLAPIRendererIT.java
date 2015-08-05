@@ -89,6 +89,9 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLDataProperty HAS_ORIGIN = DataProperty(IRI("hasOrigin"));
 	private static final OWLDataProperty HAS_NAME = DataProperty(IRI("hasName"));
 	private static final OWLDataProperty HAS_AGE = DataProperty(IRI("hasAge"));
+	private static final OWLDataProperty HAS_SALARY = DataProperty(IRI("hasSalary"));
+	private static final OWLDataProperty HAS_DOB = DataProperty(IRI("hasDOB"));
+	private static final OWLDataProperty HAS_BEDTIME = DataProperty(IRI("hasBedTime"));
 	private static final OWLNamedIndividual DOUBLE_HULL = NamedIndividual(IRI("double-hull"));
 	private static final OWLNamedIndividual MALE = NamedIndividual(IRI("male"));
 	private static final OWLNamedIndividual FEMALE = NamedIndividual(IRI("female"));
@@ -106,6 +109,13 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLAnnotationProperty HAS_AGE_ANNOTATION = AnnotationProperty(IRI("hasAge"));
 	private static final OWLDatatype RDFS_LITERAL = Datatype(IRI(Namespaces.RDFS + "Literal"));
 	private static final OWLDatatype XSD_STRING = Datatype(IRI(Namespaces.XSD + "string"));
+	private static final OWLDatatype XSD_FLOAT = Datatype(IRI(Namespaces.XSD + "float"));
+	private static final OWLDatatype XSD_INT = Datatype(IRI(Namespaces.XSD + "int"));
+	private static final OWLDatatype XSD_BYTE = Datatype(IRI(Namespaces.XSD + "byte"));
+	private static final OWLDatatype XSD_SHORT = Datatype(IRI(Namespaces.XSD + "short"));
+	private static final OWLDatatype XSD_DATE = Datatype(IRI(Namespaces.XSD + "date"));
+	private static final OWLDatatype XSD_DATETIME = Datatype(IRI(Namespaces.XSD + "dateTime"));
+	private static final OWLDatatype XSD_TIME = Datatype(IRI(Namespaces.XSD + "time"));
 
 	@Before
 	public void setUp() throws OWLOntologyCreationException
@@ -577,7 +587,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(axioms, containsInAnyOrder(
 				Declaration(FRED),
 				DataPropertyAssertion(HAS_NAME, FRED, Literal("Fred")),
-				DataPropertyAssertion(HAS_AGE, FRED, Literal(23))
+				DataPropertyAssertion(HAS_AGE, FRED, Literal("23", XSD_INT))
 		));
 	}
 
@@ -612,7 +622,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(axioms, containsInAnyOrder(
 				Declaration(FRED),
 				AnnotationAssertion(HAS_NAME_ANNOTATION, FRED_ANNOTATION, Literal("Fred")),
-				AnnotationAssertion(HAS_AGE_ANNOTATION, FRED_ANNOTATION, Literal(23))
+				AnnotationAssertion(HAS_AGE_ANNOTATION, FRED_ANNOTATION, Literal("23", XSD_INT))
 		));
 	}
 
@@ -754,7 +764,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(axioms, hasSize(2));
 		assertThat(axioms, containsInAnyOrder(
 				Declaration(FRED),
-				DataPropertyAssertion(HAS_AGE, FRED, Literal(23))
+				DataPropertyAssertion(HAS_AGE, FRED, Literal("23", XSD_INT))
 		));
 	}
 
@@ -775,7 +785,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(axioms, hasSize(2));
 		assertThat(axioms, containsInAnyOrder(
 				Declaration(FRED),
-				AnnotationAssertion(HAS_AGE_ANNOTATION, FRED_ANNOTATION, Literal(23))
+				AnnotationAssertion(HAS_AGE_ANNOTATION, FRED_ANNOTATION, Literal("23", XSD_INT))
 		));
 	}
 
@@ -918,7 +928,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(axioms, hasSize(2));
 		assertThat(axioms, containsInAnyOrder(
 				Declaration(FRED),
-				DataPropertyAssertion(HAS_AGE, FRED, Literal(23))
+				DataPropertyAssertion(HAS_AGE, FRED, Literal("23", XSD_INT))
 		));
 	}
 
@@ -939,7 +949,196 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(axioms, hasSize(2));
 		assertThat(axioms, containsInAnyOrder(
 				Declaration(FRED),
-				AnnotationAssertion(HAS_AGE_ANNOTATION, FRED_ANNOTATION, Literal(23))
+				AnnotationAssertion(HAS_AGE_ANNOTATION, FRED_ANNOTATION, Literal("23", XSD_INT))
+		));
+	}
+
+	@Test
+	public void TestXSDBooleanInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLDataProperty(ontology, "hasSSN");
+		
+		Label cellA1 = createCell("true", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: hasSSN @A1(xsd:boolean)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_SSN, FRED, Literal(true))
+		));
+	}
+
+	@Test
+	public void TestXSDByteInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLDataProperty(ontology, "hasSalary");
+		
+		Label cellA1 = createCell("34", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: hasSalary @A1(xsd:byte)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_SALARY, FRED, Literal("34", XSD_BYTE))
+		));
+	}
+
+	@Test
+	public void TestXSDShortInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLDataProperty(ontology, "hasSalary");
+		
+		Label cellA1 = createCell("34", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: hasSalary @A1(xsd:short)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_SALARY, FRED, Literal("34", XSD_SHORT))
+		));
+	}
+
+	@Test
+	public void TestXSDIntInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLDataProperty(ontology, "hasSalary");
+		
+		Label cellA1 = createCell("34", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: hasSalary @A1(xsd:int)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_SALARY, FRED, Literal("34", XSD_INT))
+		));
+	}
+
+	@Test
+	public void TestXSDFloatInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLDataProperty(ontology, "hasSalary");
+		
+		Label cellA1 = createCell("34000.0", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: hasSalary @A1(xsd:float)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_SALARY, FRED, Literal("34000.0", XSD_FLOAT))
+		));
+	}
+
+	@Test
+	public void TestXSDStringInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLDataProperty(ontology, "hasName");
+		
+		Label cellA1 = createCell("Fred", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: hasName @A1(xsd:string)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_NAME, FRED, Literal("Fred"))
+		));
+	}
+
+	@Test
+	public void TestXSDDateInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLDataProperty(ontology, "hasDOB");
+		
+		Label cellA1 = createCell("1999-01-01", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: hasDOB @A1(xsd:date)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_DOB, FRED, Literal("1999-01-01", XSD_DATE))
+		));
+	}
+
+	@Test
+	public void TestXSDDateTimeInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLDataProperty(ontology, "hasDOB");
+		
+		Label cellA1 = createCell("1999-01-01T10:10:10", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: hasDOB @A1(xsd:dateTime)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_DOB, FRED, Literal("1999-01-01T10:10:10", XSD_DATETIME))
+		));
+	}
+
+	@Test
+	public void TestXSDTimeInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLDataProperty(ontology, "hasBedTime");
+		
+		Label cellA1 = createCell("21:00", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: hasBedTime @A1(xsd:time)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_BEDTIME, FRED, Literal("21:00", XSD_TIME))
 		));
 	}
 
