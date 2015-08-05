@@ -32,7 +32,7 @@ import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Objec
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectProperty;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectSomeValuesFrom;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectUnionOf;
-import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SubClassOf;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.*;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -90,6 +90,8 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLNamedIndividual FEMALE = NamedIndividual(IRI("female"));
 	private static final OWLNamedIndividual OTHER = NamedIndividual(IRI("other"));
 	private static final OWLNamedIndividual FRED = NamedIndividual(IRI("Fred"));
+	private static final OWLNamedIndividual FREDDY = NamedIndividual(IRI("Freddy"));
+	private static final OWLNamedIndividual F = NamedIndividual(IRI("F"));
 	private static final OWLAnnotationSubject CAR_ANNOTATION = IRI("Car");
 	private static final OWLAnnotationSubject FRED_ANNOTATION = IRI("Fred");
 	private static final OWLAnnotationProperty HAS_AUTHOR_ANNOTATION = AnnotationProperty(IRI("hasAuthor"));
@@ -605,6 +607,39 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 				Declaration(FRED),
 				AnnotationAssertion(HAS_NAME_ANNOTATION, FRED_ANNOTATION, Literal("Fred")),
 				AnnotationAssertion(HAS_AGE_ANNOTATION, FRED_ANNOTATION, Literal(23))
+		));
+	}
+
+	@Test
+	public void TestIndividualDeclarationWithSameIndividual()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred SameAs: Freddy";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				SameIndividual(FRED, FREDDY)
+		));
+	}
+
+	@Test
+	public void TestIndividualDeclarationWithMultipleSameIndividual()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Individual: Fred SameAs: Freddy, F";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(3));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				SameIndividual(FRED, FREDDY),
+				SameIndividual(FRED, F)
 		));
 	}
 
