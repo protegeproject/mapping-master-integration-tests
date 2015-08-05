@@ -779,6 +779,19 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		));
 	}
 
+	@Test
+	public void TestLiteralReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		String expression = "Class: @\"Car\"";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+	}
+
 	// TODO Different rdfs:label and rdf:id, e.g., Class: @A5(rdf:ID=@B5
 	// rdfs:label=@A5)
 	// TODO Tests for the following directives:
