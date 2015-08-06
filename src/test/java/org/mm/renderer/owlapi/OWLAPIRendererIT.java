@@ -49,7 +49,6 @@ import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ParseException;
 import org.mm.renderer.RendererException;
 import org.mm.rendering.owlapi.OWLAPIRendering;
-import org.mm.rendering.text.TextRendering;
 import org.mm.test.IntegrationTestBase;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAnnotationSubject;
@@ -63,7 +62,6 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.vocab.Namespaces;
 
-import junit.framework.Assert;
 import jxl.read.biff.BiffException;
 import jxl.write.Label;
 import jxl.write.WriteException;
@@ -1221,6 +1219,24 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(rdfs:label=mm:append(\"Big\"))";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR_BIG)));
+	}
+
+	@Test
+	public void TestDefaultAppendInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "CarBig");
+		
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(mm:append(\"Big\"))";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
