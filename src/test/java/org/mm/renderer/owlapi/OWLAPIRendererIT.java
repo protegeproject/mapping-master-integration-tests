@@ -46,7 +46,6 @@ import org.junit.Test;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ParseException;
 import org.mm.rendering.owlapi.OWLAPIRendering;
-import org.mm.rendering.text.TextRendering;
 import org.mm.test.IntegrationTestBase;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAnnotationSubject;
@@ -60,7 +59,6 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.vocab.Namespaces;
 
-import junit.framework.Assert;
 import jxl.read.biff.BiffException;
 import jxl.write.Label;
 import jxl.write.WriteException;
@@ -87,6 +85,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLClass HUMAN = Class(IRI("Human"));
 	private static final OWLClass A = Class(IRI("A"));
 	private static final OWLClass ZYVOX = Class(IRI("Zyvox"));
+	private static final OWLClass UNKNOWN = Class(IRI("Unknown"));
 	private static final OWLObjectProperty HAS_ENGINE = ObjectProperty(IRI("hasEngine"));
 	private static final OWLObjectProperty HAS_HULL = ObjectProperty(IRI("hasHull"));
 	private static final OWLObjectProperty HAS_PARENT = ObjectProperty(IRI("hasParent"));
@@ -1610,6 +1609,166 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 				DataPropertyAssertion(HAS_SALARY, FRED, Literal("44", XSD_INT)),
 				ClassAssertion(PERSON, FRED)
 		));
+	}
+
+	@Test
+	public void TestDefaultLocationValueInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(mm:DefaultLocationValue=\"Unknown\")";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(UNKNOWN)));
+	}
+
+	@Test
+	public void TestDefaultLabelInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(rdfs:label mm:DefaultLabel=\"Unknown\")";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(UNKNOWN)));
+	}
+
+	@Test
+	public void TestResolveIfOWLEntityExistsInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(mm:ResolveIfOWLEntityExists)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+	}
+
+	@Test
+	public void TestSkipIfOWLEntityExistsInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(mm:SkipIfOWLEntityExists)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+	}
+
+	@Test
+	public void TestWarningIfOWLEntityExistsInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(mm:WarningIfOWLEntityExists)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+	}
+
+	@Test
+	public void TestErrorIfOWLEntityExistsInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(mm:ErrorIfOWLEntityExists)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+	}
+
+	@Test
+	public void TestCreateIfOWLEntityDoesNotExistInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(mm:CreateIfOWLEntityDoesNotExist)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+	}
+
+	@Test
+	public void TestSkipIfOWLEntityDoesNotExistInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(mm:SkipIfOWLEntityDoesNotExist)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+	}
+
+	@Test
+	public void TestWarningIfOWLEntityDoesNotExistInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(mm:WarningIfOWLEntityDoesNotExist)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+	}
+
+	@Test
+	public void TestErrorIfOWLEntityDoesNotExistInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(mm:ErrorIfOWLEntityDoesNotExist)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
 	}
 
 	// TODO Different rdfs:label and rdf:id, e.g., Class: @A5(rdf:ID=@B5
