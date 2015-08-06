@@ -1964,13 +1964,50 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		));
 	}
 
-	// TODO Different rdfs:label and rdf:id, e.g., Class: @A5(rdf:ID=@B5
-	// rdfs:label=@A5)
-	// TODO Tests for the following directives:
-	// mm:Location, mm:Prefix, mm:Namespace
-	// mm:ResolveIfOWLEntityExists, mm:SkipIfOWLEntityExists,
-	// mm:WarningIfOWLEntityExists,
-	// mm:ErrorIfOWLEntityExists, mm:CreateIfOWLEntityDoesNotExist,
-	// mm:SkipIfOWLEntityDoesNotExist,
-	// mm:WarningIfOWLEntityDoesNotExist, mm:ErrorIfOWLEntityDoesNotExist
+	@Test
+	public void TestOutOfRangeColumnInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		thrown.expect(RendererException.class);
+		thrown.expectMessage("invalid source specification @D1 - column D out of range");
+
+		String expression = "Class: @D1";
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		createOWLAPIRendering(ontology, SHEET1, cells, expression);
+	}
+
+	@Test
+	public void TestOutOfRangeRowInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		thrown.expect(RendererException.class);
+		thrown.expectMessage("invalid source specification @A3 - row 3 out of range");
+
+		String expression = "Class: @A3";
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		createOWLAPIRendering(ontology, SHEET1, cells, expression);
+	}
+
+	@Test
+	public void TestInvalidSheetNameInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		thrown.expect(RendererException.class);
+		thrown.expectMessage("invalid sheet name fff");
+
+		String expression = "Class: @'fff'!A3";
+		createOWLAPIRendering(ontology, expression);
+	}
+
+	@Test
+	public void TestParseException()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		thrown.expect(ParseException.class);
+
+		String expression = "Class: @";
+		createOWLAPIRendering(ontology, expression);
+	}
 }
