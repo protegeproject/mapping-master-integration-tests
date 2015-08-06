@@ -49,6 +49,7 @@ import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ParseException;
 import org.mm.renderer.RendererException;
 import org.mm.rendering.owlapi.OWLAPIRendering;
+import org.mm.rendering.text.TextRendering;
 import org.mm.test.IntegrationTestBase;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAnnotationSubject;
@@ -62,6 +63,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.vocab.Namespaces;
 
+import junit.framework.Assert;
 import jxl.read.biff.BiffException;
 import jxl.write.Label;
 import jxl.write.WriteException;
@@ -1827,6 +1829,139 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		createOWLAPIRendering(ontology, SHEET1, cells, expression);
+	}
+
+	@Test
+	public void TestSkipIfEmptyLocationInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:SkipIfEmptyLocation)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(FRED)));
+	}
+
+	@Test
+	public void TestSkipIfEmptyLiteralInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:SkipIfEmptyLiteral)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(FRED)));
+	}
+
+	@Test
+	public void TestSkipIfEmptyRDFSLabelDirectiveInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(mm:SkipIfEmptyLabel)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(false));
+	}
+
+	@Test
+	public void TestSkipIfEmptyRDFIDDirectiveInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(rdf:ID mm:SkipIfEmptyID)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(false));
+	}
+
+	@Test
+	public void TestWarningIfEmptyLocationInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:WarningIfEmptyLocation)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(FRED)));
+	}
+
+	@Test
+	public void TestWarningIfEmptyLiteralInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:WarningIfEmptyLiteral)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(1));
+		assertThat(axioms, containsInAnyOrder(Declaration(FRED)));
+	}
+
+	@Test
+	public void TestWarningIfEmptyRDFSLabelDirectiveInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(mm:WarningIfEmptyLabel)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(false));
+	}
+
+	@Test
+	public void TestWarningIfEmptyRDFIDDirectiveInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(rdf:ID mm:WarningIfEmptyID)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(false));
+	}
+
+	@Test
+	public void TestProcessIfEmptyLiteralInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLDataProperty(ontology, "hasName");
+		
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:ProcessIfEmptyLiteral)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_NAME, FRED, Literal(""))
+		));
 	}
 
 	// TODO Different rdfs:label and rdf:id, e.g., Class: @A5(rdf:ID=@B5
