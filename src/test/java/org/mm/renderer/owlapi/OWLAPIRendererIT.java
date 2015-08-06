@@ -42,9 +42,12 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ParseException;
+import org.mm.renderer.RendererException;
 import org.mm.rendering.owlapi.OWLAPIRendering;
 import org.mm.test.IntegrationTestBase;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
@@ -123,6 +126,9 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLDatatype XSD_DATE = Datatype(IRI(Namespaces.XSD + "date"));
 	private static final OWLDatatype XSD_DATETIME = Datatype(IRI(Namespaces.XSD + "dateTime"));
 	private static final OWLDatatype XSD_TIME = Datatype(IRI(Namespaces.XSD + "time"));
+
+	@Rule
+	public final ExpectedException thrown = ExpectedException.none();
 
 	@Before
 	public void setUp() throws OWLOntologyCreationException
@@ -1769,6 +1775,58 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(1));
 		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+	}
+
+	@Test
+	public void TestErrorIfEmptyLocationDirectiveInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		thrown.expect(RendererException.class);
+		thrown.expectMessage("empty location");
+
+		String expression = "Class: @A1(mm:ErrorIfEmptyLocation)";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		createOWLAPIRendering(ontology, SHEET1, cells, expression);
+	}
+
+	@Test
+	public void TestErrorIfEmptyLiteralDirectiveInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		thrown.expect(RendererException.class);
+		thrown.expectMessage("empty literal in reference");
+
+		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:ErrorIfEmptyLiteral)";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		createOWLAPIRendering(ontology, SHEET1, cells, expression);
+	}
+
+	@Test
+	public void TestErrorIfEmptyRDFSLabelDirectiveInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		thrown.expect(RendererException.class);
+		thrown.expectMessage("empty RDFS label in reference");
+
+		String expression = "Class: @A1(mm:ErrorIfEmptyLabel)";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		createOWLAPIRendering(ontology, SHEET1, cells, expression);
+	}
+
+	@Test
+	public void TestErrorIfEmptyRDFIDDirectiveInReference()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		thrown.expect(RendererException.class);
+		thrown.expectMessage("empty RDF ID in reference");
+
+		String expression = "Class: @A1(rdf:ID=@A1 mm:ErrorIfEmptyID)";
+		Label cellA1 = createCell("", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		createOWLAPIRendering(ontology, SHEET1, cells, expression);
 	}
 
 	// TODO Different rdfs:label and rdf:id, e.g., Class: @A5(rdf:ID=@B5
