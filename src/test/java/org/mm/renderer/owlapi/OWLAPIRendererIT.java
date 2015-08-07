@@ -811,7 +811,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
-		assertThat(axioms, hasSize(2));
+		assertThat(axioms, hasSize(1));
 		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
 	}
 
@@ -1801,10 +1801,11 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		thrown.expect(RendererException.class);
 		thrown.expectMessage("empty location");
-
-		String expression = "Class: @A1(mm:ErrorIfEmptyLocation)";
+		
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(mm:ErrorIfEmptyLocation)";
 		createOWLAPIRendering(ontology, SHEET1, cells, expression);
 	}
 
@@ -1814,10 +1815,11 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		thrown.expect(RendererException.class);
 		thrown.expectMessage("empty literal in reference");
-
-		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:ErrorIfEmptyLiteral)";
+		
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:ErrorIfEmptyLiteral)";
 		createOWLAPIRendering(ontology, SHEET1, cells, expression);
 	}
 
@@ -1827,10 +1829,11 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		thrown.expect(RendererException.class);
 		thrown.expectMessage("empty RDFS label in reference");
-
-		String expression = "Class: @A1(mm:ErrorIfEmptyLabel)";
+		
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(mm:ErrorIfEmptyLabel)";
 		createOWLAPIRendering(ontology, SHEET1, cells, expression);
 	}
 
@@ -1840,10 +1843,11 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		thrown.expect(RendererException.class);
 		thrown.expectMessage("empty RDF ID in reference");
-
-		String expression = "Class: @A1(rdf:ID=@A1 mm:ErrorIfEmptyID)";
+		
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(rdf:ID=@A1 mm:ErrorIfEmptyID)";
 		createOWLAPIRendering(ontology, SHEET1, cells, expression);
 	}
 
