@@ -11,6 +11,7 @@ import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Class
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataAllValuesFrom;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataExactCardinality;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataHasValue;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataMaxCardinality;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataMinCardinality;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataProperty;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataPropertyAssertion;
@@ -95,6 +96,8 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLObjectProperty HAS_GENDER = ObjectProperty(IRI("hasGender"));
 	private static final OWLObjectProperty HAS_P1 = ObjectProperty(IRI("hasP1"));
 	private static final OWLObjectProperty HAS_P2 = ObjectProperty(IRI("hasP2"));
+	private static final OWLDataProperty HAS_P3 = DataProperty(IRI("hasP3"));
+	private static final OWLDataProperty HAS_P4 = DataProperty(IRI("hasP4"));
 	private static final OWLDataProperty HAS_SSN = DataProperty(IRI("hasSSN"));
 	private static final OWLDataProperty HAS_ORIGIN = DataProperty(IRI("hasOrigin"));
 	private static final OWLDataProperty HAS_NAME = DataProperty(IRI("hasName"));
@@ -466,7 +469,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	}
 
 	@Test
-	public void TestNegatedClassExpression()
+	public void TestEquivalentToNegatedClassExpression()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
@@ -483,7 +486,32 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	}
 
 	@Test
-	public void TestUnionClassExpression()
+	public void TestEquivalentToComplexBooleanClassExpression()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "A");
+		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
+		declareOWLDataProperties(ontology, "hasP3", "hasP4");
+		String expression = "Class: A EquivalentTo: NOT hasP1 EXACTLY 2 AND ((hasP2 EXACTLY 3 AND hasP4 MAX 5) OR hasP3 MIN 4)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(A),
+				EquivalentClasses(A, ObjectIntersectionOf(
+						ObjectComplementOf(ObjectExactCardinality(2, HAS_P1, OWLThing())), 
+						ObjectUnionOf(
+								ObjectIntersectionOf(
+										ObjectExactCardinality(3, HAS_P2, OWLThing()),
+										DataMaxCardinality(5, HAS_P4, RDFS_LITERAL)),
+								DataMinCardinality(4, HAS_P3, RDFS_LITERAL))))
+		));
+	}
+
+	@Test
+	public void TestSubClassOfUnionClassExpression()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "A");
@@ -501,7 +529,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	}
 
 	@Test
-	public void TestIntersectionClassExpression()
+	public void TestSubClassOfIntersectionClassExpression()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "A");
@@ -515,6 +543,31 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(axioms, containsInAnyOrder(
 				Declaration(A),
 				SubClassOf(A, ObjectIntersectionOf(ObjectExactCardinality(2, HAS_P1, OWLThing()), ObjectExactCardinality(3, HAS_P2, OWLThing())))
+		));
+	}
+
+	@Test
+	public void TestSubClassOfComplexBooleanClassExpression()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "A");
+		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
+		declareOWLDataProperties(ontology, "hasP3", "hasP4");
+		String expression = "Class: A SubClassOf: NOT hasP1 EXACTLY 2 AND ((hasP2 EXACTLY 3 AND hasP4 MAX 5) OR hasP3 MIN 4)";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(A),
+				SubClassOf(A, ObjectIntersectionOf(
+						ObjectComplementOf(ObjectExactCardinality(2, HAS_P1, OWLThing())), 
+						ObjectUnionOf(
+								ObjectIntersectionOf(
+										ObjectExactCardinality(3, HAS_P2, OWLThing()),
+										DataMaxCardinality(5, HAS_P4, RDFS_LITERAL)),
+								DataMinCardinality(4, HAS_P3, RDFS_LITERAL))))
 		));
 	}
 
@@ -556,7 +609,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLClasses(ontology, "Person", "Human");
 		declareOWLObjectProperty(ontology, "hasParent");
-		String expression = "Individual: Fred Types: Person, (hasParent ONLY Human)";
+		String expression = "Individual: Fred Types: Person, hasParent ONLY Human";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
@@ -1756,11 +1809,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		
 		String expression = "Class: @A1(mm:SkipIfOWLEntityDoesNotExist)";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
-		assertThat(owlapiRendering.isPresent(), is(true));
-		
-		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
-		assertThat(axioms, hasSize(1));
-		assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+		assertThat(owlapiRendering.isPresent(), is(false));
 	}
 
 	@Test
@@ -1783,6 +1832,9 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	public void TestErrorIfOWLEntityDoesNotExistInReference()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
+		thrown.expect(RendererException.class);
+		thrown.expectMessage("an entity does not exist in namespace '' with the rdf:ID Car");
+		
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		
@@ -1948,7 +2000,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		
 		String expression = "Class: @A1(mm:WarningIfEmptyLabel)";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
-		assertThat(owlapiRendering.isPresent(), is(false));
+		assertThat(owlapiRendering.isPresent(), is(true)); // XXX: should be true
 	}
 
 	@Test
@@ -1960,7 +2012,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		
 		String expression = "Class: @A1(rdf:ID mm:WarningIfEmptyID)";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
-		assertThat(owlapiRendering.isPresent(), is(false));
+		assertThat(owlapiRendering.isPresent(), is(true)); // XXX: should be true
 	}
 
 	@Test
