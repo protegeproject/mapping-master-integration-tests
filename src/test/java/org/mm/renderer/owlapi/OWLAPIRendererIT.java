@@ -538,7 +538,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(2));
 		assertThat(axioms, containsInAnyOrder(
-				Declaration(PERSON), SubClassOf(PERSON, ObjectSomeValuesFrom(HAS_GENDER, ObjectOneOf(MALE, FEMALE, OTHER)))
+				Declaration(PERSON), SubClassOf(PERSON, ObjectAllValuesFrom(HAS_GENDER, ObjectOneOf(MALE, FEMALE, OTHER)))
 		));
 	}
 
