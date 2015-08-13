@@ -30,13 +30,14 @@ import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Objec
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectHasValue;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectIntersectionOf;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectMaxCardinality;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectMinCardinality;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectOneOf;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectProperty;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectPropertyAssertion;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectSomeValuesFrom;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectUnionOf;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SameIndividual;
-import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.*;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SubClassOf;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -46,6 +47,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mm.core.settings.ReferenceSettings;
+import org.mm.core.settings.ValueEncodingSetting;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ParseException;
 import org.mm.renderer.RendererException;
@@ -70,6 +73,7 @@ import jxl.write.WriteException;
 public class OWLAPIRendererIT extends IntegrationTestBase
 {
 	private OWLOntology ontology;
+	private ReferenceSettings settings;
 
 	private static final OWLClass BMW = Class(IRI("BMW"));
 	private static final OWLClass CAR = Class(IRI("Car"));
@@ -137,6 +141,8 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	public void setUp() throws OWLOntologyCreationException
 	{
 		ontology = createOWLOntology();
+		settings = new ReferenceSettings();
+		settings.setValueEncodingSetting(ValueEncodingSetting.RDF_ID);
 	}
 
 	@Test
@@ -146,7 +152,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Car");
 		String expression = "Class: Car";
 		
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -162,7 +168,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Car", "Vehicle");
 		String expression = "Class: Car SubClassOf: Vehicle";
 		
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -182,7 +188,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLObjectProperties(ontology, "hasEngine");
 		String expression = "Class: Car SubClassOf: hasEngine EXACTLY 1";
 		
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -201,7 +207,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Car", "Vehicle", "Device");
 		String expression = "Class: Car SubClassOf: Vehicle, Device";
 
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -219,7 +225,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLClasses(ontology, "Car", "Automobile");
 		String expression = "Class: Car EquivalentTo: Automobile";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -239,7 +245,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLObjectProperties(ontology, "hasEngine");
 		String expression = "Class: Car EquivalentTo: hasEngine EXACTLY 1";
 
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -258,7 +264,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Car", "Automobile", "Auto");
 		declareOWLObjectProperties(ontology, "hasEngine");
 		String expression = "Class: Car EquivalentTo: Automobile, Auto, hasEngine EXACTLY 1";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -278,7 +284,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Car");
 		declareOWLAnnotationProperties(ontology, "hasAuthor");
 		String expression = "Class: Car Annotations: hasAuthor Bob";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -296,7 +302,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Car");
 		declareOWLAnnotationProperties(ontology, "hasAuthor", "hasDate");
 		String expression = "Class: Car Annotations: hasAuthor Bob, hasDate \"1990-10-10\"";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -314,7 +320,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Car");
 		declareOWLObjectProperties(ontology, "hasEngine");
 		String expression = "Class: Car SubClassOf: hasEngine MAX 1";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -332,7 +338,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Car");
 		declareOWLObjectProperties(ontology, "hasEngine");
 		String expression = "Class: Car SubClassOf: hasEngine MIN 1";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -350,7 +356,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Car");
 		declareOWLObjectProperties(ontology, "hasEngine");
 		String expression = "Class: Car SubClassOf: hasEngine EXACTLY 1";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -368,7 +374,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Car");
 		declareOWLDataProperties(ontology, "hasSSN");
 		String expression = "Class: Car SubClassOf: hasSSN MAX 1";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -386,7 +392,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Car");
 		declareOWLDataProperties(ontology, "hasSSN");
 		String expression = "Class: Car SubClassOf: hasSSN MIN 1";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -404,7 +410,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Car");
 		declareOWLDataProperties(ontology, "hasSSN");
 		String expression = "Class: Car SubClassOf: hasSSN EXACTLY 1";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -423,7 +429,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLObjectProperties(ontology, "hasHull");
 		declareOWLNamedIndividual(ontology, "double-hull");
 		String expression = "Class: Catamaran SubClassOf: hasHull VALUE double-hull";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -441,7 +447,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "BMW");
 		declareOWLDataProperties(ontology, "hasOrigin");
 		String expression = "Class: BMW SubClassOf: hasOrigin VALUE \"Germany\"";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -459,7 +465,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "ChildOfDoctor", "Physician");
 		declareOWLObjectProperties(ontology, "hasParent");
 		String expression = "Class: ChildOfDoctor SubClassOf: hasParent SOME Physician";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -477,7 +483,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Car");
 		declareOWLDataProperties(ontology, "hasName");
 		String expression = "Class: Car SubClassOf: hasName SOME xsd:string";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -494,7 +500,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Person", "Human");
 		declareOWLObjectProperties(ontology, "hasParent");
 		String expression = "Class: Person SubClassOf: hasParent ONLY Human";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -512,7 +518,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Person");
 		declareOWLDataProperties(ontology, "hasSSN");
 		String expression = "Class: Person SubClassOf: hasSSN ONLY xsd:string";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -532,7 +538,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLNamedIndividual(ontology, "female");
 		declareOWLNamedIndividual(ontology, "other");
 		String expression = "Class: Person SubClassOf: hasGender ONLY {male, female, other}";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -549,7 +555,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Car");
 		declareOWLObjectProperties(ontology, "hasEngine");
 		String expression = "Class: Car EquivalentTo: NOT hasEngine EXACTLY 2";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -566,7 +572,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "A");
 		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
 		String expression = "Class: A EquivalentTo: hasP1 EXACTLY 2 OR hasP2 EXACTLY 3";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -584,7 +590,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "A");
 		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
 		String expression = "Class: A EquivalentTo: hasP1 EXACTLY 2 AND hasP2 EXACTLY 3";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -603,7 +609,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
 		declareOWLDataProperties(ontology, "hasP3", "hasP4");
 		String expression = "Class: A EquivalentTo: NOT hasP1 EXACTLY 2 AND ((hasP2 EXACTLY 3 AND hasP4 MAX 5) OR hasP3 MIN 4)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -627,7 +633,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Car");
 		declareOWLObjectProperties(ontology, "hasEngine");
 		String expression = "Class: Car SubClassOf: NOT hasEngine EXACTLY 2";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -644,7 +650,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "A");
 		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
 		String expression = "Class: A SubClassOf: hasP1 EXACTLY 2 OR hasP2 EXACTLY 3";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -662,7 +668,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "A");
 		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
 		String expression = "Class: A SubClassOf: hasP1 EXACTLY 2 AND hasP2 EXACTLY 3";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -681,7 +687,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
 		declareOWLDataProperties(ontology, "hasP3", "hasP4");
 		String expression = "Class: A SubClassOf: NOT hasP1 EXACTLY 2 AND ((hasP2 EXACTLY 3 AND hasP4 MAX 5) OR hasP3 MIN 4)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -703,7 +709,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		String expression = "Individual: Fred";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -719,7 +725,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLClasses(ontology, "Person");
 		String expression = "Individual: Fred Types: Person";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -737,7 +743,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		declareOWLClasses(ontology, "Person", "Human");
 		declareOWLObjectProperty(ontology, "hasParent");
 		String expression = "Individual: Fred Types: Person, hasParent ONLY Human";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -755,7 +761,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLDataProperty(ontology, "hasName");
 		String expression = "Individual: Fred Facts: hasName \"Fred\"";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -772,7 +778,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLDataProperties(ontology, "hasName", "hasAge");
 		String expression = "Individual: Fred Facts: hasName \"Fred\", hasAge 23";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -790,7 +796,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLAnnotationProperty(ontology, "hasName");
 		String expression = "Individual: Fred Annotations: hasName \"Fred\"";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -807,7 +813,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	{
 		declareOWLAnnotationProperties(ontology, "hasName", "hasAge");
 		String expression = "Individual: Fred Annotations: hasName \"Fred\", hasAge 23";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -824,7 +830,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		String expression = "Individual: Fred SameAs: Freddy";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -840,7 +846,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		String expression = "Individual: Fred SameAs: Freddy, F";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -857,7 +863,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		String expression = "Individual: Fred DifferentFrom: Bob";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -873,7 +879,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		String expression = "Individual: Fred DifferentFrom: Bob, Bobby";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -895,7 +901,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -911,7 +917,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: @A1";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -929,7 +935,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: @A1 Bob";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -950,7 +956,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: @A1 23";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -971,7 +977,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Annotations: @A1(AnnotationProperty) 23";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -987,7 +993,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		String expression = "Class: @\"Car\"";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1005,7 +1011,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @'" + SHEET1 + "'!A1";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1023,7 +1029,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @*1";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1041,7 +1047,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A*";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1059,7 +1065,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(Class)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1075,7 +1081,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: @A1(Individual)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1093,7 +1099,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: @A1(ObjectProperty) Bob";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1114,7 +1120,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: @A1(DataProperty) 23";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1135,7 +1141,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Annotations: @A1(AnnotationProperty) 23";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1156,7 +1162,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: hasSSN @A1(xsd:boolean)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1177,7 +1183,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: hasSalary @A1(xsd:byte)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1198,7 +1204,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: hasSalary @A1(xsd:short)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1219,7 +1225,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: hasSalary @A1(xsd:int)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1240,7 +1246,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: hasSalary @A1(xsd:float)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1261,7 +1267,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: hasName @A1(xsd:string)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1282,7 +1288,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: hasDOB @A1(xsd:date)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1303,7 +1309,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: hasDOB @A1(xsd:dateTime)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1324,7 +1330,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: hasBedTime @A1(xsd:time)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1345,7 +1351,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(rdfs:label=(\"BMW\"))";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1363,7 +1369,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(rdfs:label=(\"Big\", \"Car\"))";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1381,7 +1387,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(rdfs:label=(\"Big\", @A1))";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1399,7 +1405,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(rdfs:label=mm:append(\"Big\"))";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1417,7 +1423,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:append(\"Big\"))";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1435,7 +1441,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(rdfs:label=mm:prepend(\"Big\"))";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1453,7 +1459,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:prepend(\"Big\"))";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1474,7 +1480,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1, cellA2, cellA3, cellA4);
 		
 		String expression = "Class: @A4(mm:ShiftUp)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1495,7 +1501,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1, cellA2, cellA3, cellA4);
 		
 		String expression = "Class: @A1(mm:ShiftDown)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1516,7 +1522,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1, cellB1, cellC1, cellD1);
 		
 		String expression = "Class: @A1(mm:ShiftRight)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1537,7 +1543,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1, cellB1, cellC1, cellD1);
 		
 		String expression = "Class: @D1(mm:ShiftLeft)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1563,7 +1569,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1, cellB1, cellB2, cellB3, cellB4, cellC1, cellD1, cellE1, cellF1);
 		
 		String expression = "Class: @A*(mm:append(@B*(mm:ShiftDown), @C*(mm:ShiftRight)))";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1581,7 +1587,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:toLowerCase(\"CAR\"))";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1599,7 +1605,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:toLowerCase)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1617,7 +1623,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:trim(\"  Car  \"))";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1635,7 +1641,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:trim)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1653,7 +1659,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:reverse(\"raC\"))";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1671,7 +1677,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:reverse)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1689,7 +1695,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:toUpperCase(\"Car\"))";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1707,7 +1713,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:toUpperCase)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1725,7 +1731,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: hasName @A1(mm:replaceAll(\"[^a-zA-Z0-9]\",\"\"))";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1746,7 +1752,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(rdfs:label=[\":(\\S+)\"])";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1764,7 +1770,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1([\":(\\S+)\"])";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1782,7 +1788,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(rdfs:label=mm:capturing(\":(\\S+)\"))";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1802,7 +1808,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		
 		String expression = "Individual: Fred  " + "Facts: " + "hasAge @A1(xsd:int [\"(\\d+)\\s+\"]), "
 				+ "hasSalary @A1(xsd:int [\"\\s+(\\d+)\"])" + "Types: Person";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1823,7 +1829,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:DefaultLocationValue=\"Unknown\")";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1839,7 +1845,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(rdfs:label mm:DefaultLabel=\"Unknown\")";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1855,7 +1861,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:ResolveIfOWLEntityExists)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1871,7 +1877,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:SkipIfOWLEntityExists)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1887,7 +1893,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:WarningIfOWLEntityExists)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1903,7 +1909,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:ErrorIfOWLEntityExists)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1919,7 +1925,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:CreateIfOWLEntityDoesNotExist)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1935,7 +1941,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:SkipIfOWLEntityDoesNotExist)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(false));
 	}
 
@@ -1947,7 +1953,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:WarningIfOWLEntityDoesNotExist)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1966,7 +1972,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:ErrorIfOWLEntityDoesNotExist)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -1985,7 +1991,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:ErrorIfEmptyLocation)";
-		createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 	}
 
 	@Test
@@ -1999,7 +2005,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:ErrorIfEmptyLiteral)";
-		createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 	}
 
 	@Test
@@ -2013,7 +2019,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:ErrorIfEmptyLabel)";
-		createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 	}
 
 	@Test
@@ -2027,7 +2033,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(rdf:ID=@A1 mm:ErrorIfEmptyID)";
-		createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 	}
 
 	@Test
@@ -2038,7 +2044,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:SkipIfEmptyLocation)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -2054,7 +2060,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:SkipIfEmptyLiteral)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -2070,7 +2076,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:SkipIfEmptyLabel)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(false));
 	}
 
@@ -2082,7 +2088,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(rdf:ID mm:SkipIfEmptyID)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(false));
 	}
 
@@ -2094,7 +2100,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:WarningIfEmptyLocation)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -2110,7 +2116,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:WarningIfEmptyLiteral)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -2126,7 +2132,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(mm:WarningIfEmptyLabel)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true)); // XXX: should be true
 	}
 
@@ -2138,7 +2144,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Class: @A1(rdf:ID mm:WarningIfEmptyID)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true)); // XXX: should be true
 	}
 
@@ -2152,7 +2158,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Set<Label> cells = createCells(cellA1);
 		
 		String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:ProcessIfEmptyLiteral)";
-		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
@@ -2173,7 +2179,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		String expression = "Class: @D1";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 	}
 
 	@Test
@@ -2186,7 +2192,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		String expression = "Class: @A3";
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
-		createOWLAPIRendering(ontology, SHEET1, cells, expression);
+		createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 	}
 
 	@Test
@@ -2197,7 +2203,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		thrown.expectMessage("invalid sheet name fff");
 
 		String expression = "Class: @'fff'!A3";
-		createOWLAPIRendering(ontology, expression);
+		createOWLAPIRendering(ontology, expression, settings);
 	}
 
 	@Test
@@ -2207,6 +2213,6 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		thrown.expect(ParseException.class);
 
 		String expression = "Class: @";
-		createOWLAPIRendering(ontology, expression);
+		createOWLAPIRendering(ontology, expression, settings);
 	}
 }
