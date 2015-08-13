@@ -36,7 +36,7 @@ import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Objec
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectSomeValuesFrom;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectUnionOf;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SameIndividual;
-import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SubClassOf;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.*;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -175,6 +175,26 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	}
 
 	@Test
+	public void TestSubClassOfClassExpression()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car");
+		declareOWLObjectProperties(ontology, "hasEngine");
+		String expression = "Class: Car SubClassOf: hasEngine EXACTLY 1";
+		
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(CAR),
+				SubClassOf(CAR, ObjectExactCardinality(1, HAS_ENGINE, OWLThing()))
+		));
+	}
+
+	@Test
 	public void TestMultipleSubClassOf()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
@@ -288,7 +308,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	}
 
 	@Test
-	public void TestMaxCardinalityRestriction()
+	public void TestObjectMaxCardinalityRestriction()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
@@ -306,11 +326,65 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	}
 
 	@Test
-	public void TestMinCardinalityRestriction()
+	public void TestObjectMinCardinalityRestriction()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
-		declareOWLDataProperties(ontology, "hasAuthor", "hasSSN");
+		declareOWLObjectProperties(ontology, "hasEngine");
+		String expression = "Class: Car SubClassOf: hasEngine MIN 1";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(CAR),
+				SubClassOf(CAR, ObjectMinCardinality(1, HAS_ENGINE, OWLThing()))
+		));
+	}
+
+	@Test
+	public void TestObjectExactCardinalityRestriction()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car");
+		declareOWLObjectProperties(ontology, "hasEngine");
+		String expression = "Class: Car SubClassOf: hasEngine EXACTLY 1";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(CAR),
+				SubClassOf(CAR, ObjectExactCardinality(1, HAS_ENGINE, OWLThing()))
+		));
+	}
+
+	@Test
+	public void TesDatatMaxCardinalityRestriction()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car");
+		declareOWLDataProperties(ontology, "hasSSN");
+		String expression = "Class: Car SubClassOf: hasSSN MAX 1";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(CAR),
+				SubClassOf(CAR, DataMaxCardinality (1, HAS_SSN, RDFS_LITERAL))
+		));
+	}
+
+	@Test
+	public void TesDatatMinCardinalityRestriction()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car");
+		declareOWLDataProperties(ontology, "hasSSN");
 		String expression = "Class: Car SubClassOf: hasSSN MIN 1";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
@@ -324,11 +398,11 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	}
 
 	@Test
-	public void TestExactCardinalityRestriction()
+	public void TestDataExactCardinalityRestriction()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
-		declareOWLDataProperties(ontology, "hasAuthor", "hasSSN");
+		declareOWLDataProperties(ontology, "hasSSN");
 		String expression = "Class: Car SubClassOf: hasSSN EXACTLY 1";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
@@ -486,6 +560,42 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	}
 
 	@Test
+	public void TestEquivalentToUnionClassExpression()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "A");
+		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
+		String expression = "Class: A EquivalentTo: hasP1 EXACTLY 2 OR hasP2 EXACTLY 3";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(A),
+				EquivalentClasses(A, ObjectUnionOf(ObjectExactCardinality(2, HAS_P1, OWLThing()), ObjectExactCardinality(3, HAS_P2, OWLThing())))
+		));
+	}
+
+	@Test
+	public void TestEquivalentToIntersectionClassExpression()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "A");
+		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
+		String expression = "Class: A EquivalentTo: hasP1 EXACTLY 2 AND hasP2 EXACTLY 3";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(A),
+				EquivalentClasses(A, ObjectIntersectionOf(ObjectExactCardinality(2, HAS_P1, OWLThing()), ObjectExactCardinality(3, HAS_P2, OWLThing())))
+		));
+	}
+
+	@Test
 	public void TestEquivalentToComplexBooleanClassExpression()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
@@ -508,6 +618,23 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 										DataMaxCardinality(5, HAS_P4, RDFS_LITERAL)),
 								DataMinCardinality(4, HAS_P3, RDFS_LITERAL))))
 		));
+	}
+
+	@Test
+	public void TestSubClassOfNegatedClassExpression()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		declareOWLClasses(ontology, "Car");
+		declareOWLObjectProperties(ontology, "hasEngine");
+		String expression = "Class: Car SubClassOf: NOT hasEngine EXACTLY 2";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression);
+		assertThat(owlapiRendering.isPresent(), is(true));
+
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(CAR),
+				SubClassOf(CAR, ObjectComplementOf(ObjectExactCardinality(2, HAS_ENGINE, OWLThing())))));
 	}
 
 	@Test
@@ -843,7 +970,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Label cellA1 = createCell("hasAge", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		
-		String expression = "Individual: Fred Annotations: @A1 23";
+		String expression = "Individual: Fred Annotations: @A1(AnnotationProperty) 23";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
