@@ -2009,7 +2009,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		thrown.expect(RendererException.class);
-		thrown.expectMessage("an entity does not exist in namespace '' with the rdf:ID Car");
+		thrown.expectMessage("an entity does not exist in prefix '' with the rdf:ID Car");
 		
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
