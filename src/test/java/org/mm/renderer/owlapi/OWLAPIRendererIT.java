@@ -93,7 +93,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLClass HUMAN = Class(IRI("Human"));
 	private static final OWLClass A = Class(IRI("A"));
 	private static final OWLClass ZYVOX = Class(IRI("Zyvox"));
-	private static final OWLClass UNKNOWN = Class(IRI("Unknown"));
+	private static final OWLClass SOMETHING = Class(IRI("Something"));
 	private static final OWLObjectProperty HAS_ENGINE = ObjectProperty(IRI("hasEngine"));
 	private static final OWLObjectProperty HAS_HULL = ObjectProperty(IRI("hasHull"));
 	private static final OWLObjectProperty HAS_PARENT = ObjectProperty(IRI("hasParent"));
@@ -124,6 +124,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLAnnotationProperty HAS_DATE_ANNOTATION = AnnotationProperty(IRI("hasDate"));
 	private static final OWLAnnotationProperty HAS_NAME_ANNOTATION = AnnotationProperty(IRI("hasName"));
 	private static final OWLAnnotationProperty HAS_AGE_ANNOTATION = AnnotationProperty(IRI("hasAge"));
+	private static final OWLAnnotationProperty RDFS_LABEL = AnnotationProperty(IRI(Namespaces.RDFS + "label"));
 	private static final OWLDatatype RDFS_LITERAL = Datatype(IRI(Namespaces.RDFS + "Literal"));
 	private static final OWLDatatype XSD_STRING = Datatype(IRI(Namespaces.XSD + "string"));
 	private static final OWLDatatype XSD_FLOAT = Datatype(IRI(Namespaces.XSD + "float"));
@@ -1342,7 +1343,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	}
 
 	@Test
-	public void TestRDFSLabelAssignmentInReference()
+	public void TestRDFSLabelAssignmentInReference_ClassExistsInOntology()
 			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "BMW");
@@ -1355,8 +1356,30 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
-		assertThat(axioms, hasSize(1));
-		assertThat(axioms, containsInAnyOrder(Declaration(BMW)));
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(BMW),
+				AnnotationAssertion(RDFS_LABEL, IRI("BMW"), Literal("BMW", "")) // empty language tag
+		));
+	}
+
+	@Test
+	public void TestRDFSLabelAssignmentInReference_ClassNotExistInOntology()
+			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+	{
+		Label cellA1 = createCell("Car", 1, 1);
+		Set<Label> cells = createCells(cellA1);
+		
+		String expression = "Class: @A1(rdfs:label=(\"Car BMW Germany\"))";
+		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+		assertThat(owlapiRendering.isPresent(), is(true));
+		
+		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(CAR_BMW_GERMANY),
+				AnnotationAssertion(RDFS_LABEL, IRI("CarBMWGermany"), Literal("Car BMW Germany", "")) // empty language tag
+		));
 	}
 
 	@Test
@@ -1373,8 +1396,11 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
-		assertThat(axioms, hasSize(1));
-		assertThat(axioms, containsInAnyOrder(Declaration(BIG_CAR)));
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(BIG_CAR),
+				AnnotationAssertion(RDFS_LABEL, IRI("BigCar"), Literal("BigCar", "")) // empty language tag
+		));
 	}
 
 	@Test
@@ -1391,8 +1417,11 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
-		assertThat(axioms, hasSize(1));
-		assertThat(axioms, containsInAnyOrder(Declaration(BIG_CAR)));
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(BIG_CAR),
+				AnnotationAssertion(RDFS_LABEL, IRI("BigCar"), Literal("BigCar", "")) // empty language tag
+		));
 	}
 
 	@Test
@@ -1409,8 +1438,10 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
-		assertThat(axioms, hasSize(1));
-		assertThat(axioms, containsInAnyOrder(Declaration(CAR_BIG)));
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(CAR_BIG),
+				AnnotationAssertion(RDFS_LABEL, IRI("CarBig"), Literal("CarBig", "")))); // empty language tag
 	}
 
 	@Test
@@ -1445,8 +1476,11 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
-		assertThat(axioms, hasSize(1));
-		assertThat(axioms, containsInAnyOrder(Declaration(BIG_CAR)));
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(BIG_CAR),
+				AnnotationAssertion(RDFS_LABEL, IRI("BigCar"), Literal("BigCar", "")) // empty language tag
+		));
 	}
 
 	@Test
@@ -1756,8 +1790,11 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
-		assertThat(axioms, hasSize(1));
-		assertThat(axioms, containsInAnyOrder(Declaration(ZYVOX)));
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(ZYVOX),
+				AnnotationAssertion(RDFS_LABEL, IRI("Zyvox"), Literal("Zyvox", ""))) // empty language tag
+		);
 	}
 
 	@Test
@@ -1792,8 +1829,11 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
-		assertThat(axioms, hasSize(1));
-		assertThat(axioms, containsInAnyOrder(Declaration(ZYVOX)));
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(ZYVOX),
+				AnnotationAssertion(RDFS_LABEL, IRI("Zyvox"), Literal("Zyvox", "")) // empty language tag
+		));
 	}
 
 	@Test
@@ -1828,13 +1868,13 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		
-		String expression = "Class: @A1(mm:DefaultLocationValue=\"Unknown\")";
+		String expression = "Class: @A1(mm:DefaultLocationValue=\"Something\")";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(1));
-		assertThat(axioms, containsInAnyOrder(Declaration(UNKNOWN)));
+		assertThat(axioms, containsInAnyOrder(Declaration(SOMETHING)));
 	}
 
 	@Test
@@ -1844,13 +1884,16 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		
-		String expression = "Class: @A1(rdfs:label mm:DefaultLabel=\"Unknown\")";
+		String expression = "Class: @A1(rdfs:label mm:DefaultLabel=\"Something\")";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
-		assertThat(axioms, hasSize(1));
-		assertThat(axioms, containsInAnyOrder(Declaration(UNKNOWN)));
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(SOMETHING),
+				AnnotationAssertion(RDFS_LABEL, IRI("Something"), Literal("Something", "")) // empty language tag
+		));
 	}
 
 	@Test
