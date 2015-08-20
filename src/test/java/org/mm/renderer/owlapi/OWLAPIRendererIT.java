@@ -66,10 +66,6 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.vocab.Namespaces;
 
-import jxl.read.biff.BiffException;
-import jxl.write.Label;
-import jxl.write.WriteException;
-
 public class OWLAPIRendererIT extends IntegrationTestBase
 {
 	private OWLOntology ontology;
@@ -148,7 +144,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestClassDeclaration()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		String expression = "Class: Car";
@@ -164,7 +160,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestSubClassOf()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car", "Vehicle");
 		String expression = "Class: Car SubClassOf: Vehicle";
@@ -183,7 +179,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestSubClassOfClassExpression()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLObjectProperties(ontology, "hasEngine");
@@ -203,7 +199,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestMultipleSubClassOf()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car", "Vehicle", "Device");
 		String expression = "Class: Car SubClassOf: Vehicle, Device";
@@ -222,7 +218,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestEquivalentToClass()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car", "Automobile");
 		String expression = "Class: Car EquivalentTo: Automobile";
@@ -240,7 +236,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestEquivalentToClassExpression()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLObjectProperties(ontology, "hasEngine");
@@ -260,7 +256,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestMultipleEquivalentClass()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car", "Automobile", "Auto");
 		declareOWLObjectProperties(ontology, "hasEngine");
@@ -280,7 +276,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestClassDeclarationWithAnnotations()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLAnnotationProperties(ontology, "hasAuthor");
@@ -298,7 +294,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestClassDeclarationWithMultipleAnnotations()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLAnnotationProperties(ontology, "hasAuthor", "hasDate");
@@ -316,7 +312,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestObjectMaxCardinalityRestriction()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLObjectProperties(ontology, "hasEngine");
@@ -334,7 +330,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestObjectMinCardinalityRestriction()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLObjectProperties(ontology, "hasEngine");
@@ -352,7 +348,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestObjectExactCardinalityRestriction()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLObjectProperties(ontology, "hasEngine");
@@ -370,7 +366,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TesDatatMaxCardinalityRestriction()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLDataProperties(ontology, "hasSSN");
@@ -388,7 +384,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TesDatatMinCardinalityRestriction()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLDataProperties(ontology, "hasSSN");
@@ -406,7 +402,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestDataExactCardinalityRestriction()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLDataProperties(ontology, "hasSSN");
@@ -424,7 +420,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestObjectHasValueRestriction()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Catamaran", "DoubleHull");
 		declareOWLObjectProperties(ontology, "hasHull");
@@ -443,7 +439,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestDataHasValueRestriction()
-			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+			throws MappingMasterException, IOException, ParseException
 	{
 		declareOWLClasses(ontology, "BMW");
 		declareOWLDataProperties(ontology, "hasOrigin");
@@ -461,7 +457,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestObjectSomeValueRestriction()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "ChildOfDoctor", "Physician");
 		declareOWLObjectProperties(ontology, "hasParent");
@@ -479,7 +475,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestDataSomeValueRestriction()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLDataProperties(ontology, "hasName");
@@ -496,7 +492,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestObjectAllValuesFromRestriction()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Person", "Human");
 		declareOWLObjectProperties(ontology, "hasParent");
@@ -514,7 +510,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestDataAllValuesFromRestriction()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Person");
 		declareOWLDataProperties(ontology, "hasSSN");
@@ -531,7 +527,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestOWLObjectOneOf()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Person");
 		declareOWLObjectProperties(ontology, "hasGender");
@@ -551,7 +547,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestEquivalentToNegatedClassExpression()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLObjectProperties(ontology, "hasEngine");
@@ -568,7 +564,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestEquivalentToUnionClassExpression()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "A");
 		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
@@ -586,7 +582,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestEquivalentToIntersectionClassExpression()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "A");
 		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
@@ -604,7 +600,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestEquivalentToComplexBooleanClassExpression()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "A");
 		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
@@ -629,7 +625,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestSubClassOfNegatedClassExpression()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		declareOWLObjectProperties(ontology, "hasEngine");
@@ -646,7 +642,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestSubClassOfUnionClassExpression()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "A");
 		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
@@ -664,7 +660,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestSubClassOfIntersectionClassExpression()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "A");
 		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
@@ -682,7 +678,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestSubClassOfComplexBooleanClassExpression()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "A");
 		declareOWLObjectProperties(ontology, "hasP1", "hasP2");
@@ -707,7 +703,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestIndividualDeclaration()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		String expression = "Individual: Fred";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
@@ -722,7 +718,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestIndividualDeclarationWithTypes()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Person");
 		String expression = "Individual: Fred Types: Person";
@@ -739,7 +735,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestIndividualDeclarationWithMultipleTypes()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Person", "Human");
 		declareOWLObjectProperty(ontology, "hasParent");
@@ -758,7 +754,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestIndividualDeclarationWithFacts()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLDataProperty(ontology, "hasName");
 		String expression = "Individual: Fred Facts: hasName \"Fred\"";
@@ -775,7 +771,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestIndividualDeclarationWithMultipleFacts()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLDataProperties(ontology, "hasName", "hasAge");
 		String expression = "Individual: Fred Facts: hasName \"Fred\", hasAge 23";
@@ -793,7 +789,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestIndividualDeclarationWithAnnotations()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLAnnotationProperty(ontology, "hasName");
 		String expression = "Individual: Fred Annotations: hasName \"Fred\"";
@@ -810,7 +806,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestIndividualDeclarationWithMultipleAnnotations()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLAnnotationProperties(ontology, "hasName", "hasAge");
 		String expression = "Individual: Fred Annotations: hasName \"Fred\", hasAge 23";
@@ -828,7 +824,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestIndividualDeclarationWithSameIndividual()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		String expression = "Individual: Fred SameAs: Freddy";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
@@ -844,7 +840,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestIndividualDeclarationWithMultipleSameIndividual()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		String expression = "Individual: Fred SameAs: Freddy, F";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
@@ -861,7 +857,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestIndividualDeclarationWithDifferentIndividuals()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		String expression = "Individual: Fred DifferentFrom: Bob";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
@@ -877,7 +873,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestIndividualDeclarationWithMultipleDifferentIndividuals()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		String expression = "Individual: Fred DifferentFrom: Bob, Bobby";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
@@ -894,7 +890,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestAbsoluteReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		
@@ -912,7 +908,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestAbsoluteIndividualReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("Fred", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -928,7 +924,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestAbsoluteObjectPropertyReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLObjectProperty(ontology, "hasParent");
 		
@@ -949,7 +945,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestAbsoluteDataPropertyReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLDataProperty(ontology, "hasAge");
 		
@@ -970,7 +966,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestAbsoluteAnnotationPropertyReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLAnnotationProperty(ontology, "hasAge");
 		
@@ -991,7 +987,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestLiteralReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		String expression = "Class: @\"Car\"";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, expression, settings);
@@ -1004,7 +1000,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestAbsoluteReferenceWithSheetName()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		
@@ -1022,7 +1018,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestColumnWildcardInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		
@@ -1040,7 +1036,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestRowWildcardInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		
@@ -1058,7 +1054,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestClassQualifiedInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		
@@ -1076,7 +1072,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestIndividualInQualifiedReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("Fred", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -1092,7 +1088,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestObjectPropertyInQualifiedReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLObjectProperty(ontology, "hasParent");
 		
@@ -1113,7 +1109,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestDataPropertyQualifiedInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLDataProperty(ontology, "hasAge");
 		
@@ -1134,7 +1130,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestAnnotationPropertyQualifiedReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLAnnotationProperty(ontology, "hasAge");
 		
@@ -1155,7 +1151,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestXSDBooleanInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLDataProperty(ontology, "hasSSN");
 		
@@ -1176,7 +1172,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestXSDByteInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLDataProperty(ontology, "hasSalary");
 		
@@ -1197,7 +1193,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestXSDShortInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLDataProperty(ontology, "hasSalary");
 		
@@ -1218,7 +1214,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestXSDIntInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLDataProperty(ontology, "hasSalary");
 		
@@ -1239,7 +1235,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestXSDFloatInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLDataProperty(ontology, "hasSalary");
 		
@@ -1260,7 +1256,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestXSDStringInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLDataProperty(ontology, "hasName");
 		
@@ -1281,7 +1277,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestXSDDateInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLDataProperty(ontology, "hasDOB");
 		
@@ -1302,7 +1298,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestXSDDateTimeInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLDataProperty(ontology, "hasDOB");
 		
@@ -1323,7 +1319,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestXSDTimeInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLDataProperty(ontology, "hasBedTime");
 		
@@ -1344,7 +1340,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestRDFSLabelAssignmentInReference_ClassExistsInOntology()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "BMW");
 		
@@ -1365,7 +1361,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestRDFSLabelAssignmentInReference_ClassNotExistInOntology()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -1384,7 +1380,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestRDFSLabelAssignmentWithConcatenatedParametersInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "BigCar");
 		
@@ -1405,7 +1401,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestRDFSLabelAssignmentWithReferenceParameterInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "BigCar");
 		
@@ -1426,7 +1422,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestRDFSLabelAppendInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "CarBig");
 		
@@ -1446,7 +1442,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestDefaultAppendInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "CarBig");
 		
@@ -1464,7 +1460,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestRDFSLabelPrependInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "BigCar");
 		
@@ -1485,7 +1481,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestDefaultPrependInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "BigCar");
 		
@@ -1503,7 +1499,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestShiftUpInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		
@@ -1524,7 +1520,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestShiftDownInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		
@@ -1545,7 +1541,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestShiftRightInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		
@@ -1566,7 +1562,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestShiftLeftInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		
@@ -1587,14 +1583,14 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestReferencesInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "CarBMWGermany");
 		
 		Label cellA1 = createCell("Car", 1, 1);
 		Label cellB1 = createCell("", 2, 1);
 		Label cellB2 = createCell("", 2, 2);
-		Label cellB3 = createCell("", 3, 3);
+		Label cellB3 = createCell("", 2, 3);
 		Label cellB4 = createCell("BMW", 2, 4);
 		Label cellC1 = createCell("", 3, 1);
 		Label cellD1 = createCell("", 4, 1);
@@ -1613,7 +1609,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestToLowerCaseInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "car");
 		
@@ -1631,7 +1627,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestToLowerCaseImplicitInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "car");
 		
@@ -1649,7 +1645,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestTrimInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		
@@ -1667,7 +1663,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestTrimImplicitInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		
@@ -1685,7 +1681,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestReverseInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		
@@ -1703,7 +1699,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestReverseImplifictInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Car");
 		
@@ -1721,7 +1717,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestToUpperCaseInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "CAR");
 		
@@ -1739,7 +1735,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestToUpperCaseImplicitInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "CAR");
 		
@@ -1757,7 +1753,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestReplaceAllInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLDataProperty(ontology, "hasName");
 		
@@ -1778,7 +1774,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestCapturingExpressionInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Zyvox");
 		
@@ -1799,7 +1795,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestCapturingExpressionStandaloneInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Zyvox");
 		
@@ -1817,7 +1813,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestCapturingExpressionMethodInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClasses(ontology, "Zyvox");
 		
@@ -1838,7 +1834,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestMultipleCapturingExpressionsInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLClass(ontology, "Person");
 		declareOWLDataProperties(ontology, "hasAge", "hasSalary");
@@ -1863,7 +1859,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestDefaultLocationValueInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -1879,7 +1875,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestDefaultLabelInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -1898,7 +1894,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestResolveIfOWLEntityExistsInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -1914,7 +1910,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestSkipIfOWLEntityExistsInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -1930,7 +1926,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestWarningIfOWLEntityExistsInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -1946,7 +1942,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestErrorIfOWLEntityExistsInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -1962,7 +1958,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestCreateIfOWLEntityDoesNotExistInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -1978,7 +1974,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestSkipIfOWLEntityDoesNotExistInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -1990,7 +1986,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestWarningIfOWLEntityDoesNotExistInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -2006,7 +2002,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestErrorIfOWLEntityDoesNotExistInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		thrown.expect(RendererException.class);
 		thrown.expectMessage("an entity does not exist in prefix '' with the rdf:ID Car");
@@ -2025,7 +2021,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestErrorIfEmptyLocationDirectiveInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		thrown.expect(RendererException.class);
 		thrown.expectMessage("empty location");
@@ -2039,7 +2035,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestErrorIfEmptyLiteralDirectiveInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		thrown.expect(RendererException.class);
 		thrown.expectMessage("empty literal in reference");
@@ -2053,7 +2049,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestErrorIfEmptyRDFSLabelDirectiveInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		thrown.expect(RendererException.class);
 		thrown.expectMessage("empty RDFS label in reference");
@@ -2067,7 +2063,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestErrorIfEmptyRDFIDDirectiveInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		thrown.expect(RendererException.class);
 		thrown.expectMessage("empty RDF ID in reference");
@@ -2081,7 +2077,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestSkipIfEmptyLocationInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -2097,7 +2093,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestSkipIfEmptyLiteralInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -2113,7 +2109,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestSkipIfEmptyRDFSLabelDirectiveInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -2125,7 +2121,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestSkipIfEmptyRDFIDDirectiveInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -2137,7 +2133,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestWarningIfEmptyLocationInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -2153,7 +2149,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestWarningIfEmptyLiteralInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -2169,7 +2165,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestWarningIfEmptyRDFSLabelDirectiveInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -2181,7 +2177,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestWarningIfEmptyRDFIDDirectiveInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -2193,7 +2189,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestProcessIfEmptyLiteralInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		declareOWLDataProperty(ontology, "hasName");
 		
@@ -2214,10 +2210,10 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestOutOfRangeColumnInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		thrown.expect(RendererException.class);
-		thrown.expectMessage("invalid source specification @D1 - column D out of range");
+		thrown.expectMessage("invalid source specification @'Sheet1'!D1 - column D is out of range");
 
 		String expression = "Class: @D1";
 		Label cellA1 = createCell("Car", 1, 1);
@@ -2227,10 +2223,10 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestOutOfRangeRowInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		thrown.expect(RendererException.class);
-		thrown.expectMessage("invalid source specification @A3 - row 3 out of range");
+		thrown.expectMessage("invalid source specification @'Sheet1'!A3 - row 3 is out of range");
 
 		String expression = "Class: @A3";
 		Label cellA1 = createCell("Car", 1, 1);
@@ -2240,7 +2236,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestInvalidSheetNameInReference()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		thrown.expect(RendererException.class);
 		thrown.expectMessage("invalid sheet name fff");
@@ -2251,7 +2247,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 
 	@Test
 	public void TestParseException()
-			throws WriteException, BiffException, MappingMasterException, ParseException, IOException
+			throws MappingMasterException, ParseException, IOException
 	{
 		thrown.expect(ParseException.class);
 
