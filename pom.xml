@@ -6,13 +6,12 @@
   <groupId>org.mm</groupId>
   <artifactId>mapping-master-integration-tests</artifactId>
   <version>1.0.0</version>
-  <packaging>jar</packaging>
   <name>Mapping Master Integration Tests</name>
   <description>Integration tests for Mapping Master</description>
 
   <properties>
 
-    <mapping-master.version>1.0.0</mapping-master.version>
+    <mapping-master.version>1.1.0</mapping-master.version>
 
     <slf4j.version>1.6.1</slf4j.version>
     <junit.version>4.11</junit.version>
