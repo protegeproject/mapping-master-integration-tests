@@ -1238,7 +1238,7 @@ public class TextRendererIT extends IntegrationTestBase
       throws MappingMasterException, ParseException, IOException
   {
     this.thrown.expect(RendererException.class);
-    this.thrown.expectMessage("invalid source specification @'Sheet1'!D1 - column D is out of range");
+    this.thrown.expectMessage("Invalid source specification @'Sheet1'!D1 - column D is out of range");
 
     String expression = "Class: @D1";
     Label cellA1 = createCell("Car", 1, 1);
@@ -1250,7 +1250,7 @@ public class TextRendererIT extends IntegrationTestBase
       throws MappingMasterException, ParseException, IOException
   {
     this.thrown.expect(RendererException.class);
-    this.thrown.expectMessage("invalid source specification @'Sheet1'!A3 - row 3 is out of range");
+    this.thrown.expectMessage("Invalid source specification @'Sheet1'!A3 - row 3 is out of range");
 
     String expression = "Class: @A3";
     Label cellA1 = createCell("Car", 1, 1);
@@ -1262,7 +1262,7 @@ public class TextRendererIT extends IntegrationTestBase
       throws MappingMasterException, ParseException, IOException
   {
     this.thrown.expect(RendererException.class);
-    this.thrown.expectMessage("invalid sheet name fff");
+    this.thrown.expectMessage("Sheet name 'fff' does not exist");
 
     String expression = "Class: @'fff'!A3";
     createTextRendering(SHEET1, expression, settings);
