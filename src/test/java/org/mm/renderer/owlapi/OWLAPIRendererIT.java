@@ -75,8 +75,8 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	private static final OWLClass CAR = Class(IRI("Car"));
 	private static final OWLClass CAR_LOWERCASE = Class(IRI("car"));
 	private static final OWLClass CAR_UPPERCASE = Class(IRI("CAR"));
+	private static final OWLClass TRUCK = Class(IRI("Truck"));
 	private static final OWLClass BIG_CAR = Class(IRI("BigCar"));
-	private static final OWLClass CAR_BIG = Class(IRI("CarBig"));
 	private static final OWLClass CAR_BMW_GERMANY = Class(IRI("CarBMWGermany"));
 	private static final OWLClass CATAMARAN = Class(IRI("Catamaran"));
 	private static final OWLClass VEHICLE = Class(IRI("Vehicle"));
@@ -1342,12 +1342,12 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	public void TestRDFSLabelAssignmentInReference_ClassExistsInOntology()
 			throws MappingMasterException, ParseException, IOException
 	{
-		declareOWLClasses(ontology, "BMW");
+		declareOWLClass(ontology, "BMW", "Bavarian Motor Works");
 		
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		
-		String expression = "Class: @A1(rdfs:label=(\"BMW\"))";
+		String expression = "Class: @A1(rdfs:label=(\"Bavarian Motor Works\"))";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
@@ -1355,7 +1355,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(axioms, hasSize(2));
 		assertThat(axioms, containsInAnyOrder(
 				Declaration(BMW),
-				AnnotationAssertion(RDFS_LABEL, IRI("BMW"), Literal("BMW", "")) // empty language tag
+				AnnotationAssertion(RDFS_LABEL, IRI("BMW"), Literal("Bavarian Motor Works", "")) // empty language tag
 		));
 	}
 
@@ -1382,20 +1382,20 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	public void TestRDFSLabelAssignmentWithConcatenatedParametersInReference()
 			throws MappingMasterException, ParseException, IOException
 	{
-		declareOWLClasses(ontology, "BigCar");
+		declareOWLClass(ontology, "Truck", "Big Car");
 		
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		
-		String expression = "Class: @A1(rdfs:label=(\"Big\", \"Car\"))";
+		String expression = "Class: @A1(rdfs:label=(\"Big \", \"Car\"))";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(2));
 		assertThat(axioms, containsInAnyOrder(
-				Declaration(BIG_CAR),
-				AnnotationAssertion(RDFS_LABEL, IRI("BigCar"), Literal("BigCar", "")) // empty language tag
+				Declaration(TRUCK),
+				AnnotationAssertion(RDFS_LABEL, IRI("Truck"), Literal("Big Car", "")) // empty language tag
 		));
 	}
 
@@ -1403,20 +1403,20 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	public void TestRDFSLabelAssignmentWithReferenceParameterInReference()
 			throws MappingMasterException, ParseException, IOException
 	{
-		declareOWLClasses(ontology, "BigCar");
+		declareOWLClass(ontology, "Truck", "Big Car");
 		
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		
-		String expression = "Class: @A1(rdfs:label=(\"Big\", @A1))";
+		String expression = "Class: @A1(rdfs:label=(\"Big \", @A1))";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(2));
 		assertThat(axioms, containsInAnyOrder(
-				Declaration(BIG_CAR),
-				AnnotationAssertion(RDFS_LABEL, IRI("BigCar"), Literal("BigCar", "")) // empty language tag
+				Declaration(TRUCK),
+				AnnotationAssertion(RDFS_LABEL, IRI("Truck"), Literal("Big Car", "")) // empty language tag
 		));
 	}
 
@@ -1424,58 +1424,58 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	public void TestRDFSLabelAppendInReference()
 			throws MappingMasterException, ParseException, IOException
 	{
-		declareOWLClasses(ontology, "CarBig");
+		declareOWLClass(ontology, "Truck", "Car Big");
 		
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		
-		String expression = "Class: @A1(rdfs:label=mm:append(\"Big\"))";
+		String expression = "Class: @A1(rdfs:label=mm:append(\" Big\"))";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(2));
 		assertThat(axioms, containsInAnyOrder(
-				Declaration(CAR_BIG),
-				AnnotationAssertion(RDFS_LABEL, IRI("CarBig"), Literal("CarBig", "")))); // empty language tag
+				Declaration(TRUCK),
+				AnnotationAssertion(RDFS_LABEL, IRI("Truck"), Literal("Car Big", "")))); // empty language tag
 	}
 
 	@Test
 	public void TestDefaultAppendInReference()
 			throws MappingMasterException, ParseException, IOException
 	{
-		declareOWLClasses(ontology, "CarBig");
+		declareOWLClasses(ontology, "BigCar");
 		
-		Label cellA1 = createCell("Car", 1, 1);
+		Label cellA1 = createCell("Big", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		
-		String expression = "Class: @A1(mm:append(\"Big\"))";
+		String expression = "Class: @A1(mm:append(\"Car\"))";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(1));
-		assertThat(axioms, containsInAnyOrder(Declaration(CAR_BIG)));
+		assertThat(axioms, containsInAnyOrder(Declaration(BIG_CAR)));
 	}
 
 	@Test
 	public void TestRDFSLabelPrependInReference()
 			throws MappingMasterException, ParseException, IOException
 	{
-		declareOWLClasses(ontology, "BigCar");
+		declareOWLClass(ontology, "Truck", "Big Car");
 		
 		Label cellA1 = createCell("Car", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		
-		String expression = "Class: @A1(rdfs:label=mm:prepend(\"Big\"))";
+		String expression = "Class: @A1(rdfs:label=mm:prepend(\"Big \"))";
 		Optional<? extends OWLAPIRendering> owlapiRendering = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
 		assertThat(axioms, hasSize(2));
 		assertThat(axioms, containsInAnyOrder(
-				Declaration(BIG_CAR),
-				AnnotationAssertion(RDFS_LABEL, IRI("BigCar"), Literal("BigCar", "")) // empty language tag
+				Declaration(TRUCK),
+				AnnotationAssertion(RDFS_LABEL, IRI("Truck"), Literal("Big Car", "")) // empty language tag
 		));
 	}
 
@@ -1776,7 +1776,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	public void TestCapturingExpressionInReference()
 			throws MappingMasterException, ParseException, IOException
 	{
-		declareOWLClasses(ontology, "Zyvox");
+		declareOWLClass(ontology, "Zyvox", "Zyvox");
 		
 		Label cellA1 = createCell("Pfizer:Zyvox", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -1815,7 +1815,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	public void TestCapturingExpressionMethodInReference()
 			throws MappingMasterException, ParseException, IOException
 	{
-		declareOWLClasses(ontology, "Zyvox");
+		declareOWLClass(ontology, "Zyvox", "Zyvox");
 		
 		Label cellA1 = createCell("Pfizer:Zyvox", 1, 1);
 		Set<Label> cells = createCells(cellA1);
@@ -2135,6 +2135,8 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 	public void TestWarningIfEmptyLocationInReference()
 			throws MappingMasterException, ParseException, IOException
 	{
+		declareOWLDataProperties(ontology, "hasName");
+		
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		
@@ -2143,14 +2145,19 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
-		assertThat(axioms, hasSize(1));
-		assertThat(axioms, containsInAnyOrder(Declaration(FRED)));
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms, containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_NAME, FRED, Literal(""))
+		));
 	}
 
 	@Test
 	public void TestWarningIfEmptyLiteralInReference()
 			throws MappingMasterException, ParseException, IOException
 	{
+		declareOWLDataProperty(ontology, "hasName");
+		
 		Label cellA1 = createCell("", 1, 1);
 		Set<Label> cells = createCells(cellA1);
 		
@@ -2159,8 +2166,11 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 		assertThat(owlapiRendering.isPresent(), is(true));
 		
 		Set<OWLAxiom> axioms = owlapiRendering.get().getOWLAxioms();
-		assertThat(axioms, hasSize(1));
-		assertThat(axioms, containsInAnyOrder(Declaration(FRED)));
+		assertThat(axioms, hasSize(2));
+		assertThat(axioms,containsInAnyOrder(
+				Declaration(FRED),
+				DataPropertyAssertion(HAS_NAME, FRED, Literal(""))
+		));
 	}
 
 	@Test
@@ -2213,7 +2223,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 			throws MappingMasterException, ParseException, IOException
 	{
 		thrown.expect(RendererException.class);
-		thrown.expectMessage("invalid source specification @'Sheet1'!D1 - column D is out of range");
+		thrown.expectMessage("Invalid source specification @'Sheet1'!D1 - column D is out of range");
 
 		String expression = "Class: @D1";
 		Label cellA1 = createCell("Car", 1, 1);
@@ -2226,7 +2236,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 			throws MappingMasterException, ParseException, IOException
 	{
 		thrown.expect(RendererException.class);
-		thrown.expectMessage("invalid source specification @'Sheet1'!A3 - row 3 is out of range");
+		thrown.expectMessage("Invalid source specification @'Sheet1'!A3 - row 3 is out of range");
 
 		String expression = "Class: @A3";
 		Label cellA1 = createCell("Car", 1, 1);
@@ -2239,7 +2249,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
 			throws MappingMasterException, ParseException, IOException
 	{
 		thrown.expect(RendererException.class);
-		thrown.expectMessage("invalid sheet name fff");
+		thrown.expectMessage("Sheet name 'fff' does not exist");
 
 		String expression = "Class: @'fff'!A3";
 		createOWLAPIRendering(ontology, expression, settings);
