@@ -105,7 +105,8 @@ public class OWLAPIRendererIT extends IntegrationTestBase
    private static final OWLDataProperty HAS_SALARY = DataProperty(IRI("hasSalary"));
    private static final OWLDataProperty HAS_DOB = DataProperty(IRI("hasDOB"));
    private static final OWLDataProperty HAS_BEDTIME = DataProperty(IRI("hasBedTime"));
-   private static final OWLNamedIndividual DOUBLE_HULL = NamedIndividual(IRI("double-hull"));
+   private static final OWLNamedIndividual LOWER_DOUBLE_HULL = NamedIndividual(IRI("double-hull"));
+   private static final OWLNamedIndividual UPPER_DOUBLE_HULL = NamedIndividual(IRI("DoubleHull"));
    private static final OWLNamedIndividual MALE = NamedIndividual(IRI("male"));
    private static final OWLNamedIndividual FEMALE = NamedIndividual(IRI("female"));
    private static final OWLNamedIndividual OTHER = NamedIndividual(IRI("other"));
@@ -393,9 +394,10 @@ public class OWLAPIRendererIT extends IntegrationTestBase
    @Test
    public void TestObjectHasValueRestriction() throws MappingMasterException, ParseException, IOException
    {
-      declareOWLClasses(ontology, "Catamaran", "DoubleHull");
+      declareOWLClasses(ontology, "Catamaran");
       declareOWLObjectProperties(ontology, "hasHull");
       declareOWLNamedIndividual(ontology, "double-hull");
+
       String expression = "Class: Catamaran SubClassOf: hasHull VALUE double-hull";
       Optional<? extends OWLAPIRendering> result = createOWLAPIRendering(ontology, expression, settings);
       assertThat(result.isPresent(), is(true));
@@ -404,7 +406,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
       assertThat(axioms, hasSize(2));
       assertThat(axioms, containsInAnyOrder(
             Declaration(CATAMARAN),
-            SubClassOf(CATAMARAN, ObjectHasValue(HAS_HULL, DOUBLE_HULL))));
+            SubClassOf(CATAMARAN, ObjectHasValue(HAS_HULL, LOWER_DOUBLE_HULL))));
    }
 
    @Test
@@ -495,6 +497,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
       declareOWLNamedIndividual(ontology, "male");
       declareOWLNamedIndividual(ontology, "female");
       declareOWLNamedIndividual(ontology, "other");
+
       String expression = "Class: Person SubClassOf: hasGender ONLY {male, female, other}";
       Optional<? extends OWLAPIRendering> result = createOWLAPIRendering(ontology, expression, settings);
       assertThat(result.isPresent(), is(true));
@@ -2085,7 +2088,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
       assertThat(axioms, hasSize(2));
       assertThat(axioms, containsInAnyOrder(
             Declaration(CATAMARAN),
-            SubClassOf(CATAMARAN, ObjectHasValue(HAS_HULL, DOUBLE_HULL))));
+            SubClassOf(CATAMARAN, ObjectHasValue(HAS_HULL, UPPER_DOUBLE_HULL))));
    }
 
    @Test
