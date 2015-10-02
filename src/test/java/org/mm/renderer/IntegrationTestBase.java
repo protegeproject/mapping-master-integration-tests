@@ -112,7 +112,7 @@ public class IntegrationTestBase
 
       TextRenderer renderer = new TextRenderer(dataSource);
       MMExpressionNode mmExpressionNode = parseExpression(expression, settings);
-      return renderer.renderExpression(mmExpressionNode);
+      return renderer.render(mmExpressionNode);
    }
 
    protected Optional<? extends TextRendering> createTextRendering(String sheetName, String expression,
@@ -148,7 +148,7 @@ public class IntegrationTestBase
 
       OWLAPIRenderer renderer = new OWLAPIRenderer(ontology, dataSource);
       MMExpressionNode mmExpressionNode = parseExpression(expression, settings);
-      return renderer.renderExpression(mmExpressionNode);
+      return renderer.render(mmExpressionNode);
    }
 
    /**
