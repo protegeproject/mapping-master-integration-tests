@@ -822,10 +822,10 @@ public class OWLAPIRendererIT extends IntegrationTestBase
    {
       declareOWLClasses(ontology, "Car");
 
-      Label cellA1 = createCell("Car with good condition and Brakes", 1, 1);
+      Label cellA1 = createCell("Car", 1, 1);
       Set<Label> cells = createCells(cellA1);
 
-      String expression = "Class: @A1(rdfs:label)";
+      String expression = "Class: @A1";
       Optional<? extends OWLAPIRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
       assertThat(result.isPresent(), is(true));
 
