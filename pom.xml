@@ -11,7 +11,7 @@
 
   <properties>
 
-    <mapping-master.version>1.1.0</mapping-master.version>
+    <mapping-master.version>1.4-SNAPSHOT</mapping-master.version>
 
     <slf4j.version>1.6.1</slf4j.version>
     <junit.version>4.11</junit.version>
@@ -31,7 +31,7 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.mm</groupId>
+      <groupId>edu.stanford.protege</groupId>
       <artifactId>mapping-master</artifactId>
       <version>${mapping-master.version}</version>
     </dependency>
