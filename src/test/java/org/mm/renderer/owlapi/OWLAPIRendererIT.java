@@ -1,5 +1,32 @@
 package org.mm.renderer.owlapi;
 
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.mm.core.settings.ReferenceSettings;
+import org.mm.core.settings.ValueEncodingSetting;
+import org.mm.exceptions.MappingMasterException;
+import org.mm.parser.ParseException;
+import org.mm.renderer.IntegrationTestBase;
+import org.mm.renderer.RendererException;
+import org.mm.rendering.owlapi.OWLAPIRendering;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLAnnotationSubject;
+import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLDatatype;
+import org.semanticweb.owlapi.model.OWLNamedIndividual;
+import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.vocab.Namespaces;
+
+import java.io.IOException;
+import java.util.Optional;
+import java.util.Set;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
@@ -38,33 +65,6 @@ import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Objec
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectUnionOf;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SameIndividual;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SubClassOf;
-
-import java.io.IOException;
-import java.util.Optional;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.mm.core.settings.ReferenceSettings;
-import org.mm.core.settings.ValueEncodingSetting;
-import org.mm.exceptions.MappingMasterException;
-import org.mm.parser.ParseException;
-import org.mm.renderer.IntegrationTestBase;
-import org.mm.renderer.RendererException;
-import org.mm.rendering.owlapi.OWLAPIRendering;
-import org.semanticweb.owlapi.model.OWLAnnotationProperty;
-import org.semanticweb.owlapi.model.OWLAnnotationSubject;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLDataProperty;
-import org.semanticweb.owlapi.model.OWLDatatype;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.vocab.Namespaces;
 
 public class OWLAPIRendererIT extends IntegrationTestBase
 {
@@ -762,6 +762,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
    @Test
    public void TestIndividualDeclarationWithSameIndividual() throws MappingMasterException, ParseException, IOException
    {
+      declareOWLNamedIndividual(ontology, "Freddy");
       String expression = "Individual: Fred SameAs: Freddy";
       Optional<? extends OWLAPIRendering> result = createOWLAPIRendering(ontology, expression, settings);
       assertThat(result.isPresent(), is(true));
@@ -777,6 +778,8 @@ public class OWLAPIRendererIT extends IntegrationTestBase
    public void TestIndividualDeclarationWithMultipleSameIndividual()
          throws MappingMasterException, ParseException, IOException
    {
+      declareOWLNamedIndividual(ontology, "Freddy");
+      declareOWLNamedIndividual(ontology, "F");
       String expression = "Individual: Fred SameAs: Freddy, F";
       Optional<? extends OWLAPIRendering> result = createOWLAPIRendering(ontology, expression, settings);
       assertThat(result.isPresent(), is(true));
@@ -793,6 +796,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
    public void TestIndividualDeclarationWithDifferentIndividuals()
          throws MappingMasterException, ParseException, IOException
    {
+      declareOWLNamedIndividual(ontology, "Bob");
       String expression = "Individual: Fred DifferentFrom: Bob";
       Optional<? extends OWLAPIRendering> result = createOWLAPIRendering(ontology, expression, settings);
       assertThat(result.isPresent(), is(true));
@@ -808,6 +812,8 @@ public class OWLAPIRendererIT extends IntegrationTestBase
    public void TestIndividualDeclarationWithMultipleDifferentIndividuals()
          throws MappingMasterException, ParseException, IOException
    {
+      declareOWLNamedIndividual(ontology, "Bob");
+      declareOWLNamedIndividual(ontology, "Bobby");
       String expression = "Individual: Fred DifferentFrom: Bob, Bobby";
       Optional<? extends OWLAPIRendering> result = createOWLAPIRendering(ontology, expression, settings);
       assertThat(result.isPresent(), is(true));
@@ -1948,7 +1954,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
    {
       Label cellA1 = createCell("", 1, 1);
       Set<Label> cells = createCells(cellA1);
-
+      declareOWLDataProperty(ontology, "hasName");
       String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:SkipIfEmptyLocation)";
       Optional<? extends OWLAPIRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
       assertThat(result.isPresent(), is(true));
@@ -1963,7 +1969,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
    {
       Label cellA1 = createCell("", 1, 1);
       Set<Label> cells = createCells(cellA1);
-
+      declareOWLObjectProperty(ontology, "hasName");
       String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:SkipIfEmptyLiteral)";
       Optional<? extends OWLAPIRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
       assertThat(result.isPresent(), is(true));
@@ -1998,7 +2004,7 @@ public class OWLAPIRendererIT extends IntegrationTestBase
    @Test
    public void TestWarningIfEmptyLocationInReference() throws MappingMasterException, ParseException, IOException
    {
-      declareOWLDataProperties(ontology, "hasName");
+      declareOWLDataProperty(ontology, "hasName");
 
       Label cellA1 = createCell("", 1, 1);
       Set<Label> cells = createCells(cellA1);
