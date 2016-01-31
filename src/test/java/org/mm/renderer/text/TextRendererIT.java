@@ -1,9 +1,5 @@
 package org.mm.renderer.text;
 
-import java.io.IOException;
-import java.util.Optional;
-import java.util.Set;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -19,21 +15,23 @@ import org.mm.rendering.text.TextRendering;
 import org.mm.ss.SpreadsheetLocation;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
+import java.io.IOException;
+import java.util.Optional;
+import java.util.Set;
+
 public class TextRendererIT extends IntegrationTestBase
 {
   private ReferenceSettings settings;
 
   @Rule public final ExpectedException thrown = ExpectedException.none();
 
-  @Before
-  public void setUp() throws OWLOntologyCreationException
+  @Before public void setUp() throws OWLOntologyCreationException
   {
     settings = new ReferenceSettings();
     settings.setValueEncodingSetting(ValueEncodingSetting.RDFS_LABEL);
   }
 
-  @Test public void TestClassDeclaration()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestClassDeclaration() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: Car";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -42,8 +40,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestSubClassOf()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestSubClassOf() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: Car SubClassOf: Vehicle";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -52,8 +49,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestMultipleSubClassOf()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestMultipleSubClassOf() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: Car SubClassOf: Vehicle, Device";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -62,8 +58,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestEquivalentToClass()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestEquivalentToClass() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: Car EquivalentTo: Automobile";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -72,8 +67,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestEquivalentToClassExpression()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestEquivalentToClassExpression() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: Car EquivalentTo: (hasEngine EXACTLY 1)";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -82,8 +76,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestMultipleEquivalentClass()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestMultipleEquivalentClass() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: Car EquivalentTo: Automobile, Auto, (hasEngine EXACTLY 1)";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -92,8 +85,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestClassDeclarationWithAnnotations()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestClassDeclarationWithAnnotations() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: Car Annotations: hasAuthor Bob";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -112,8 +104,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestMaxCardinalityRestriction()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestMaxCardinalityRestriction() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: Car SubClassOf: (hasEngine MAX 1)";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -122,8 +113,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestMinCardinalityRestriction()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestMinCardinalityRestriction() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: Car SubClassOf: (hasSSN MIN 1)";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -132,8 +122,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestExactCardinalityRestriction()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestExactCardinalityRestriction() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: Car SubClassOf: (hasSSN EXACTLY 1)";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -142,8 +131,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestObjectHasValueRestriction()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestObjectHasValueRestriction() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: Catamaran SubClassOf: (hasHull VALUE 2)"; // XXX: Should be Individual
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -152,8 +140,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestDataHasValueRestriction()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestDataHasValueRestriction() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: BMW SubClassOf: (hasOrigin VALUE \"Germany\")";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -162,8 +149,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestObjectSomeValueRestriction()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestObjectSomeValueRestriction() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: ChildOfDoctor SubClassOf: (hasParent SOME Physician)";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -172,8 +158,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestDataSomeValueRestriction()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestDataSomeValueRestriction() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: Car SubClassOf: (hasName SOME xsd:string)";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -192,8 +177,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestDataAllValuesFromRestriction()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestDataAllValuesFromRestriction() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: Person SubClassOf: (hasParent ONLY Human)";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -203,8 +187,7 @@ public class TextRendererIT extends IntegrationTestBase
   }
 
   // TODO The grammar is incorrect here - parenthesis should not be required around the {}.
-  @Test public void TestOWLObjectOneOf()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestOWLObjectOneOf() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: Person SubClassOf: (hasGender ONLY {Male, Female, Other})";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -213,8 +196,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestNegatedClassExpression()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestNegatedClassExpression() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: Car EquivalentTo: NOT (hasEngine EXACTLY 2)";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -223,8 +205,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestUnionClassExpression()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestUnionClassExpression() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: A SubClassOf: ((hasP1 EXACTLY 2) OR (hasP2 EXACTLY 3))";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -233,8 +214,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestIntersectionClassExpression()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestIntersectionClassExpression() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: A SubClassOf: ((hasP1 EXACTLY 2) AND (hasP2 EXACTLY 3))";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -243,8 +223,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestIndividualDeclaration()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestIndividualDeclaration() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -253,8 +232,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestIndividualDeclarationWithTypes()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestIndividualDeclarationWithTypes() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Types: Person";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -273,8 +251,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestIndividualDeclarationWithFacts()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestIndividualDeclarationWithFacts() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasName \"Fred\"";
     Optional<? extends TextRendering> textRendering = createTextRendering(expression, settings);
@@ -353,8 +330,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expression, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestAbsoluteClassReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestAbsoluteClassReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1";
     String expectedRendering = "Class: Car";
@@ -366,8 +342,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestAbsoluteIndividualReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestAbsoluteIndividualReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: @A1";
     String expectedRendering = "Individual: Car";
@@ -379,8 +354,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestAbsoluteObjectPropertyReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestAbsoluteObjectPropertyReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: @A1 Bob";
     String expectedRendering = "Individual: Fred Facts: hasUncle Bob";
@@ -392,8 +366,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestAbsoluteDataPropertyReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestAbsoluteDataPropertyReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: @A1 23";
     String expectedRendering = "Individual: Fred Facts: hasAge 23";
@@ -405,8 +378,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestAbsoluteAnnotationPropertyReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestAbsoluteAnnotationPropertyReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Annotations: @A1 23";
     String expectedRendering = "Individual: Fred Annotations: hasAge 23";
@@ -418,8 +390,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestLiteralReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestLiteralReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @\"Car\"";
     String expectedRendering = "Class: Car";
@@ -429,8 +400,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestAbsoluteReferenceWithSheetName()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestAbsoluteReferenceWithSheetName() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @'" + SHEET1 + "'!A1";
     String expectedRendering = "Class: Car";
@@ -442,36 +412,35 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestColumnWildcardInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestColumnWildcardInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @*1";
     String expectedRendering = "Class: Car";
     Label cellA1 = createCell("Car", 1, 1);
     Set<Label> cells = createCells(cellA1);
     SpreadsheetLocation currentLocation = new SpreadsheetLocation(SHEET1, 1, 1);
-    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression, settings);
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression,
+        settings);
 
     Assert.assertTrue(textRendering.isPresent());
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestRowWildcardInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestRowWildcardInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A*";
     String expectedRendering = "Class: Car";
     Label cellA1 = createCell("Car", 1, 1);
     Set<Label> cells = createCells(cellA1);
     SpreadsheetLocation currentLocation = new SpreadsheetLocation(SHEET1, 1, 1);
-    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression, settings);
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression,
+        settings);
 
     Assert.assertTrue(textRendering.isPresent());
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestClassQualifiedInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestClassQualifiedInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(Class)";
     String expectedRendering = "Class: Car";
@@ -483,8 +452,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestIndividualInQualifiedReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestIndividualInQualifiedReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: @A1(mm:Location)";
     String expectedRendering = "Individual: Car";
@@ -493,11 +461,10 @@ public class TextRendererIT extends IntegrationTestBase
     Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression, settings);
 
     Assert.assertTrue(textRendering.isPresent());
-//    Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
+    //    Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestObjectPropertyInQualifiedReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestObjectPropertyInQualifiedReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: @A1(ObjectProperty) Bob";
     String expectedRendering = "Individual: Fred Facts: hasUncle Bob";
@@ -509,8 +476,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestDataPropertyQualifiedInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestDataPropertyQualifiedInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: @A1(DataProperty) 23";
     String expectedRendering = "Individual: Fred Facts: hasAge 23";
@@ -535,8 +501,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestXSDBooleanInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestXSDBooleanInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasSSN @A1(xsd:boolean)";
     String expectedRendering = "Individual: Fred Facts: hasSSN true";
@@ -548,8 +513,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestXSDByteInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestXSDByteInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasSalary @A1(xsd:byte)";
     String expectedRendering = "Individual: Fred Facts: hasSalary 34";
@@ -561,8 +525,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestXSDShortInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestXSDShortInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasSalary @A1(xsd:short)";
     String expectedRendering = "Individual: Fred Facts: hasSalary 34";
@@ -574,8 +537,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestXSDIntInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestXSDIntInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasSalary @A1(xsd:int)";
     String expectedRendering = "Individual: Fred Facts: hasSalary 34";
@@ -587,8 +549,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestXSDFloatInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestXSDFloatInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasSalary @A1(xsd:float)";
     String expectedRendering = "Individual: Fred Facts: hasSalary 34000.0";
@@ -600,8 +561,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestXSDStringInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestXSDStringInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasName @A1(xsd:string)";
     String expectedRendering = "Individual: Fred Facts: hasName \"Fred\"";
@@ -613,8 +573,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestXSDDateInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestXSDDateInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasDOB @A1(xsd:date)";
     String expectedRendering = "Individual: Fred Facts: hasDOB \"1999-01-01\"";
@@ -626,8 +585,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestXSDDateTimeInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestXSDDateTimeInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasDOB @A1(xsd:dateTime)";
     String expectedRendering = "Individual: Fred Facts: hasDOB \"1999-01-01T10:10:10\"";
@@ -639,8 +597,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestXSDTimeInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestXSDTimeInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasBedTime @A1(xsd:time)";
     String expectedRendering = "Individual: Fred Facts: hasBedTime \"21:00\"";
@@ -652,8 +609,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestRDFSLabelAssignmentInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestRDFSLabelAssignmentInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(rdfs:label=(\"Big\"))";
     String expectedRendering = "Class: Big";
@@ -691,8 +647,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestRDFSLabelAppendInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestRDFSLabelAppendInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(rdfs:label=mm:append(\"Big\"))";
     String expectedRendering = "Class: CarBig";
@@ -704,8 +659,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestRDFSLabelPrependInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestRDFSLabelPrependInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(rdfs:label=mm:prepend(\"Big\"))";
     String expectedRendering = "Class: BigCar";
@@ -717,8 +671,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestDefaultPrependInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestDefaultPrependInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(mm:prepend(\"Big\"))";
     String expectedRendering = "Class: BigCar";
@@ -730,8 +683,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestShiftUpInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestShiftUpInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A4(mm:Location)";
     String expectedRendering = "Class: Car";
@@ -743,11 +695,10 @@ public class TextRendererIT extends IntegrationTestBase
     Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression, settings);
 
     Assert.assertTrue(textRendering.isPresent());
-//    Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
+    //    Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestShiftDownInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestShiftDownInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(mm:ShiftDown)";
     String expectedRendering = "Class: Car";
@@ -762,8 +713,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestReferencesInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestReferencesInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A*(mm:append(@B*(mm:ShiftDown), @C*(mm:ShiftRight)))";
     String expectedRendering = "Class: CarBMWGermany";
@@ -783,8 +733,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestShiftRightInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestShiftRightInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(mm:ShiftRight)";
     String expectedRendering = "Class: Car";
@@ -799,8 +748,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestShiftLeftInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestShiftLeftInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @D1(mm:ShiftLeft)";
     String expectedRendering = "Class: Car";
@@ -815,8 +763,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestToLowerCaseInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestToLowerCaseInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(mm:toLowerCase(\"CAR\"))";
     String expectedRendering = "Class: car";
@@ -828,8 +775,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestTrimInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestTrimInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(mm:trim(\"  Car  \"))";
     String expectedRendering = "Class: Car";
@@ -841,8 +787,53 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestReverseInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestPrintfInReference() throws MappingMasterException, ParseException, IOException
+  {
+    String expression = "Class: @A1(mm:printf(\"A_%s\", @A1))";
+    String expectedRendering = "Class: A_Car";
+    Label cellA1 = createCell("Car", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
+  }
+
+  @Test public void TestPrintfInWithBadFormatInReference() throws MappingMasterException, ParseException, IOException
+  {
+    this.thrown.expect(RendererException.class);
+    this.thrown.expectMessage("function mm:printf supplied with illegal format %a");
+
+    String expression = "Class: @A1(mm:printf(\"%a\", @A1))";
+    Label cellA1 = createCell("", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+    createTextRendering(SHEET1, cells, expression, settings);
+  }
+
+  @Test public void TestDecimalFormatInReference() throws MappingMasterException, ParseException, IOException
+  {
+    String expression = "Individual: Fred Facts: hasSalary @A1(mm:decimalFormat(\"###,###.00\", @A1))";
+    String expectedRendering = "Individual: Fred Facts: hasSalary \"23,000.20\"";
+    Label cellA1 = createCell("23000.2", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
+  }
+
+  @Test public void TestDecimalFormatWithBadFormatInReference() throws MappingMasterException, ParseException, IOException
+  {
+    this.thrown.expect(RendererException.class);
+    this.thrown.expectMessage("function mm:decimalFormat supplied with illegal pattern ..");
+
+    String expression = "Individual: Fred Facts: hasSalary @A1(mm:decimalFormat(\"..\", @A1))";
+    Label cellA1 = createCell("23000.2", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+    createTextRendering(SHEET1, cells, expression, settings);
+  }
+
+  @Test public void TestReverseInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(mm:reverse(\"raC\"))";
     String expectedRendering = "Class: Car";
@@ -854,8 +845,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestToUpperCaseInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestToUpperCaseInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(mm:toUpperCase(@A1))";
     String expectedRendering = "Class: CAR";
@@ -867,8 +857,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestToUpperCaseImplicitInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestToUpperCaseImplicitInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(mm:toUpperCase)";
     String expectedRendering = "Class: CAR";
@@ -880,8 +869,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestReplaceAllInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestReplaceAllInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasItem @A1(mm:replaceAll(\"[^a-zA-Z0-9]\",\"\"))";
     String expectedRendering = "Individual: Fred Facts: hasItem \"bag\"";
@@ -893,8 +881,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestCapturingExpressionInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestCapturingExpressionInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(rdfs:label=[\":(\\S+)\"])";
     String expectedRendering = "Class: Zyvox";
@@ -949,8 +936,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestDefaultLocationValueInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestDefaultLocationValueInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(mm:DefaultLocationValue=\"Unknown\")";
     String expectedRendering = "Class: Unknown";
@@ -962,8 +948,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestDefaultLabelInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestDefaultLabelInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(rdfs:label mm:DefaultLabel=\"Unknown\")";
     String expectedRendering = "Class: Unknown";
@@ -975,8 +960,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestResolveIfOWLEntityExistsInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestResolveIfOWLEntityExistsInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(mm:ResolveIfOWLEntityExists)";
     String expectedRendering = "Class: Car";
@@ -988,8 +972,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestSkipIfOWLEntityExistsInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestSkipIfOWLEntityExistsInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(mm:SkipIfOWLEntityExists)";
     String expectedRendering = "Class: Car";
@@ -1001,8 +984,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestWarningIfOWLEntityExistsInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestWarningIfOWLEntityExistsInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(mm:WarningIfOWLEntityExists)";
     String expectedRendering = "Class: Car";
@@ -1014,8 +996,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestErrorIfOWLEntityExistsInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestErrorIfOWLEntityExistsInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Class: @A1(mm:ErrorIfOWLEntityExists)";
     String expectedRendering = "Class: Car";
@@ -1123,8 +1104,7 @@ public class TextRendererIT extends IntegrationTestBase
     createTextRendering(SHEET1, cells, expression, settings);
   }
 
-  @Test public void TestSkipIfEmptyLocationInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestSkipIfEmptyLocationInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:SkipIfEmptyLocation)";
     String expectedRendering = "Individual: Fred";
@@ -1136,8 +1116,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestSkipIfEmptyLiteralInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestSkipIfEmptyLiteralInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:SkipIfEmptyLiteral)";
     String expectedRendering = "Individual: Fred";
@@ -1171,8 +1150,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertTrue(textRendering.isPresent());
   }
 
-  @Test public void TestWarningIfEmptyLocationInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestWarningIfEmptyLocationInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:WarningIfEmptyLocation)";
     String expectedRendering = "Individual: Fred";
@@ -1184,8 +1162,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestWarningIfEmptyLiteralInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestWarningIfEmptyLiteralInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:WarningIfEmptyLiteral)";
     String expectedRendering = "Individual: Fred";
@@ -1219,8 +1196,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertTrue(textRendering.isPresent());
   }
 
-  @Test public void TestProcessIfEmptyLiteralInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestProcessIfEmptyLiteralInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasName @A1(xsd:string mm:ProcessIfEmptyLiteral)";
     String expectedRendering = "Individual: Fred Facts: hasName \"\"";
@@ -1232,8 +1208,7 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
-  @Test public void TestOutOfRangeColumnInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestOutOfRangeColumnInReference() throws MappingMasterException, ParseException, IOException
   {
     this.thrown.expect(RendererException.class);
     this.thrown.expectMessage("Invalid source specification @'Sheet1'!D1 - column D is out of range");
@@ -1244,8 +1219,7 @@ public class TextRendererIT extends IntegrationTestBase
     createTextRendering(SHEET1, cells, expression, settings);
   }
 
-  @Test public void TestOutOfRangeRowInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestOutOfRangeRowInReference() throws MappingMasterException, ParseException, IOException
   {
     this.thrown.expect(RendererException.class);
     this.thrown.expectMessage("Invalid source specification @'Sheet1'!A3 - row 3 is out of range");
@@ -1256,8 +1230,7 @@ public class TextRendererIT extends IntegrationTestBase
     createTextRendering(SHEET1, cells, expression, settings);
   }
 
-  @Test public void TestInvalidSheetNameInReference()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestInvalidSheetNameInReference() throws MappingMasterException, ParseException, IOException
   {
     this.thrown.expect(RendererException.class);
     this.thrown.expectMessage("Sheet name 'fff' does not exist");
@@ -1266,8 +1239,7 @@ public class TextRendererIT extends IntegrationTestBase
     createTextRendering(SHEET1, expression, settings);
   }
 
-  @Test public void TestParseException()
-      throws MappingMasterException, ParseException, IOException
+  @Test public void TestParseException() throws MappingMasterException, ParseException, IOException
   {
     this.thrown.expect(ParseException.class);
 
@@ -1277,6 +1249,6 @@ public class TextRendererIT extends IntegrationTestBase
 
   public static String clean(String text)
   {
-     return text.replaceAll("\n\\s*", " ").trim();
+    return text.replaceAll("\n\\s*", " ").trim();
   }
 }
