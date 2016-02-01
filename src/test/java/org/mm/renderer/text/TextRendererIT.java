@@ -799,6 +799,18 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
+  @Test public void TestPrintfWithImplicitParameterInReference() throws MappingMasterException, ParseException, IOException
+  {
+    String expression = "Class: @A1(mm:printf(\"A_%s\"))";
+    String expectedRendering = "Class: A_Car";
+    Label cellA1 = createCell("Car", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
+  }
+
   @Test public void TestPrintfInWithBadFormatInReference() throws MappingMasterException, ParseException, IOException
   {
     this.thrown.expect(RendererException.class);
@@ -813,6 +825,18 @@ public class TextRendererIT extends IntegrationTestBase
   @Test public void TestDecimalFormatInReference() throws MappingMasterException, ParseException, IOException
   {
     String expression = "Individual: Fred Facts: hasSalary @A1(mm:decimalFormat(\"###,###.00\", @A1))";
+    String expectedRendering = "Individual: Fred Facts: hasSalary \"23,000.20\"";
+    Label cellA1 = createCell("23000.2", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
+  }
+
+  @Test public void TestDecimalFormatWithImplicitParameterInReference() throws MappingMasterException, ParseException, IOException
+  {
+    String expression = "Individual: Fred Facts: hasSalary @A1(mm:decimalFormat(\"###,###.00\"))";
     String expectedRendering = "Individual: Fred Facts: hasSalary \"23,000.20\"";
     Label cellA1 = createCell("23000.2", 1, 1);
     Set<Label> cells = createCells(cellA1);
