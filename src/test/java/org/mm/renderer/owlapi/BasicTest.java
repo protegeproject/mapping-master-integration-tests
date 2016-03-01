@@ -464,7 +464,7 @@ public class BasicTest extends IntegrationTestBase
    {
       declareOWLClasses(ontology, "Catamaran");
       declareOWLObjectProperties(ontology, "hasHull");
-      declareOWLNamedIndividual(ontology, "double-hull"); // TODO MM must check this entity
+      declareOWLNamedIndividual(ontology, "double-hull");
 
       String expression = "Class: Catamaran SubClassOf: hasHull VALUE double-hull";
 
@@ -607,7 +607,7 @@ public class BasicTest extends IntegrationTestBase
       declareOWLObjectProperties(ontology, "hasGender");
       declareOWLNamedIndividual(ontology, "male");
       declareOWLNamedIndividual(ontology, "female");
-      declareOWLNamedIndividual(ontology, "other"); // TODO MM must check this entities in the ontology
+      declareOWLNamedIndividual(ontology, "other");
 
       String expression = "Class: Person SubClassOf: hasGender ONLY {male, female, other}";
 
@@ -835,7 +835,7 @@ public class BasicTest extends IntegrationTestBase
    @Category(NamedIndividualTest.class)
    public void TestIndividualDeclaration() throws Exception
    {
-      declareOWLNamedIndividual(ontology, "fred"); // TODO MM must check the individual
+      declareOWLNamedIndividual(ontology, "fred");
 
       String expression = "Individual: fred";
 
@@ -856,7 +856,7 @@ public class BasicTest extends IntegrationTestBase
    public void TestIndividualDeclarationWithTypes() throws Exception
    {
       declareOWLClasses(ontology, "Person");
-      declareOWLNamedIndividual(ontology, "fred"); // TODO MM must check the individual
+      declareOWLNamedIndividual(ontology, "fred");
 
       String expression = "Individual: fred Types: Person";
 
@@ -880,7 +880,7 @@ public class BasicTest extends IntegrationTestBase
    {
       declareOWLClasses(ontology, "Person", "Human");
       declareOWLObjectProperty(ontology, "hasParent");
-      declareOWLNamedIndividual(ontology, "fred"); // TODO MM must check the individual
+      declareOWLNamedIndividual(ontology, "fred");
 
       String expression = "Individual: fred Types: Person, hasParent ONLY Human";
 
@@ -904,7 +904,7 @@ public class BasicTest extends IntegrationTestBase
    public void TestIndividualDeclarationWithFact() throws Exception
    {
       declareOWLDataProperty(ontology, "hasName");
-      declareOWLNamedIndividual(ontology, "fred"); // TODO MM must check the individual
+      declareOWLNamedIndividual(ontology, "fred");
 
       String expression = "Individual: fred Facts: hasName \"Fred\"";
 
@@ -927,7 +927,7 @@ public class BasicTest extends IntegrationTestBase
    public void TestIndividualDeclarationWithMultipleFacts() throws Exception
    {
       declareOWLDataProperties(ontology, "hasName", "hasAge");
-      declareOWLNamedIndividual(ontology, "fred"); // TODO MM must check the individual
+      declareOWLNamedIndividual(ontology, "fred");
 
       String expression = "Individual: fred Facts: hasName \"Fred\", hasAge 23";
 
@@ -950,7 +950,7 @@ public class BasicTest extends IntegrationTestBase
    @Category(NamedIndividualTest.class)
    public void TestIndividualDeclarationWithSameIndividual() throws Exception
    {
-      declareOWLNamedIndividual(ontology, "fred", "freddy"); // TODO MM must check the individual
+      declareOWLNamedIndividuals(ontology, "fred", "freddy");
 
       String expression = "Individual: fred SameAs: freddy";
 
@@ -972,7 +972,7 @@ public class BasicTest extends IntegrationTestBase
    @Category(NamedIndividualTest.class)
    public void TestIndividualDeclarationWithMultipleSameIndividual() throws Exception
    {
-      declareOWLNamedIndividuals(ontology, "fred", "freddy", "alfred"); // TODO MM must check the individual
+      declareOWLNamedIndividuals(ontology, "fred", "freddy", "alfred");
 
       String expression = "Individual: fred SameAs: freddy, alfred";
 
@@ -995,7 +995,7 @@ public class BasicTest extends IntegrationTestBase
    @Category(NamedIndividualTest.class)
    public void TestIndividualDeclarationWithDifferentIndividuals() throws Exception
    {
-      declareOWLNamedIndividual(ontology, "fred", "bob"); // TODO MM must check the individual
+      declareOWLNamedIndividuals(ontology, "fred", "bob");
 
       String expression = "Individual: fred DifferentFrom: bob";
 
@@ -1017,7 +1017,7 @@ public class BasicTest extends IntegrationTestBase
    @Category(NamedIndividualTest.class)
    public void TestIndividualDeclarationWithMultipleDifferentIndividuals() throws Exception
    {
-      declareOWLNamedIndividuals(ontology, "fred", "bob", "bobby"); // TODO MM must check the individual
+      declareOWLNamedIndividuals(ontology, "fred", "bob", "bobby");
 
       String expression = "Individual: fred DifferentFrom: bob, bobby";
 

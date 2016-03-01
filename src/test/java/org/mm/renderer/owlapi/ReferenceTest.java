@@ -167,13 +167,13 @@ public class ReferenceTest extends IntegrationTestBase
     * - Precondition:
     *    + The target sheet cell must not be empty,
     *    + The target individual must be predefined in the ontology,
-    *    + No necessary predefined properties in the ontology. // TODO Should it be predefined?
+    *    + No necessary predefined properties in the ontology.
     */
    @Test
    @Category(NameResolutionTest.class)
    public void TestAbsoluteDataPropertyReference() throws Exception
    {
-      declareOWLNamedIndividual(ontology, "fred"); // TODO MM must check this individual
+      declareOWLNamedIndividual(ontology, "fred");
 
       Label cellA1 = createCell("hasAge", 1, 1);
       Set<Label> cells = createCells(cellA1);
@@ -196,13 +196,13 @@ public class ReferenceTest extends IntegrationTestBase
     * - Precondition:
     *    + The target sheet cell must not be empty,
     *    + The target individuals must be predefined in the ontology,
-    *    + No necessary predefined properties in the ontology. // TODO Should it be predefined?
+    *    + No necessary predefined properties in the ontology.
     */
    @Test
    @Category(NameResolutionTest.class)
    public void TestAbsoluteObjectPropertyReference() throws Exception
    {
-      declareOWLNamedIndividuals(ontology, "fred", "bob"); // TODO MM must check this individuals
+      declareOWLNamedIndividuals(ontology, "fred", "bob");
 
       Label cellA1 = createCell("hasParent", 1, 1);
       Set<Label> cells = createCells(cellA1);
@@ -225,13 +225,13 @@ public class ReferenceTest extends IntegrationTestBase
     * - Precondition:
     *    + The target sheet cell must not be empty,
     *    + The target individuals must be predefined in the ontology,
-    *    + No necessary predefined properties in the ontology. // TODO Should it be predefined?
+    *    + No necessary predefined properties in the ontology.
     */
    @Test
    @Category(NameResolutionTest.class)
    public void TestAnnotationPropertyQualifiedReference() throws Exception
    {
-      declareOWLNamedIndividual(ontology, "fred"); // TODO MM must check this individual
+      declareOWLNamedIndividual(ontology, "fred");
 
       Label cellA1 = createCell("hasAge", 1, 1);
       Set<Label> cells = createCells(cellA1);
@@ -1220,14 +1220,13 @@ public class ReferenceTest extends IntegrationTestBase
    @Category(CellProcessingTest.class)
    public void TestDecimalFormatInReference() throws Exception
    {
-      declareOWLNamedIndividual(ontology, "fred"); // TODO MM must check this individual
       declareOWLDataProperty(ontology, "hasSalary");
 
       Label cellA1 = createCell("fred", 1, 1);
       Label cellB1 = createCell("23000.2", 2, 1);
       Set<Label> cells = createCells(cellA1, cellB1);
 
-      String expression = "Individual: @A1 Facts: hasSalary @B1(mm:decimalFormat(\"###,###.00\"))";
+      String expression = "Individual: @A1 Facts: hasSalary @B1(xsd:decimal mm:decimalFormat(\"###,###.00\"))";
 
       Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
       assertThat(result.isPresent(), is(true));
@@ -1236,7 +1235,7 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, hasSize(2));
       assertThat(axioms, containsInAnyOrder(
             Declaration(FRED),
-            DataPropertyAssertion(HAS_SALARY, FRED, Literal("23,000.20", XSD_STRING)))); // TODO Must be xsd:decimal
+            DataPropertyAssertion(HAS_SALARY, FRED, Literal("23,000.20", XSD_DECIMAL))));
    }
 
    /*
