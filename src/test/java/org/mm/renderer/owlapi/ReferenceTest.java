@@ -17,7 +17,6 @@ import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Named
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectProperty;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectPropertyAssertion;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,8 +27,6 @@ import org.junit.experimental.categories.Category;
 import org.junit.rules.ExpectedException;
 import org.mm.core.settings.ReferenceSettings;
 import org.mm.core.settings.ValueEncodingSetting;
-import org.mm.exceptions.MappingMasterException;
-import org.mm.parser.ParseException;
 import org.mm.renderer.IntegrationTestBase;
 import org.mm.renderer.RendererException;
 import org.mm.renderer.owlapi.AllRenderingTestSuite.CellProcessingTest;
@@ -1319,68 +1316,6 @@ public class ReferenceTest extends IntegrationTestBase
    }
 
    /*
-    * Test (mm:SkipIfOWLEntityExists) directive. Note that the ontology has the target class.
-    * Expected results:
-    *    + No class declaration axiom should be created
-    */
-   @Test
-   @Category(DirectiveTest.class)
-   public void TestSkipIfOWLEntityExistsInReference() throws Exception
-   {
-      declareOWLClass(ontology, "Car");
-
-      Label cellA1 = createCell("Car", 1, 1);
-      Set<Label> cells = createCells(cellA1);
-
-      String expression = "Class: @A1(mm:SkipIfOWLEntityExists)";
-
-      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
-      assertThat(result.isPresent(), is(false));
-   }
-
-   /*
-    * Test (mm:WarningIfOWLEntityExists) directive. Note that the ontology has the target class.
-    * Expected results:
-    *    + No class declaration axiom should be created and a warning log should appear.
-    */
-   @Test
-   @Category(DirectiveTest.class)
-   public void TestWarningIfOWLEntityExistsInReference() throws Exception
-   {
-      declareOWLClass(ontology, "Car");
-
-      Label cellA1 = createCell("Car", 1, 1);
-      Set<Label> cells = createCells(cellA1);
-
-      String expression = "Class: @A1(mm:WarningIfOWLEntityExists)";
-
-      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
-      assertThat(result.isPresent(), is(false));
-   }
-
-   /*
-    * Test (mm:ErrorIfOWLEntityExists) directive. Note that the ontology has the target class.
-    * Expected results:
-    *    + No class declaration axiom should be created and an error should be thrown.
-    */
-   @Test
-   @Category(DirectiveTest.class)
-   public void TestErrorIfOWLEntityExistsInReference() throws Exception
-   {
-      thrown.expect(RendererException.class);
-
-      declareOWLClass(ontology, "Car");
-
-      Label cellA1 = createCell("Car", 1, 1);
-      Set<Label> cells = createCells(cellA1);
-
-      String expression = "Class: @A1(mm:ErrorIfOWLEntityExists)";
-
-      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
-      assertThat(result.isPresent(), is(false));
-   }
-
-   /*
     * Test (mm:SkipIfOWLEntityDoesNotExist) directive.
     * Expected results:
     *    + No class declaration should be created.
@@ -1672,30 +1607,6 @@ public class ReferenceTest extends IntegrationTestBase
    }
 
    /*
-    * Test (mm:ProcessIfEmptyLabel) directive.
-    * Expected results:
-    *    + Creating a class declaration and with empty value for the rdfs:label annotation.
-    */
-   @Test
-   @Category(DirectiveTest.class)
-   public void TestProcessIfEmptyLabelDirectiveInReference() throws Exception
-   {
-      Label cellA1 = createCell("BMW", 1, 1);
-      Label cellB1 = createCell("", 2, 1);
-      Set<Label> cells = createCells(cellA1, cellB1);
-
-      String expression = "Class: @A1(rdf:id rdfs:label=@B1 mm:ProcessIfEmptyLabel)";
-      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
-      assertThat(result.isPresent(), is(true));
-
-      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
-      assertThat(axioms, hasSize(2));
-      assertThat(axioms, containsInAnyOrder(
-            Declaration(BMW),
-            AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "BMW"), Literal("", XSD_STRING))));
-   }
-
-   /*
     * Test (mm:SkipIfEmptyLabel) directive.
     * Expected results:
     *    + Creating a class declaration but without the rdfs:label annotation.
@@ -1704,17 +1615,12 @@ public class ReferenceTest extends IntegrationTestBase
    @Category(DirectiveTest.class)
    public void TestSkipIfEmptyLabelDirectiveInReference() throws Exception
    {
-      Label cellA1 = createCell("BMW", 1, 1);
-      Label cellB1 = createCell("", 2, 1);
-      Set<Label> cells = createCells(cellA1, cellB1);
+      Label cellA1 = createCell("", 1, 1);
+      Set<Label> cells = createCells(cellA1);
 
-      String expression = "Class: @A1(rdf:id rdfs:label=@B1 mm:SkipIfEmptyLabel)";
+      String expression = "Class: @A1(rdfs:label mm:SkipIfEmptyLabel)";
       Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
-      assertThat(result.isPresent(), is(true));
-
-      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
-      assertThat(axioms, hasSize(1));
-      assertThat(axioms, containsInAnyOrder(Declaration(BMW)));
+      assertThat(result.isPresent(), is(false));
    }
 
    /*
@@ -1727,17 +1633,12 @@ public class ReferenceTest extends IntegrationTestBase
    @Category(DirectiveTest.class)
    public void TestWarningIfEmptyLabelDirectiveInReference() throws Exception
    {
-      Label cellA1 = createCell("BMW", 1, 1);
-      Label cellB1 = createCell("", 2, 1);
-      Set<Label> cells = createCells(cellA1, cellB1);
+      Label cellA1 = createCell("", 1, 1);
+      Set<Label> cells = createCells(cellA1);
 
-      String expression = "Class: @A1(rdf:id rdfs:label=@B1 mm:WarningIfEmptyLabel)";
+      String expression = "Class: @A1(rdfs:label mm:WarningIfEmptyLabel)";
       Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
-      assertThat(result.isPresent(), is(true));
-
-      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
-      assertThat(axioms, hasSize(1));
-      assertThat(axioms, containsInAnyOrder(Declaration(BMW)));
+      assertThat(result.isPresent(), is(false));
    }
 
    /*
@@ -1752,11 +1653,10 @@ public class ReferenceTest extends IntegrationTestBase
    {
       this.thrown.expect(RendererException.class);
 
-      Label cellA1 = createCell("BMW", 1, 1);
-      Label cellB1 = createCell("", 2, 1);
-      Set<Label> cells = createCells(cellA1, cellB1);
+      Label cellA1 = createCell("", 1, 1);
+      Set<Label> cells = createCells(cellA1);
 
-      String expression = "Class: @A1(rdf:id rdfs:label=@B1 mm:ErrorIfEmptyLabel)";
+      String expression = "Class: @A1(rdfs:label mm:ErrorIfEmptyLabel)";
       Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
       assertThat(result.isPresent(), is(false));
    }
