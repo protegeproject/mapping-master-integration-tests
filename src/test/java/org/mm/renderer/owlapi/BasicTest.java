@@ -756,7 +756,7 @@ public class BasicTest extends IntegrationTestBase
    public void TestEquivalentToUnionClassExpression() throws Exception
    {
       declareOWLClasses(ontology, "A");
-      declareOWLObjectProperties(ontology, "hasP1", "hasP2"); // TODO Check the error message
+      declareOWLObjectProperties(ontology, "hasP1", "hasP2");
 
       String expression = "Class: A EquivalentTo: hasP1 EXACTLY 2 OR hasP2 EXACTLY 3";
 
