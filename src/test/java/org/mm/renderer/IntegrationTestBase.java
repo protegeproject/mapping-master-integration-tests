@@ -35,11 +35,12 @@ import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
+import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.util.DefaultPrefixManager;
+import org.semanticweb.owlapi.model.PrefixManager;
 
 public class IntegrationTestBase
 {
@@ -51,17 +52,34 @@ public class IntegrationTestBase
    protected static final SpreadsheetLocation DEFAULT_CURRENT_LOCATION = new SpreadsheetLocation(SHEET1, 1, 1);
    protected static final String ONTOLOGY_ID = "http://protege.stanford.edu/mm-test/";
 
-   protected final DefaultPrefixManager prefixManager;
+   protected PrefixManager prefixManager;
+
+   private OWLOntologyManager ontologyManager = OWLManager.createOWLOntologyManager();
 
    protected IntegrationTestBase()
    {
-      prefixManager = new DefaultPrefixManager();
-      prefixManager.setDefaultPrefix(ONTOLOGY_ID);
+      // NO-OP
    }
 
    protected OWLOntology createOWLOntology() throws OWLOntologyCreationException
    {
-      return OWLManager.createOWLOntologyManager().createOntology(IRI.create(ONTOLOGY_ID));
+      OWLOntology ontology = ontologyManager.createOntology(IRI.create(ONTOLOGY_ID));
+      setDefaultPrefix(ontology);
+      return ontology;
+   }
+
+   private void setDefaultPrefix(OWLOntology ontology)
+   {
+      OWLDocumentFormat format = ontologyManager.getOntologyFormat(ontology);
+      prefixManager = (PrefixManager) format.asPrefixOWLOntologyFormat();
+      prefixManager.setDefaultPrefix(ONTOLOGY_ID);
+   }
+
+   protected void setPrefix(OWLOntology ontology, String prefixName, String prefix)
+   {
+      OWLDocumentFormat format = ontologyManager.getOntologyFormat(ontology);
+      prefixManager = (PrefixManager) format.asPrefixOWLOntologyFormat();
+      prefixManager.setPrefix(prefixName, prefix);
    }
 
    protected Workbook createWorkbook(String sheetName, Set<Label> cells) throws IOException

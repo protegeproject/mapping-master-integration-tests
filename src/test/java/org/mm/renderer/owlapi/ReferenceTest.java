@@ -72,6 +72,7 @@ public class ReferenceTest extends IntegrationTestBase
    private static final OWLAnnotationProperty HAS_AGE_ANNOTATION = AnnotationProperty(IRI(ONTOLOGY_ID, "hasAge"));
    private static final OWLAnnotationProperty RDFS_LABEL = AnnotationProperty(IRI(Namespaces.RDFS + "label"));
    private static final OWLAnnotationProperty RDFS_COMMENT = AnnotationProperty(IRI(Namespaces.RDFS + "comment"));
+   private static final OWLAnnotationProperty SKOS_PREFLABEL = AnnotationProperty(IRI(Namespaces.SKOS + "prefLabel"));
    private static final OWLDatatype RDF_PLAINLITERAL = Datatype(IRI(Namespaces.RDF + "PlainLiteral"));
    private static final OWLDatatype XSD_STRING = Datatype(IRI(Namespaces.XSD + "string"));
    private static final OWLDatatype XSD_BOOLEAN = Datatype(IRI(Namespaces.XSD + "boolean"));
@@ -272,6 +273,36 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(
             Declaration(FRED),
             AnnotationAssertion(HAS_AGE_ANNOTATION, IRI(ONTOLOGY_ID, "fred"), Literal("23", XSD_INTEGER))));
+   }
+
+   /*
+    * Test a user-specified annotation property in individual assertion.
+    * - Precondition:
+    *    + The target sheet cell must not be empty,
+    *    + The target annotation property must be predefined in the ontology,
+    *    + The target prefix must be predefined in the ontology, if any,
+    */
+   @Test
+   @Category(NameResolutionTest.class)
+   public void TestUserSpecifiedAnnotationProperty() throws Exception
+   {
+      setPrefix(ontology, "skos", "http://www.w3.org/2004/02/skos/core#");
+      declareOWLAnnotationProperty(ontology, "skos:prefLabel");
+
+      Label cellA1 = createCell("fred", 1, 1);
+      Label cellB1 = createCell("Alfred", 2, 1);
+      Set<Label> cells = createCells(cellA1, cellB1);
+
+      String expression = "Individual: @A1 Annotations: skos:prefLabel @B1";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(2));
+      assertThat(axioms, containsInAnyOrder(
+            Declaration(FRED),
+            AnnotationAssertion(SKOS_PREFLABEL, IRI(ONTOLOGY_ID, "fred"), Literal("Alfred", XSD_STRING))));
    }
 
    /*
