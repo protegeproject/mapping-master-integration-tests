@@ -51,6 +51,7 @@ public class ReferenceTest extends IntegrationTestBase
 
    private static final OWLClass BMW = Class(IRI(ONTOLOGY_ID, "BMW"));
    private static final OWLClass CAR = Class(IRI(ONTOLOGY_ID, "Car"));
+   private static final OWLClass BARBARA_PUFFINS = Class(IRI(ONTOLOGY_ID, "Barbara's_Puffins_Honey-Rice_Cereal_-_10.5oz_box"));
    private static final OWLClass CAR_LOWERCASE = Class(IRI(ONTOLOGY_ID, "car"));
    private static final OWLClass CAR_UPPERCASE = Class(IRI(ONTOLOGY_ID, "CAR"));
    private static final OWLClass BMW_CAR = Class(IRI(ONTOLOGY_ID, "BMW_Car"));
@@ -115,6 +116,29 @@ public class ReferenceTest extends IntegrationTestBase
       Set<OWLAxiom> axioms = result.get().getOWLAxioms();
       assertThat(axioms, hasSize(1));
       assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+   }
+
+   /*
+    * Test the class declaration using common naming
+    * - Precondition:
+    *    + The target sheet cell must not be empty,
+    *    + No necessary predefined classes in the ontology.
+    */
+   @Test
+   @Category(NameResolutionTest.class)
+   public void TestCommonNaming() throws Exception
+   {
+      Label cellA1 = createCell("Barbara's Puffins Honey-Rice Cereal - 10.5oz box", 1, 1);
+      Set<Label> cells = createCells(cellA1);
+
+      String expression = "Class: @A1";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(1));
+      assertThat(axioms, containsInAnyOrder(Declaration(BARBARA_PUFFINS)));
    }
 
    /*
