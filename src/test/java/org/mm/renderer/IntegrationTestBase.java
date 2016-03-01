@@ -21,9 +21,9 @@ import org.mm.parser.ParseException;
 import org.mm.parser.SimpleNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.parser.node.MMExpressionNode;
-import org.mm.renderer.owlapi.OWLAPIRenderer;
+import org.mm.renderer.owlapi.OWLRenderer;
 import org.mm.renderer.text.TextRenderer;
-import org.mm.rendering.owlapi.OWLAPIRendering;
+import org.mm.rendering.owlapi.OWLRendering;
 import org.mm.rendering.text.TextRendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadsheetLocation;
@@ -49,19 +49,19 @@ public class IntegrationTestBase
    protected static final String DEFAULT_SHEET = SHEET1;
    protected static final Set<Label> EMPTY_CELL_SET = Collections.emptySet();
    protected static final SpreadsheetLocation DEFAULT_CURRENT_LOCATION = new SpreadsheetLocation(SHEET1, 1, 1);
-   protected static final String DEFAULT_PREFIX = ":";
+   protected static final String ONTOLOGY_ID = "http://protege.stanford.edu/mm-test/";
 
    protected final DefaultPrefixManager prefixManager;
 
    protected IntegrationTestBase()
    {
       prefixManager = new DefaultPrefixManager();
-      prefixManager.setDefaultPrefix(DEFAULT_PREFIX);
+      prefixManager.setDefaultPrefix(ONTOLOGY_ID);
    }
 
    protected OWLOntology createOWLOntology() throws OWLOntologyCreationException
    {
-      return OWLManager.createOWLOntologyManager().createOntology();
+      return OWLManager.createOWLOntologyManager().createOntology(IRI.create(ONTOLOGY_ID));
    }
 
    protected Workbook createWorkbook(String sheetName, Set<Label> cells) throws IOException
@@ -127,26 +127,26 @@ public class IntegrationTestBase
       return createTextRendering(sheetName, cells, DEFAULT_CURRENT_LOCATION, expression, settings);
    }
 
-   protected Optional<? extends OWLAPIRendering> createOWLAPIRendering(OWLOntology ontology, String expression,
+   protected Optional<? extends OWLRendering> createOWLAPIRendering(OWLOntology ontology, String expression,
          ReferenceSettings settings) throws MappingMasterException, IOException, ParseException
    {
       return createOWLAPIRendering(ontology, DEFAULT_SHEET, EMPTY_CELL_SET, DEFAULT_CURRENT_LOCATION, expression, settings);
    }
 
-   protected Optional<? extends OWLAPIRendering> createOWLAPIRendering(OWLOntology ontology, String sheetName,
+   protected Optional<? extends OWLRendering> createOWLAPIRendering(OWLOntology ontology, String sheetName,
          Set<Label> cells, String expression, ReferenceSettings settings) throws MappingMasterException, IOException, ParseException
    {
       return createOWLAPIRendering(ontology, sheetName, cells, DEFAULT_CURRENT_LOCATION, expression, settings);
    }
 
-   protected Optional<? extends OWLAPIRendering> createOWLAPIRendering(OWLOntology ontology, String sheetName,
+   protected Optional<? extends OWLRendering> createOWLAPIRendering(OWLOntology ontology, String sheetName,
          Set<Label> cells, SpreadsheetLocation currentLocation, String expression, ReferenceSettings settings)
                throws MappingMasterException, IOException, ParseException
    {
       SpreadSheetDataSource dataSource = createSpreadsheetDataSource(sheetName, cells);
       dataSource.setCurrentLocation(currentLocation);
 
-      OWLAPIRenderer renderer = new OWLAPIRenderer(ontology, dataSource);
+      OWLRenderer renderer = new OWLRenderer(ontology, dataSource);
       MMExpressionNode mmExpressionNode = parseExpression(expression, settings);
       return renderer.render(mmExpressionNode);
    }
@@ -185,7 +185,7 @@ public class IntegrationTestBase
    protected void declareOWLClass(OWLOntology ontology, String shortName)
    {
       OWLDataFactory dataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
-      IRI classIri = IRI.create(shortName);
+      IRI classIri = prefixManager.getIRI(shortName);
       OWLEntity entity = dataFactory.getOWLClass(classIri);
 
       OWLDeclarationAxiom classDeclarationxiom = dataFactory.getOWLDeclarationAxiom(entity);
@@ -201,7 +201,7 @@ public class IntegrationTestBase
    protected void declareOWLNamedIndividual(OWLOntology ontology, String shortName)
    {
       OWLDataFactory dataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
-      IRI iri = IRI.create(shortName);
+      IRI iri = prefixManager.getIRI(shortName);
       OWLEntity entity = dataFactory.getOWLNamedIndividual(iri);
 
       OWLDeclarationAxiom axiom = dataFactory.getOWLDeclarationAxiom(entity);
@@ -217,7 +217,7 @@ public class IntegrationTestBase
    protected void declareOWLObjectProperty(OWLOntology ontology, String shortName)
    {
       OWLDataFactory dataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
-      IRI iri = IRI.create(shortName);
+      IRI iri = prefixManager.getIRI(shortName);
       OWLEntity entity = dataFactory.getOWLObjectProperty(iri);
 
       OWLDeclarationAxiom axiom = dataFactory.getOWLDeclarationAxiom(entity);
@@ -233,7 +233,7 @@ public class IntegrationTestBase
    protected void declareOWLDataProperty(OWLOntology ontology, String shortName)
    {
       OWLDataFactory dataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
-      IRI iri = IRI.create(shortName);
+      IRI iri = prefixManager.getIRI(shortName);
       OWLEntity entity = dataFactory.getOWLDataProperty(iri);
 
       OWLDeclarationAxiom axiom = dataFactory.getOWLDeclarationAxiom(entity);
@@ -249,7 +249,7 @@ public class IntegrationTestBase
    protected void declareOWLAnnotationProperty(OWLOntology ontology, String shortName)
    {
       OWLDataFactory dataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
-      IRI iri = IRI.create(shortName);
+      IRI iri = prefixManager.getIRI(shortName);
       OWLEntity entity = dataFactory.getOWLAnnotationProperty(iri);
 
       OWLDeclarationAxiom axiom = dataFactory.getOWLDeclarationAxiom(entity);
@@ -259,7 +259,7 @@ public class IntegrationTestBase
    protected void declareOWLDatatype(OWLOntology ontology, String shortName)
    {
       OWLDataFactory dataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
-      IRI iri = IRI.create(shortName);
+      IRI iri = prefixManager.getIRI(shortName);
       OWLEntity entity = dataFactory.getOWLDatatype(iri);
 
       OWLDeclarationAxiom axiom = dataFactory.getOWLDeclarationAxiom(entity);
