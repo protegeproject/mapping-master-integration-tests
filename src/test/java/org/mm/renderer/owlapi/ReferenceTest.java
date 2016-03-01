@@ -66,11 +66,13 @@ public class ReferenceTest extends IntegrationTestBase
    private static final OWLDataProperty HAS_SALARY = DataProperty(IRI(ONTOLOGY_ID, "hasSalary"));
    private static final OWLDataProperty HAS_DOB = DataProperty(IRI(ONTOLOGY_ID, "hasDOB"));
    private static final OWLDataProperty HAS_BEDTIME = DataProperty(IRI(ONTOLOGY_ID, "hasBedTime"));
+   private static final OWLNamedIndividual P1 = NamedIndividual(IRI(ONTOLOGY_ID, "p1"));
    private static final OWLNamedIndividual FRED = NamedIndividual(IRI(ONTOLOGY_ID, "fred"));
    private static final OWLNamedIndividual BOB = NamedIndividual(IRI(ONTOLOGY_ID, "bob"));
    private static final OWLAnnotationProperty HAS_AGE_ANNOTATION = AnnotationProperty(IRI(ONTOLOGY_ID, "hasAge"));
    private static final OWLAnnotationProperty RDFS_LABEL = AnnotationProperty(IRI(Namespaces.RDFS + "label"));
-   private static final OWLDatatype RDFS_LITERAL = Datatype(IRI(Namespaces.RDFS + "Literal"));
+   private static final OWLAnnotationProperty RDFS_COMMENT = AnnotationProperty(IRI(Namespaces.RDFS + "comment"));
+   private static final OWLDatatype RDF_PLAINLITERAL = Datatype(IRI(Namespaces.RDF + "PlainLiteral"));
    private static final OWLDatatype XSD_STRING = Datatype(IRI(Namespaces.XSD + "string"));
    private static final OWLDatatype XSD_BOOLEAN = Datatype(IRI(Namespaces.XSD + "boolean"));
    private static final OWLDatatype XSD_DOUBLE = Datatype(IRI(Namespaces.XSD + "double"));
@@ -341,6 +343,38 @@ public class ReferenceTest extends IntegrationTestBase
       Set<OWLAxiom> axioms = result.get().getOWLAxioms();
       assertThat(axioms, hasSize(1));
       assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+   }
+
+   /*
+    * Test individual data property assertion with input datatype rdf:PlainLiteral.
+    * - Precondition:
+    *    + The target sheet cells must not be empty,
+    *    + The target property must be predefined in the ontology,
+    *    + No necessary predefined individuals in the ontology.
+    * - Expected results:
+    *    + Creating an individual declaration axiom,
+    *    + Creating a data property assertion axiom.
+    */
+   @Test
+   @Category(NameResolutionTest.class)
+   public void TestRDFPlainLiteralInReference() throws Exception
+   {
+      declareOWLDataProperty(ontology, "hasName");
+
+      Label cellA1 = createCell("fred", 1, 1);
+      Label cellB1 = createCell("Alfred", 2, 1);
+      Set<Label> cells = createCells(cellA1, cellB1);
+
+      String expression = "Individual: @A1 Facts: hasName @B1(rdf:PlainLiteral)";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(2));
+      assertThat(axioms, containsInAnyOrder(
+            Declaration(FRED),
+            DataPropertyAssertion(HAS_NAME, FRED, Literal("Alfred", RDF_PLAINLITERAL))));
    }
 
    /*
@@ -1336,6 +1370,42 @@ public class ReferenceTest extends IntegrationTestBase
       Set<OWLAxiom> axioms = result.get().getOWLAxioms();
       assertThat(axioms, hasSize(1));
       assertThat(axioms, containsInAnyOrder(Declaration(ZYVOX)));
+   }
+
+   /*
+    * Test (xml:lang) function.
+    * - Precondition:
+    *    + The target sheet cell must not be empty,
+    *    + The target annotation property must not be empty,
+    *    + No necessary predefined individuals in the ontology.
+    * - Expected results:
+    *    + Creating an individual declaration axiom with a language tag in its annotation assertion.
+    */
+   @Test
+   @Category(CellProcessingTest.class)
+   public void TestLanguageTagInReference() throws Exception
+   {
+      declareOWLAnnotationProperty(ontology, "rdfs:comment");
+
+      Label cellA1 = createCell("p1", 1, 1);
+      Label cellB1 = createCell("Familia Swiss Muesli Mixed Cereals - 32 oz box", 2, 1);
+
+      Set<Label> cells = createCells(cellA1, cellB1);
+
+      /*
+       * Individual: @A1
+       * Annotations: skos:prefLabel @B1(xml:lang="en")
+       */
+      String expression = "Individual: @A1 Annotations: rdfs:comment @B1(xml:lang=\"en\")";
+ 
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(2));
+      assertThat(axioms, containsInAnyOrder(
+            Declaration(P1),
+            AnnotationAssertion(RDFS_COMMENT, IRI(ONTOLOGY_ID, "p1"), Literal("Familia Swiss Muesli Mixed Cereals - 32 oz box", "en"))));
    }
 
    /*
