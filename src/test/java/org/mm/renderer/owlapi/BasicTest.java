@@ -115,8 +115,9 @@ public class BasicTest extends IntegrationTestBase
       settings.setValueEncodingSetting(ValueEncodingSetting.RDF_ID);
    }
 
-   /*
+   /**
     * Test the class declaration.
+    * <p>
     * - Precondition: The target class must be predefined in the ontology
     */
    @Test
@@ -135,8 +136,9 @@ public class BasicTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
    }
 
-   /*
+   /**
     * Test the sub-class axiom.
+    * <p>
     * - Precondition: The target classes must be predefined in the ontology
     */
    @Test
@@ -157,10 +159,12 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(CAR, VEHICLE)));
    }
 
-   /*
+   /**
     * Test the sub-class expression axiom.
-    * - Precondition: The target class must be predefined in the ontology,
-    *                 The target property must be predefined in the ontology.
+    * <p>
+    * - Precondition:<br />
+    *    + The target class must be predefined in the ontology,<br />
+    *    + The target property must be predefined in the ontology.
     */
    @Test
    @Category(ClassExpressionTest.class)
@@ -181,8 +185,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(CAR, ObjectExactCardinality(1, HAS_ENGINE, OWLThing()))));
    }
 
-   /*
+   /**
     * Test multiple sub-class axioms.
+    * <p>
     * - Preconditions: The target classes must be predefined in the ontology
     */
    @Test
@@ -204,8 +209,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(CAR, AUTO)));
    }
 
-   /*
+   /**
     * Test negated sub-class axiom.
+    * <p>
     * - Precondition: The target classes must be predefined in the ontology.
     */
    @Test
@@ -226,8 +232,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(CAR, ObjectComplementOf(PERSON))));
    }
 
-   /*
+   /**
     * Test class equivalent axiom.
+    * <p>
     * - Precondition: The target classes must be predefined in the ontology
     */
    @Test
@@ -248,8 +255,9 @@ public class BasicTest extends IntegrationTestBase
             EquivalentClasses(CAR, AUTOMOBILE)));
    }
 
-   /*
+   /**
     * Test multiple class equivalent axioms.
+    * <p>
     * - Precondition: The target classes must be predefined in the ontology.
     */
    @Test
@@ -271,8 +279,9 @@ public class BasicTest extends IntegrationTestBase
             EquivalentClasses(CAR, AUTO)));
    }
 
-   /*
+   /**
     * Test negated class equivalent axiom.
+    * <p>
     * - Precondition: The target classes must be predefined in the ontology.
     */
    @Test
@@ -293,8 +302,9 @@ public class BasicTest extends IntegrationTestBase
             EquivalentClasses(CAR, ObjectComplementOf(CATAMARAN))));
    }
 
-   /*
+   /**
     * Test class expression equivalent axiom.
+    * <p>
     * - Precondition: The target class and property must be predefined in the ontology.
     */
    @Test
@@ -316,8 +326,9 @@ public class BasicTest extends IntegrationTestBase
             EquivalentClasses(CAR, ObjectExactCardinality(1, HAS_ENGINE, OWLThing()))));
    }
 
-   /*
+   /**
     * Test object maximum cardinality restriction axiom.
+    * <p>
     * - Precondition: The target class and property must be predefined in the ontology.
     */
    @Test
@@ -339,8 +350,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(CAR, ObjectMaxCardinality(1, HAS_ENGINE, OWLThing()))));
    }
 
-   /*
+   /**
     * Test object minimum cardinality restriction axiom.
+    * <p>
     * - Precondition: The target class and property must be predefined in the ontology.
     */
    @Test
@@ -362,8 +374,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(CAR, ObjectMinCardinality(1, HAS_ENGINE, OWLThing()))));
    }
 
-   /*
+   /**
     * Test object exact cardinality restriction axiom.
+    * <p>
     * - Precondition: The target class and property must be predefined in the ontology.
     */
    @Test
@@ -385,8 +398,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(CAR, ObjectExactCardinality(1, HAS_ENGINE, OWLThing()))));
    }
 
-   /*
+   /**
     * Test data maximum cardinality restriction axiom.
+    * <p>
     * - Precondition: The target class and property must be predefined in the ontology.
     */
    @Test
@@ -408,8 +422,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(CAR, DataMaxCardinality(1, HAS_SSN, RDFS_LITERAL))));
    }
 
-   /*
+   /**
     * Test data minimum cardinality restriction axiom.
+    * <p>
     * - Precondition: The target class and property must be predefined in the ontology.
     */
    @Test
@@ -431,8 +446,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(CAR, DataMinCardinality(1, HAS_SSN, RDFS_LITERAL))));
    }
 
-   /*
+   /**
     * Test data exact cardinality restriction axiom.
+    * <p>
     * - Precondition: The target class and property must be predefined in the ontology.
     */
    @Test
@@ -454,8 +470,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(CAR, DataExactCardinality(1, HAS_SSN, RDFS_LITERAL))));
    }
 
-   /*
+   /**
     * Test object has value restriction axiom.
+    * <p>
     * - Precondition: The target class, object property and individual must be predefined in the ontology.
     */
    @Test
@@ -478,8 +495,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(CATAMARAN, ObjectHasValue(HAS_HULL, DOUBLE_HULL))));
    }
 
-   /*
+   /**
     * Test data has value restriction axiom.
+    * <p>
     * - Precondition: The target class and data property must be predefined in the ontology.
     */
    @Test
@@ -501,8 +519,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(CATAMARAN, DataHasValue(HAS_ORIGIN, Literal("Germany")))));
    }
 
-   /*
+   /**
     * Test object some value restriction axiom.
+    * <p>
     * - Precondition: The target classes and property must be predefined in the ontology.
     */
    @Test
@@ -524,8 +543,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(CHILD_OF_DOCTOR, ObjectSomeValuesFrom(HAS_PARENT, PHYSICIAN))));
    }
 
-   /*
+   /**
     * Test data some value restriction axiom.
+    * <p>
     * - Precondition: The target classes and property must be predefined in the ontology. In addition,
     *   only a limited set of XSD datatypes is supported (see Wiki page).
     */
@@ -548,8 +568,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(CAR, DataSomeValuesFrom(HAS_NAME, XSD_STRING))));
    }
 
-   /*
+   /**
     * Test object all values restriction axiom.
+    * <p>
     * - Precondition: The target classes and property must be predefined in the ontology.
     */
    @Test
@@ -571,8 +592,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(PERSON, ObjectAllValuesFrom(HAS_PARENT, HUMAN))));
    }
 
-   /*
+   /**
     * Test data all values restriction axiom.
+    * <p>
     * - Precondition: The target classes and property must be predefined in the ontology. In addition,
     *   only a limited set of XSD datatypes is supported (see Wiki page).
     */
@@ -595,8 +617,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(PERSON, DataAllValuesFrom(HAS_SSN, XSD_STRING))));
    }
 
-   /*
+   /**
     * Test object one of restriction axiom.
+    * <p>
     * - Precondition: The target classes, object property and individuals must be predefined in the ontology.
     */
    @Test
@@ -621,8 +644,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(PERSON, ObjectAllValuesFrom(HAS_GENDER, ObjectOneOf(MALE, FEMALE, OTHER)))));
    }
 
-   /*
+   /**
     * Test sub-class to negated class expression axiom.
+    * <p>
     * - Precondition: The target class and property must be predefined in the ontology.
     */
    @Test
@@ -644,8 +668,9 @@ public class BasicTest extends IntegrationTestBase
             SubClassOf(A, ObjectComplementOf(ObjectExactCardinality(1, HAS_P1, OWLThing())))));
    }
 
-   /*
+   /**
     * Test sub-class to union of class expressions axiom.
+    * <p>
     * - Precondition: The target class and properties must be predefined in the ontology.
     */
    @Test
@@ -669,8 +694,9 @@ public class BasicTest extends IntegrationTestBase
                   ObjectExactCardinality(3, HAS_P2, OWLThing())))));
    }
 
-   /*
+   /**
     * Test sub-class to intersection of class expressions axiom.
+    * <p>
     * - Precondition: The target class and properties must be predefined in the ontology.
     */
    @Test
@@ -694,8 +720,9 @@ public class BasicTest extends IntegrationTestBase
                   ObjectExactCardinality(3, HAS_P2, OWLThing())))));
    }
 
-   /*
+   /**
     * Test sub-class to complex boolean of class expressions axiom.
+    * <p>
     * - Precondition: The target class and properties must be predefined in the ontology.
     */
    @Test
@@ -724,8 +751,9 @@ public class BasicTest extends IntegrationTestBase
                         DataMinCardinality(4, HAS_P3, RDFS_LITERAL))))));
    }
 
-   /*
+   /**
     * Test negated class equivalent to class expression axiom.
+    * <p>
     * - Precondition: The target class and property must be predefined in the ontology.
     */
    @Test
@@ -747,8 +775,9 @@ public class BasicTest extends IntegrationTestBase
             EquivalentClasses(A, ObjectComplementOf(ObjectExactCardinality(1, HAS_P1, OWLThing())))));
    }
 
-   /*
+   /**
     * Test class equivalent to union of class expressions axiom.
+    * <p>
     * - Precondition: The target class and properties must be predefined in the ontology.
     */
    @Test
@@ -772,8 +801,9 @@ public class BasicTest extends IntegrationTestBase
                   ObjectExactCardinality(3, HAS_P2, OWLThing())))));
    }
 
-   /*
+   /**
     * Test class equivalent to intersection of class expressions axiom.
+    * <p>
     * - Precondition: The target class and properties must be predefined in the ontology.
     */
    @Test
@@ -797,8 +827,9 @@ public class BasicTest extends IntegrationTestBase
                   ObjectExactCardinality(3, HAS_P2, OWLThing())))));
    }
 
-   /*
+   /**
     * Test class equivalent to complex boolean class expressions axiom.
+    * <p>
     * - Precondition: The target class and properties must be predefined in the ontology.
     */
    @Test
@@ -827,8 +858,9 @@ public class BasicTest extends IntegrationTestBase
                         DataMinCardinality(4, HAS_P3, RDFS_LITERAL))))));
    }
 
-   /*
-    * Test named individual declaration
+   /**
+    * Test named individual declaration.
+    * <p>
     * - Precondition: The target individual must be predefined in the ontology.
     */
    @Test
@@ -847,8 +879,9 @@ public class BasicTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(FRED)));
    }
 
-   /*
+   /**
     * Test named individual declaration with specified type.
+    * <p>
     * - Precondition: The target individual and class must be predefined in the ontology.
     */
    @Test
@@ -870,8 +903,9 @@ public class BasicTest extends IntegrationTestBase
             ClassAssertion(PERSON, FRED)));
    }
 
-   /*
+   /**
     * Test named individual declaration with multiple specified types.
+    * <p>
     * - Precondition: The target individual, classes and property must be predefined in the ontology.
     */
    @Test
@@ -895,8 +929,9 @@ public class BasicTest extends IntegrationTestBase
             ClassAssertion(ObjectAllValuesFrom(HAS_PARENT, HUMAN), FRED)));
    }
 
-   /*
+   /**
     * Test named individual declaration with fact.
+    * <p>
     * - Precondition: The target individual and property must be predefined in the ontology.
     */
    @Test
@@ -918,8 +953,9 @@ public class BasicTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_NAME, FRED, Literal("Fred", XSD_STRING))));
    }
 
-   /*
+   /**
     * Test named individual declaration with multiple facts.
+    * <p>
     * - Precondition: The target individual and properties must be predefined in the ontology.
     */
    @Test
@@ -942,8 +978,9 @@ public class BasicTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_AGE, FRED, Literal("23", XSD_INTEGER))));
    }
 
-   /*
+   /**
     * Test same as named individual axiom.
+    * <p>
     * - Precondition: The target individuals must be predefined in the ontology.
     */
    @Test
@@ -964,8 +1001,9 @@ public class BasicTest extends IntegrationTestBase
             SameIndividual(FRED, FREDDY)));
    }
 
-   /*
+   /**
     * Test same as multiple named individuals axiom.
+    * <p>
     * - Precondition: The target individuals must be predefined in the ontology.
     */
    @Test
@@ -987,8 +1025,9 @@ public class BasicTest extends IntegrationTestBase
             SameIndividual(FRED, ALFRED)));
    }
 
-   /*
+   /**
     * Test different from named individual axiom.
+    * <p>
     * - Precondition: The target individuals must be predefined in the ontology.
     */
    @Test
@@ -1009,8 +1048,9 @@ public class BasicTest extends IntegrationTestBase
             DifferentIndividuals(FRED, BOB)));
    }
 
-   /*
+   /**
     * Test different from named individual axiom.
+    * <p>
     * - Precondition: The target individuals must be predefined in the ontology.
     */
    @Test

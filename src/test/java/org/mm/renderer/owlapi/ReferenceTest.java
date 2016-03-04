@@ -98,10 +98,11 @@ public class ReferenceTest extends IntegrationTestBase
       settings.setValueEncodingSetting(ValueEncodingSetting.RDF_ID);
    }
 
-   /*
+   /**
     * Test the class declaration.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
     */
    @Test
@@ -121,10 +122,11 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
    }
 
-   /*
-    * Test the class declaration using common naming
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+   /**
+    * Test the class declaration using common naming.
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
     */
    @Test
@@ -144,10 +146,11 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(BARBARA_PUFFINS)));
    }
 
-   /*
+   /**
     * Test the class declaration with fully-qualified reference.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
     */
    @Test
@@ -166,10 +169,11 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
    }
 
-   /*
+   /**
     * Test the individual declaration.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined individuals in the ontology.
     */
    @Test
@@ -189,11 +193,12 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(FRED)));
    }
 
-   /*
+   /**
     * Test the data property reference in individual assertion. Note the individual entity is a constant.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
-    *    + The target individual must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
+    *    + The target individual must be predefined in the ontology,<br />
     *    + No necessary predefined properties in the ontology.
     */
    @Test
@@ -217,12 +222,13 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_AGE, FRED, Literal("23", XSD_INTEGER))));
    }
 
-   /*
+   /**
     * Test the object property reference in individual assertion. By default, the system will recognize the property
     * declaration as data property. To override the behavior use the (ObjectProperty) directive.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
-    *    + The target individuals must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
+    *    + The target individuals must be predefined in the ontology,<br />
     *    + No necessary predefined properties in the ontology.
     */
    @Test
@@ -246,12 +252,13 @@ public class ReferenceTest extends IntegrationTestBase
             ObjectPropertyAssertion(HAS_PARENT, FRED, BOB)));
    }
 
-   /*
+   /**
     * Test the annotation property reference in individual assertion. By default, the system will recognize the property
     * declaration as data property. To override the behavior use the (AnnotationProperty) directive.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
-    *    + The target individuals must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
+    *    + The target individuals must be predefined in the ontology,<br />
     *    + No necessary predefined properties in the ontology.
     */
    @Test
@@ -275,11 +282,12 @@ public class ReferenceTest extends IntegrationTestBase
             AnnotationAssertion(HAS_AGE_ANNOTATION, IRI(ONTOLOGY_ID, "fred"), Literal("23", XSD_INTEGER))));
    }
 
-   /*
+   /**
     * Test a user-specified annotation property in individual assertion.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
-    *    + The target annotation property must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
+    *    + The target annotation property must be predefined in the ontology,<br />
     *    + The target prefix must be predefined in the ontology, if any,
     */
    @Test
@@ -305,12 +313,14 @@ public class ReferenceTest extends IntegrationTestBase
             AnnotationAssertion(SKOS_PREFLABEL, IRI(ONTOLOGY_ID, "fred"), Literal("Alfred", XSD_STRING))));
    }
 
-   /*
+   /**
     * Test literal reference, i.e., reference with enclosed quote signs (e.g., @"Car").
-    * - Precondition:
-    *    + No necessary predefined classes in the ontology. // TODO Should it be predefined?
-    * - Expected results:
-    *    + Creating a class declaration axiom,
+    * <p>
+    * - Precondition:<br />
+    *    + No necessary predefined classes in the ontology.
+    * <p>
+    * - Expected results:<br />
+    *    + Creating a class declaration axiom,<br />
     *    + Creating a rdfs:label annotation axiom. Both will use the quoted value.
     */
    @Test
@@ -330,10 +340,11 @@ public class ReferenceTest extends IntegrationTestBase
       ));
    }
 
-   /*
+   /**
     * Test column-wildcard reference for declaring a class.
-    * - Precondition:
-    *    + The target sheet cell must not be empty
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty<br />
     *    + No necessary predefined classes in the ontology.
     */
    @Test
@@ -353,10 +364,11 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
    }
 
-   /*
+   /**
     * Test row-wildcard reference for declaring a class.
-    * - Precondition:
-    *    + The target sheet cell must not be empty
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
     */
    @Test
@@ -376,14 +388,16 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
    }
 
-   /*
+   /**
     * Test individual data property assertion with input datatype rdf:PlainLiteral.
-    * - Precondition:
-    *    + The target sheet cells must not be empty,
-    *    + The target property must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cells must not be empty,<br />
+    *    + The target property must be predefined in the ontology,<br />
     *    + No necessary predefined individuals in the ontology.
-    * - Expected results:
-    *    + Creating an individual declaration axiom,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating an individual declaration axiom,<br />
     *    + Creating a data property assertion axiom.
     */
    @Test
@@ -408,15 +422,17 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_NAME, FRED, Literal("Alfred", RDF_PLAINLITERAL))));
    }
 
-   /*
+   /**
     * Test individual data property assertion with input datatype xsd:string. Note that the (xsd:string)
     * is optional, by default.
-    * - Precondition:
-    *    + The target sheet cells must not be empty,
-    *    + The target property must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cells must not be empty,<br />
+    *    + The target property must be predefined in the ontology,<br />
     *    + No necessary predefined individuals in the ontology.
-    * - Expected results:
-    *    + Creating an individual declaration axiom,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating an individual declaration axiom,<br />
     *    + Creating a data property assertion axiom.
     */
    @Test
@@ -441,14 +457,16 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_NAME, FRED, Literal("Alfred", XSD_STRING))));
    }
 
-   /*
+   /**
     * Test individual data property assertion with input datatype xsd:boolean.
-    * - Precondition:
-    *    + The target sheet cells must not be empty,
-    *    + The target property must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cells must not be empty,<br />
+    *    + The target property must be predefined in the ontology,<br />
     *    + No necessary predefined individuals in the ontology.
-    * - Expected results:
-    *    + Creating an individual declaration axiom,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating an individual declaration axiom,<br />
     *    + Creating a data property assertion axiom.
     */
    @Test
@@ -473,14 +491,16 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_SSN, FRED, Literal("true", XSD_BOOLEAN))));
    }
 
-   /*
-    * Test individual data property assertion with input datatype xsd:doublt.
-    * - Precondition:
-    *    + The target sheet cells must not be empty,
-    *    + The target property must be predefined in the ontology,
+   /**
+    * Test individual data property assertion with input datatype xsd:double.
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cells must not be empty,<br />
+    *    + The target property must be predefined in the ontology,<br />
     *    + No necessary predefined individuals in the ontology.
-    * - Expected results:
-    *    + Creating an individual declaration axiom,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating an individual declaration axiom,<br />
     *    + Creating a data property assertion axiom.
     */
    @Test
@@ -505,14 +525,16 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_SALARY, FRED, Literal("34000.09999", XSD_DOUBLE))));
    }
 
-   /*
+   /**
     * Test individual data property assertion with input datatype xsd:float.
-    * - Precondition:
-    *    + The target sheet cells must not be empty,
-    *    + The target property must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cells must not be empty,<br />
+    *    + The target property must be predefined in the ontology,<br />
     *    + No necessary predefined individuals in the ontology.
-    * - Expected results:
-    *    + Creating an individual declaration axiom,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating an individual declaration axiom,<br />
     *    + Creating a data property assertion axiom.
     */
    @Test
@@ -537,12 +559,14 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_SALARY, FRED, Literal("34000.09999", XSD_FLOAT))));
    }
 
-   /*
+   /**
     * Test individual data property assertion with input datatype xsd:long.
-    * - Precondition:
-    *    + The target sheet cells must not be empty,
-    *    + The target property must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cells must not be empty,<br />
+    *    + The target property must be predefined in the ontology,<br />
     *    + No necessary predefined individuals in the ontology.
+    * <p>
     * - Expected results:
     *    + Creating an individual declaration axiom,
     *    + Creating a data property assertion axiom.
@@ -569,14 +593,16 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_AGE, FRED, Literal("23", XSD_LONG))));
    }
 
-   /*
+   /**
     * Test individual data property assertion with input datatype xsd:integer.
-    * - Precondition:
-    *    + The target sheet cells must not be empty,
-    *    + The target property must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cells must not be empty,<br />
+    *    + The target property must be predefined in the ontology,<br />
     *    + No necessary predefined individuals in the ontology.
-    * - Expected results:
-    *    + Creating an individual declaration axiom,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating an individual declaration axiom,<br />
     *    + Creating a data property assertion axiom.
     */
    @Test
@@ -601,14 +627,16 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_AGE, FRED, Literal("23", XSD_INTEGER))));
    }
 
-   /*
+   /**
     * Test individual data property assertion with input datatype xsd:short.
-    * - Precondition:
-    *    + The target sheet cells must not be empty,
-    *    + The target property must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cells must not be empty,<br />
+    *    + The target property must be predefined in the ontology,<br />
     *    + No necessary predefined individuals in the ontology.
-    * - Expected results:
-    *    + Creating an individual declaration axiom,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating an individual declaration axiom,<br />
     *    + Creating a data property assertion axiom.
     */
    @Test
@@ -633,14 +661,16 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_AGE, FRED, Literal("23", XSD_SHORT))));
    }
 
-   /*
+   /**
     * Test individual data property assertion with input datatype xsd:byte.
-    * - Precondition:
-    *    + The target sheet cells must not be empty,
-    *    + The target property must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cells must not be empty,<br />
+    *    + The target property must be predefined in the ontology,<br />
     *    + No necessary predefined individuals in the ontology.
-    * - Expected results:
-    *    + Creating an individual declaration axiom,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating an individual declaration axiom,<br />
     *    + Creating a data property assertion axiom.
     */
    @Test
@@ -665,14 +695,16 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_AGE, FRED, Literal("23", XSD_BYTE))));
    }
 
-   /*
+   /**
     * Test individual data property assertion with input datatype xsd:decimal.
-    * - Precondition:
-    *    + The target sheet cells must not be empty,
-    *    + The target property must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cells must not be empty,<br />
+    *    + The target property must be predefined in the ontology,<br />
     *    + No necessary predefined individuals in the ontology.
-    * - Expected results:
-    *    + Creating an individual declaration axiom,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating an individual declaration axiom,<br />
     *    + Creating a data property assertion axiom.
     */
    @Test
@@ -697,14 +729,16 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_AGE, FRED, Literal("23.00", XSD_DECIMAL))));
    }
 
-   /*
+   /**
     * Test individual data property assertion with input datatype xsd:dateTime.
-    * - Precondition:
-    *    + The target sheet cells must not be empty,
-    *    + The target property must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cells must not be empty,<br />
+    *    + The target property must be predefined in the ontology,<br />
     *    + No necessary predefined individuals in the ontology.
-    * - Expected results:
-    *    + Creating an individual declaration axiom,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating an individual declaration axiom,<br />
     *    + Creating a data property assertion axiom.
     */
    @Test
@@ -729,14 +763,16 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_DOB, FRED, Literal("1999-01-01T10:10:10", XSD_DATETIME))));
    }
 
-   /*
+   /**
     * Test individual data property assertion with input datatype xsd:date.
-    * - Precondition:
-    *    + The target sheet cells must not be empty,
-    *    + The target property must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cells must not be empty,<br />
+    *    + The target property must be predefined in the ontology,<br />
     *    + No necessary predefined individuals in the ontology.
-    * - Expected results:
-    *    + Creating an individual declaration axiom,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating an individual declaration axiom,<br />
     *    + Creating a data property assertion axiom.
     */
    @Test
@@ -761,14 +797,16 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_DOB, FRED, Literal("1999-01-01", XSD_DATE))));
    }
 
-   /*
+   /**
     * Test individual data property assertion with input datatype xsd:time.
-    * - Precondition:
-    *    + The target sheet cells must not be empty,
-    *    + The target property must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cells must not be empty,<br />
+    *    + The target property must be predefined in the ontology,<br />
     *    + No necessary predefined individuals in the ontology.
-    * - Expected results:
-    *    + Creating an individual declaration axiom,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating an individual declaration axiom,<br />
     *    + Creating a data property assertion axiom.
     */
    @Test
@@ -793,13 +831,15 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_BEDTIME, FRED, Literal("21:00", XSD_TIME))));
    }
 
-   /*
+   /**
     * Test (rdfs:label) directive in class declaration.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
-    * - Expected results:
-    *    + Creating a class declaration axiom with name using the (rdfs:label) value, instead of the cell value,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating a class declaration axiom with name using the (rdfs:label) value, instead of the cell value,<br />
     *    + Creating a rdfs:label annotation using the given (rdfs:label) value.
     */
    @Test
@@ -822,13 +862,15 @@ public class ReferenceTest extends IntegrationTestBase
       ));
    }
 
-   /*
+   /**
     * Test (rdf:id) and (rdfs:label) directives in class declaration.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
-    * - Expected results:
-    *    + Creating a class declaration axiom with name using the (rdf:id) value,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating a class declaration axiom with name using the (rdf:id) value,<br />
     *    + Creating a rdfs:label annotation using the given (rdfs:label) value.
     */
    @Test
@@ -851,13 +893,15 @@ public class ReferenceTest extends IntegrationTestBase
       ));
    }
 
-   /*
+   /**
     * Test setting the default label for (rdfs:label) directives in class declaration.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
-    * - Expected results:
-    *    + Creating a class declaration axiom with name using default label, instead of the cell value,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating a class declaration axiom with name using default label, instead of the cell value,<br />
     *    + Creating a rdfs:label annotation using the given (rdfs:label) value.
     */
    @Test
@@ -879,12 +923,14 @@ public class ReferenceTest extends IntegrationTestBase
       ));
    }
 
-   /*
+   /**
     * Test (mm:append) function in class declaration.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
-    * - Expected results:
+    * <p>
+    * - Expected results:<br />
     *    + Creating a class declaration axiom with name using the appended value, instead of the cell value,
     */
    @Test
@@ -903,13 +949,15 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(BMW_CAR)));
    }
 
-   /*
+   /**
     * Test explicit append function for (rdfs:label) directive in class declaration.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
-    * - Expected results:
-    *    + Creating a class declaration axiom with name using the appended value, instead of the cell value,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating a class declaration axiom with name using the appended value, instead of the cell value,<br />
     *    + Creating a rdfs:label annotation using the given (rdfs:label) value.
     */
    @Test
@@ -931,13 +979,15 @@ public class ReferenceTest extends IntegrationTestBase
             AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "BMW_Car"), Literal("BMW Car", XSD_STRING))));
    }
 
-   /*
+   /**
     * Test implicit append function for (rdfs:label) directive in class declaration.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
-    * - Expected results:
-    *    + Creating a class declaration axiom with name using the appended value, instead of the cell value,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating a class declaration axiom with name using the appended value, instead of the cell value,<br />
     *    + Creating a rdfs:label annotation using the given (rdfs:label) value.
     */
    @Test
@@ -959,12 +1009,14 @@ public class ReferenceTest extends IntegrationTestBase
             AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "BMW_Car"), Literal("BMW Car", XSD_STRING))));
    }
 
-   /*
+   /**
     * Test (mm:prepend) function in class declaration.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
-    * - Expected results:
+    * <p>
+    * - Expected results:<br />
     *    + Creating a class declaration axiom with name using the prepended value, instead of the cell value,
     */
    @Test
@@ -984,13 +1036,15 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(CAR_BMW)));
    }
 
-   /*
+   /**
     * Test explicit prepend function for (rdfs:label) directive in class declaration.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
-    * - Expected results:
-    *    + Creating a class declaration axiom with name using the prepended value, instead of the cell value,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating a class declaration axiom with name using the prepended value, instead of the cell value,<br />
     *    + Creating a rdfs:label annotation using the given (rdfs:label) value.
     */
    @Test
@@ -1013,13 +1067,15 @@ public class ReferenceTest extends IntegrationTestBase
       ));
    }
 
-   /*
+   /**
     * Test implicit prepend function for (rdfs:label) directive in class declaration.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
-    * - Expected results:
-    *    + Creating a class declaration axiom with name using the prepended value, instead of the cell value,
+    * <p>
+    * - Expected results:<br />
+    *    + Creating a class declaration axiom with name using the prepended value, instead of the cell value,<br />
     *    + Creating a rdfs:label annotation using the given (rdfs:label) value.
     */
    @Test
@@ -1042,10 +1098,11 @@ public class ReferenceTest extends IntegrationTestBase
       ));
    }
 
-   /*
+   /**
     * Test (mm:ShiftUp) function.
-    * - Precondition:
-    *    + At least one of the target sheet cells must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + At least one of the target sheet cells must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
     */
    @Test
@@ -1068,10 +1125,11 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
    }
 
-   /*
+   /**
     * Test (mm:ShiftDown) function.
-    * - Precondition:
-    *    + At least one of the target sheet cells must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + At least one of the target sheet cells must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
     */
    @Test
@@ -1096,10 +1154,11 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
    }
 
-   /*
+   /**
     * Test (mm:ShiftRight) function.
-    * - Precondition:
-    *    + At least one of the target sheet cells must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + At least one of the target sheet cells must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
     */
    @Test
@@ -1124,10 +1183,11 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
    }
 
-   /*
+   /**
     * Test (mm:ShiftLeft) function.
-    * - Precondition:
-    *    + At least one of the target sheet cells must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + At least one of the target sheet cells must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
     */
    @Test
@@ -1152,10 +1212,11 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
    }
 
-   /*
+   /**
     * Test multiple shift functions and appending the values.
-    * - Precondition:
-    *    + At least one of the target sheet cells must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + At least one of the target sheet cells must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
     */
    @Test
@@ -1183,10 +1244,11 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(BMW)));
    }
 
-   /*
+   /**
     * Test (mm:toLowerCase) function.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
     */
    @Test
@@ -1206,10 +1268,11 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(CAR_LOWERCASE)));
    }
 
-   /*
+   /**
     * Test (mm:toUpperCase) function.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
     */
    @Test
@@ -1229,10 +1292,11 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(CAR_UPPERCASE)));
    }
 
-   /*
+   /**
     * Test (mm:reverse) function.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
     */
    @Test
@@ -1252,10 +1316,11 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
    }
 
-   /*
+   /**
     * Test (mm:trim) function.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
     */
    @Test
@@ -1275,10 +1340,11 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
    }
 
-   /*
+   /**
     * Test (mm:printf) function.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
     */
    @Test
@@ -1298,11 +1364,12 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(BMW_CAR)));
    }
 
-   /*
+   /**
     * Test (mm:decimalFormat) function.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
-    *    + The target data property must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
+    *    + The target data property must be predefined in the ontology,<br />
     *    + No necessary predefined individuals in the ontology.
     */
    @Test
@@ -1327,11 +1394,12 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_SALARY, FRED, Literal("23,000.20", XSD_DECIMAL))));
    }
 
-   /*
+   /**
     * Test (mm:replaceAll) function.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
-    *    + The target data property must be predefined in the ontology,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
+    *    + The target data property must be predefined in the ontology.
     */
    @Test
    @Category(CellProcessingTest.class)
@@ -1354,12 +1422,14 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_NAME, FRED, Literal("Alfred", XSD_STRING))));
    }
 
-   /*
+   /**
     * Test (mm:capturing) function in class declaration.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
-    * - Expected results:
+    * <p>
+    * - Expected results:<br />
     *    + Creating a class declaration axiom with name using the prepended value, instead of the cell value,
     */
    @Test
@@ -1378,12 +1448,14 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(ZYVOX)));
    }
 
-   /*
+   /**
     * Test implicit (mm:capturing) function in class declaration.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
     *    + No necessary predefined classes in the ontology.
-    * - Expected results:
+    * <p>
+    * - Expected results:<br />
     *    + Creating a class declaration axiom with name using the prepended value, instead of the cell value,
     */
    @Test
@@ -1403,13 +1475,15 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(ZYVOX)));
    }
 
-   /*
+   /**
     * Test (xml:lang) function.
-    * - Precondition:
-    *    + The target sheet cell must not be empty,
-    *    + The target annotation property must not be empty,
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
+    *    + The target annotation property must not be empty,<br />
     *    + No necessary predefined individuals in the ontology.
-    * - Expected results:
+    * <p>
+    * - Expected results:<br />
     *    + Creating an individual declaration axiom with a language tag in its annotation assertion.
     */
    @Test
@@ -1423,7 +1497,7 @@ public class ReferenceTest extends IntegrationTestBase
 
       Set<Label> cells = createCells(cellA1, cellB1);
 
-      /*
+      /**
        * Individual: @A1
        * Annotations: skos:prefLabel @B1(xml:lang="en")
        */
@@ -1439,9 +1513,10 @@ public class ReferenceTest extends IntegrationTestBase
             AnnotationAssertion(RDFS_COMMENT, IRI(ONTOLOGY_ID, "p1"), Literal("Familia Swiss Muesli Mixed Cereals - 32 oz box", "en"))));
    }
 
-   /*
+   /**
     * Test (mm:SkipIfOWLEntityDoesNotExist) directive.
-    * Expected results:
+    * <p>
+    * Expected results:<br />
     *    + No class declaration should be created.
     */
    @Test
@@ -1456,9 +1531,10 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(result.isPresent(), is(false));
    }
 
-   /*
+   /**
     * Test (mm:WarningIfOWLEntityDoesNotExist) directive.
-    * Expected results:
+    * <p>
+    * Expected results:<br />
     *    + No class declaration axiom should be created and a warning log should appear.
     */
    @Test
@@ -1473,9 +1549,10 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(result.isPresent(), is(false));
    }
 
-   /*
+   /**
     * Test (mm:ErrorIfOWLEntityDoesNotExist) directive.
-    * Expected results:
+    * <p>
+    * Expected results:<br />
     *    + No class declaration axiom should be created and an error should be thrown.
     */
    @Test
@@ -1492,9 +1569,10 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(result.isPresent(), is(false));
    }
 
-   /*
+   /**
     * Test (mm:CreateIfOWLEntityDoesNotExist) directive. This is the default setting for resolving reference values.
-    * Expected results:
+    * <p>
+    * Expected results:<br />
     *    + Creating a class declaration axiom.
     */
    @Test
@@ -1514,9 +1592,10 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
    }
 
-   /*
-    * Test (mm:ErrorIfEmptyLocation) directive. Note that the sheet cell is empty
-    * Expected results:
+   /**
+    * Test (mm:ErrorIfEmptyLocation) directive. Note that the sheet cell is empty.
+    * <p>
+    * Expected results:<br />
     *    + No class declaration axiom should be created.
     */
    @Test
@@ -1533,9 +1612,10 @@ public class ReferenceTest extends IntegrationTestBase
    }
 
 
-   /*
-    * Test (mm:WarningIfEmptyLocation) directive. Note that the sheet cell is empty
-    * Expected results:
+   /**
+    * Test (mm:WarningIfEmptyLocation) directive. Note that the sheet cell is empty.
+    * <p>
+    * Expected results:<br />
     *    + No class declaration axiom should be created and a warning log should appear.
     */
    @Test
@@ -1551,9 +1631,10 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(result.isPresent(), is(false));
    }
 
-   /*
-    * Test (mm:ErrorIfEmptyLocation) directive. Note that the sheet cell is empty
-    * Expected results:
+   /**
+    * Test (mm:ErrorIfEmptyLocation) directive. Note that the sheet cell is empty.
+    * <p>
+    * Expected results:<br />
     *    + No class declaration axiom should be created and an error should be thrown.
     */
    @Test
@@ -1571,9 +1652,10 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(result.isPresent(), is(false));
    }
 
-   /*
-    * Test (mm:SkipIfEmptyID) directive. Note that the sheet cell is empty
-    * Expected results:
+   /**
+    * Test (mm:SkipIfEmptyID) directive. Note that the sheet cell is empty.
+    * <p>
+    * Expected results:<br />
     *    + No class declaration axiom should be created.
     */
    @Test
@@ -1590,9 +1672,10 @@ public class ReferenceTest extends IntegrationTestBase
    }
 
 
-   /*
-    * Test (mm:WarningIfEmptyID) directive. Note that the sheet cell is empty
-    * Expected results:
+   /**
+    * Test (mm:WarningIfEmptyID) directive. Note that the sheet cell is empty.
+    * <p>
+    * Expected results:<br />
     *    + No class declaration axiom should be created and a warning log should appear.
     */
    @Test
@@ -1608,9 +1691,10 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(result.isPresent(), is(false));
    }
 
-   /*
-    * Test (mm:ErrorIfEmptyID) directive. Note that the sheet cell is empty
-    * Expected results:
+   /**
+    * Test (mm:ErrorIfEmptyID) directive. Note that the sheet cell is empty.
+    * <p>
+    * Expected results:<br />
     *    + No class declaration axiom should be created and an error should be thrown.
     */
    @Test
@@ -1628,9 +1712,10 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(result.isPresent(), is(false));
    }
 
-   /*
+   /**
     * Test (mm:ProcessIfEmptyLiteral) directive.
-    * Expected results:
+    * <p>
+    * Expected results:<br />
     *    + Creating an individual declaration and with empty value for the data property assertion axiom.
     */
    @Test
@@ -1655,9 +1740,10 @@ public class ReferenceTest extends IntegrationTestBase
             DataPropertyAssertion(HAS_NAME, FRED, Literal("", XSD_STRING))));
    }
 
-   /*
+   /**
     * Test (mm:SkipIfEmptyLiteral) directive.
-    * Expected results:
+    * <p>
+    * Expected results:<br />
     *    + Creating an individual declaration but without data property assertion axiom.
     */
    @Test
@@ -1680,10 +1766,11 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(FRED)));
    }
 
-   /*
+   /**
     * Test (mm:WarningIfEmptyLiteral) directive.
-    * Expected results:
-    *    + Creating an individual declaration but without data property assertion axiom,
+    * <p>
+    * Expected results:<br />
+    *    + Creating an individual declaration but without data property assertion axiom,<br />
     *    + A warning log should appear.
     */
    @Test
@@ -1706,10 +1793,11 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(Declaration(FRED)));
    }
 
-   /*
+   /**
     * Test (mm:ErrorIfEmptyLiteral) directive.
-    * Expected results:
-    *    + No individual declaration and data property assertion axiom should be created,
+    * <p>
+    * Expected results:<br />
+    *    + No individual declaration and data property assertion axiom should be created,<br />
     *    + An error should be thrown.
     */
    @Test
@@ -1730,9 +1818,10 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(result.isPresent(), is(false));
    }
 
-   /*
+   /**
     * Test (mm:SkipIfEmptyLabel) directive.
-    * Expected results:
+    * <p>
+    * Expected results:<br />
     *    + Creating a class declaration but without the rdfs:label annotation.
     */
    @Test
@@ -1747,7 +1836,7 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(result.isPresent(), is(false));
    }
 
-   /*
+   /**
     * Test (mm:WarningIfEmptyLabel) directive.
     * Expected results:
     *    + Creating a class declaration but without the rdfs:label annotation,
@@ -1765,10 +1854,11 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(result.isPresent(), is(false));
    }
 
-   /*
+   /**
     * Test (mm:ErrorIfEmptyLabel) directive.
-    * Expected results:
-    *    + No class declaration and rdfs:label annotation should be created,
+    * <p>
+    * Expected results:<br />
+    *    + No class declaration and rdfs:label annotation should be created,<br />
     *    + An error should be thrown.
     */
    @Test
@@ -1785,7 +1875,7 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(result.isPresent(), is(false));
    }
 
-   /*
+   /**
     * Test when the decimal format is invalid.
     */
    @Test
@@ -1803,7 +1893,7 @@ public class ReferenceTest extends IntegrationTestBase
       createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
    }
 
-   /*
+   /**
     * Test when the column is out of range in the specified cell reference. TODO: Fix later
     */
 //   @Test
@@ -1821,7 +1911,7 @@ public class ReferenceTest extends IntegrationTestBase
 //      assertThat(result.isPresent(), is(false));
 //   }
 
-   /*
+   /**
     * Test when the row is out of range in the specified cell reference. TODO: Fix later
     */
 //   @Test
