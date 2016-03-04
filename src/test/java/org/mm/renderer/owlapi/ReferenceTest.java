@@ -1613,6 +1613,33 @@ public class ReferenceTest extends IntegrationTestBase
    }
 
    /**
+    * Test mismatch entity type when the OWL entity exists already in the ontology.
+    * <p>
+    * - Precondition:<br />
+    *    + The target data property exists already in the ontology.
+    * <p>
+    * Expected results:<br />
+    *    + No individual assertion axiom should be created and an error should be thrown.
+    */
+   @Test
+   @Category(DirectiveTest.class)
+   public void TestMismatchOWLEntityExistsInReference() throws Exception
+   {
+      thrown.expect(RendererException.class);
+
+      declareOWLObjectProperty(ontology, "hasParent");
+      declareOWLNamedIndividuals(ontology, "fred", "bob");
+
+      Label cellA1 = createCell("hasParent", 1, 1);
+      Set<Label> cells = createCells(cellA1);
+
+      String expression = "Individual: fred Facts: @A1(DataProperty) bob";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(false));
+   }
+
+   /**
     * Test (mm:SkipIfOWLEntityDoesNotExist) directive.
     * <p>
     * Expected results:<br />
