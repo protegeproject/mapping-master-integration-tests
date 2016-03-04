@@ -1514,6 +1514,105 @@ public class ReferenceTest extends IntegrationTestBase
    }
 
    /**
+    * Test (mm:SkipIfOWLEntityExists) directive.
+    * <p>
+    * - Precondition:<br />
+    *    + The target class exists already in the ontology.
+    * <p>
+    * - Expected results:<br />
+    *    + No class declaration should be created.
+    */
+   @Test
+   @Category(DirectiveTest.class)
+   public void TestSkipIfOWLEntityExistsInReference() throws Exception
+   {
+      declareOWLClass(ontology, "Car");
+
+      Label cellA1 = createCell("Car", 1, 1);
+      Set<Label> cells = createCells(cellA1);
+
+      String expression = "Class: @A1(mm:SkipIfOWLEntityExists)";
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(false));
+   }
+
+   /**
+    * Test (mm:WarningIfOWLEntityExists) directive.
+    * <p>
+    * - Precondition:<br />
+    *    + The target class exists already in the ontology.
+    * <p>
+    * Expected results:<br />
+    *    + No class declaration axiom should be created and a warning log should appear.
+    */
+   @Test
+   @Category(DirectiveTest.class)
+   public void TestWarningIfOWLEntityExistsInReference() throws Exception
+   {
+      declareOWLClass(ontology, "Car");
+
+      Label cellA1 = createCell("Car", 1, 1);
+      Set<Label> cells = createCells(cellA1);
+
+      String expression = "Class: @A1(mm:WarningIfOWLEntityExists)";
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(false));
+   }
+
+   /**
+    * Test (mm:ErrorIfOWLEntityExists) directive.
+    * <p>
+    * - Precondition:<br />
+    *    + The target class exists already in the ontology.
+    * <p>
+    * Expected results:<br />
+    *    + No class declaration axiom should be created and an error should be thrown.
+    */
+   @Test
+   @Category(DirectiveTest.class)
+   public void TestErrorIfOWLEntityExistsInReference() throws Exception
+   {
+      thrown.expect(RendererException.class);
+
+      declareOWLClass(ontology, "Car");
+
+      Label cellA1 = createCell("Car", 1, 1);
+      Set<Label> cells = createCells(cellA1);
+
+      String expression = "Class: @A1(mm:ErrorIfOWLEntityExists)";
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(false));
+   }
+
+   /**
+    * Test (mm:ResolveIfOWLEntityExists) directive. This is the default setting for resolving existed values.
+    * <p>
+    * - Precondition:<br />
+    *    + The target class exists already in the ontology.
+    * <p>
+    * Expected results:<br />
+    *    + Creating a class declaration axiom.
+    */
+   @Test
+   @Category(DirectiveTest.class)
+   public void TestResolveIfOWLEntityExistsInReference() throws Exception
+   {
+      declareOWLClass(ontology, "Car");
+
+      Label cellA1 = createCell("Car", 1, 1);
+      Set<Label> cells = createCells(cellA1);
+
+      String expression = "Class: @A1(mm:ResolveIfOWLEntityExists)";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(1));
+      assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
+   }
+
+   /**
     * Test (mm:SkipIfOWLEntityDoesNotExist) directive.
     * <p>
     * Expected results:<br />
