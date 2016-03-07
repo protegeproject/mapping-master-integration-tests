@@ -51,14 +51,16 @@ public class ReferenceTest extends IntegrationTestBase
 
    private static final OWLClass BMW = Class(IRI(ONTOLOGY_ID, "BMW"));
    private static final OWLClass CAR = Class(IRI(ONTOLOGY_ID, "Car"));
-   private static final OWLClass BARBARA_PUFFINS = Class(IRI(ONTOLOGY_ID, "Barbara's_Puffins_Honey-Rice_Cereal_-_10.5oz_box"));
+   private static final OWLClass BARBARA_PUFFINS_CAMELCASE = Class(IRI(ONTOLOGY_ID, "Barbara'sPuffinsHoney-RiceCereal-10.5ozBox"));
+   private static final OWLClass BARBARA_PUFFINS_SNAKECASE = Class(IRI(ONTOLOGY_ID, "Barbara's_Puffins_Honey-Rice_Cereal_-_10.5oz_box"));
+   private static final OWLClass BARBARA_PUFFINS_MD5 = Class(IRI(ONTOLOGY_ID, "290d31fea17d405a10b7a025dde55111"));
    private static final OWLClass CAR_LOWERCASE = Class(IRI(ONTOLOGY_ID, "car"));
    private static final OWLClass CAR_UPPERCASE = Class(IRI(ONTOLOGY_ID, "CAR"));
-   private static final OWLClass BMW_CAR = Class(IRI(ONTOLOGY_ID, "BMW_Car"));
-   private static final OWLClass CAR_BMW = Class(IRI(ONTOLOGY_ID, "Car_BMW"));
-   private static final OWLClass BAYERISCHE_MOTOREN_WERKE = Class(IRI(ONTOLOGY_ID, "Bayerische_Motoren_Werke"));
+   private static final OWLClass BMW_CAR = Class(IRI(ONTOLOGY_ID, "BMWCar"));
+   private static final OWLClass CAR_BMW = Class(IRI(ONTOLOGY_ID, "CarBMW"));
+   private static final OWLClass BAYERISCHE_MOTOREN_WERKE = Class(IRI(ONTOLOGY_ID, "BayerischeMotorenWerke"));
    private static final OWLClass ZYVOX = Class(IRI(ONTOLOGY_ID, "Zyvox"));
-   private static final OWLClass DEFAULT_NAME = Class(IRI(ONTOLOGY_ID, "Default_Name"));
+   private static final OWLClass DEFAULT_NAME = Class(IRI(ONTOLOGY_ID, "DefaultName"));
    private static final OWLObjectProperty HAS_PARENT = ObjectProperty(IRI(ONTOLOGY_ID, "hasParent"));
    private static final OWLDataProperty HAS_SSN = DataProperty(IRI(ONTOLOGY_ID, "hasSSN"));
    private static final OWLDataProperty HAS_NAME = DataProperty(IRI(ONTOLOGY_ID, "hasName"));
@@ -120,30 +122,6 @@ public class ReferenceTest extends IntegrationTestBase
       Set<OWLAxiom> axioms = result.get().getOWLAxioms();
       assertThat(axioms, hasSize(1));
       assertThat(axioms, containsInAnyOrder(Declaration(CAR)));
-   }
-
-   /**
-    * Test the class declaration using common naming.
-    * <p>
-    * - Precondition:<br />
-    *    + The target sheet cell must not be empty,<br />
-    *    + No necessary predefined classes in the ontology.
-    */
-   @Test
-   @Category(NameResolutionTest.class)
-   public void TestCommonNaming() throws Exception
-   {
-      Label cellA1 = createCell("Barbara's Puffins Honey-Rice Cereal - 10.5oz box", 1, 1);
-      Set<Label> cells = createCells(cellA1);
-
-      String expression = "Class: @A1";
-
-      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
-      assertThat(result.isPresent(), is(true));
-
-      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
-      assertThat(axioms, hasSize(1));
-      assertThat(axioms, containsInAnyOrder(Declaration(BARBARA_PUFFINS)));
    }
 
    /**
@@ -832,7 +810,8 @@ public class ReferenceTest extends IntegrationTestBase
    }
 
    /**
-    * Test (rdfs:label) directive in class declaration.
+    * Test (rdfs:label) directive in class declaration. Notice the (mm:camelCaseEncode) directive is added to encode
+    * the entity IRI naming.
     * <p>
     * - Precondition:<br />
     *    + The target sheet cell must not be empty,<br />
@@ -849,7 +828,7 @@ public class ReferenceTest extends IntegrationTestBase
       Label cellA1 = createCell("BMW", 1, 1);
       Set<Label> cells = createCells(cellA1);
 
-      String expression = "Class: @A1(rdfs:label=(\"Bayerische Motoren Werke\"))";
+      String expression = "Class: @A1(rdfs:label=(\"Bayerische Motoren Werke\") mm:camelCaseEncode)";
    
       Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
       assertThat(result.isPresent(), is(true));
@@ -858,7 +837,7 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, hasSize(2));
       assertThat(axioms, containsInAnyOrder(
             Declaration(BAYERISCHE_MOTOREN_WERKE),
-            AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "Bayerische_Motoren_Werke"), Literal("Bayerische Motoren Werke", XSD_STRING))
+            AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "BayerischeMotorenWerke"), Literal("Bayerische Motoren Werke", XSD_STRING))
       ));
    }
 
@@ -894,7 +873,8 @@ public class ReferenceTest extends IntegrationTestBase
    }
 
    /**
-    * Test setting the default label for (rdfs:label) directives in class declaration.
+    * Test setting the default label for (rdfs:label) directives in class declaration. Notice the (mm:camelCaseEncode) directive
+    * is added to encode the entity IRI naming.
     * <p>
     * - Precondition:<br />
     *    + The target sheet cell must not be empty,<br />
@@ -911,7 +891,7 @@ public class ReferenceTest extends IntegrationTestBase
       Label cellA1 = createCell("Some Name", 1, 1);
       Set<Label> cells = createCells(cellA1);
 
-      String expression = "Class: @A1(rdfs:label mm:DefaultLabel=\"Default Name\")";
+      String expression = "Class: @A1(rdfs:label mm:DefaultLabel=\"Default Name\" mm:camelCaseEncode)";
       Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
       assertThat(result.isPresent(), is(true));
 
@@ -919,12 +899,13 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, hasSize(2));
       assertThat(axioms, containsInAnyOrder(
             Declaration(DEFAULT_NAME),
-            AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "Default_Name"), Literal("Default Name", XSD_STRING))
+            AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "DefaultName"), Literal("Default Name", XSD_STRING))
       ));
    }
 
    /**
-    * Test (mm:append) function in class declaration.
+    * Test (mm:append) function in class declaration. Notice the (mm:camelCaseEncode) directive is added to encode
+    * the entity IRI naming.
     * <p>
     * - Precondition:<br />
     *    + The target sheet cell must not be empty,<br />
@@ -940,7 +921,7 @@ public class ReferenceTest extends IntegrationTestBase
       Label cellA1 = createCell("BMW", 1, 1);
       Set<Label> cells = createCells(cellA1);
 
-      String expression = "Class: @A1(mm:append(\" Car\"))";
+      String expression = "Class: @A1(mm:append(\" Car\") mm:camelCaseEncode)";
       Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
       assertThat(result.isPresent(), is(true));
 
@@ -950,7 +931,8 @@ public class ReferenceTest extends IntegrationTestBase
    }
 
    /**
-    * Test explicit append function for (rdfs:label) directive in class declaration.
+    * Test explicit append function for (rdfs:label) directive in class declaration. Notice the (mm:camelCaseEncode) directive
+    * is added to encode the entity IRI naming.
     * <p>
     * - Precondition:<br />
     *    + The target sheet cell must not be empty,<br />
@@ -967,7 +949,7 @@ public class ReferenceTest extends IntegrationTestBase
       Label cellA1 = createCell("BMW", 1, 1);
       Set<Label> cells = createCells(cellA1);
 
-      String expression = "Class: @A1(rdfs:label=mm:append(\" Car\"))";
+      String expression = "Class: @A1(rdfs:label=mm:append(\" Car\") mm:camelCaseEncode)";
 
       Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
       assertThat(result.isPresent(), is(true));
@@ -976,11 +958,12 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, hasSize(2));
       assertThat(axioms, containsInAnyOrder(
             Declaration(BMW_CAR),
-            AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "BMW_Car"), Literal("BMW Car", XSD_STRING))));
+            AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "BMWCar"), Literal("BMW Car", XSD_STRING))));
    }
 
    /**
-    * Test implicit append function for (rdfs:label) directive in class declaration.
+    * Test implicit append function for (rdfs:label) directive in class declaration. Notice the (mm:camelCaseEncode) directive
+    * is added to encode the entity IRI naming.
     * <p>
     * - Precondition:<br />
     *    + The target sheet cell must not be empty,<br />
@@ -997,7 +980,7 @@ public class ReferenceTest extends IntegrationTestBase
       Label cellA1 = createCell("BMW", 1, 1);
       Set<Label> cells = createCells(cellA1);
 
-      String expression = "Class: @A1(rdfs:label=(@A1, \" Car\"))";
+      String expression = "Class: @A1(rdfs:label=(@A1, \" Car\") mm:camelCaseEncode)";
 
       Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
       assertThat(result.isPresent(), is(true));
@@ -1006,11 +989,12 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, hasSize(2));
       assertThat(axioms, containsInAnyOrder(
             Declaration(BMW_CAR),
-            AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "BMW_Car"), Literal("BMW Car", XSD_STRING))));
+            AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "BMWCar"), Literal("BMW Car", XSD_STRING))));
    }
 
    /**
-    * Test (mm:prepend) function in class declaration.
+    * Test (mm:prepend) function in class declaration. Notice the (mm:camelCaseEncode) directive is added to encode
+    * the entity IRI naming.
     * <p>
     * - Precondition:<br />
     *    + The target sheet cell must not be empty,<br />
@@ -1026,7 +1010,7 @@ public class ReferenceTest extends IntegrationTestBase
       Label cellA1 = createCell("BMW", 1, 1);
       Set<Label> cells = createCells(cellA1);
 
-      String expression = "Class: @A1(mm:prepend(\"Car \"))";
+      String expression = "Class: @A1(mm:prepend(\"Car \") mm:camelCaseEncode)";
 
       Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
       assertThat(result.isPresent(), is(true));
@@ -1037,7 +1021,8 @@ public class ReferenceTest extends IntegrationTestBase
    }
 
    /**
-    * Test explicit prepend function for (rdfs:label) directive in class declaration.
+    * Test explicit prepend function for (rdfs:label) directive in class declaration. Notice the (mm:camelCaseEncode) directive
+    * is added to encode the entity IRI naming.
     * <p>
     * - Precondition:<br />
     *    + The target sheet cell must not be empty,<br />
@@ -1054,7 +1039,7 @@ public class ReferenceTest extends IntegrationTestBase
       Label cellA1 = createCell("BMW", 1, 1);
       Set<Label> cells = createCells(cellA1);
 
-      String expression = "Class: @A1(rdfs:label=mm:prepend(\"Car \"))";
+      String expression = "Class: @A1(rdfs:label=mm:prepend(\"Car \") mm:camelCaseEncode)";
 
       Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
       assertThat(result.isPresent(), is(true));
@@ -1063,12 +1048,13 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, hasSize(2));
       assertThat(axioms, containsInAnyOrder(
             Declaration(CAR_BMW),
-            AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "Car_BMW"), Literal("Car BMW", XSD_STRING))
+            AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "CarBMW"), Literal("Car BMW", XSD_STRING))
       ));
    }
 
    /**
-    * Test implicit prepend function for (rdfs:label) directive in class declaration.
+    * Test implicit prepend function for (rdfs:label) directive in class declaration. Notice the (mm:camelCaseEncode) directive
+    * is added to encode the entity IRI naming.
     * <p>
     * - Precondition:<br />
     *    + The target sheet cell must not be empty,<br />
@@ -1085,7 +1071,7 @@ public class ReferenceTest extends IntegrationTestBase
       Label cellA1 = createCell("BMW", 1, 1);
       Set<Label> cells = createCells(cellA1);
 
-      String expression = "Class: @A1(rdfs:label=(\"Car \", @A1))";
+      String expression = "Class: @A1(rdfs:label=(\"Car \", @A1) mm:camelCaseEncode)";
 
       Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
       assertThat(result.isPresent(), is(true));
@@ -1094,7 +1080,7 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, hasSize(2));
       assertThat(axioms, containsInAnyOrder(
             Declaration(CAR_BMW),
-            AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "Car_BMW"), Literal("Car BMW", XSD_STRING))
+            AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "CarBMW"), Literal("Car BMW", XSD_STRING))
       ));
    }
 
@@ -1354,7 +1340,7 @@ public class ReferenceTest extends IntegrationTestBase
       Label cellA1 = createCell("BMW", 1, 1);
       Set<Label> cells = createCells(cellA1);
 
-      String expression = "Class: @A1(mm:printf(\"%s Car\"))";
+      String expression = "Class: @A1(mm:printf(\"%sCar\"))";
 
       Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
       assertThat(result.isPresent(), is(true));
@@ -1511,6 +1497,75 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(
             Declaration(P1),
             AnnotationAssertion(RDFS_COMMENT, IRI(ONTOLOGY_ID, "p1"), Literal("Familia Swiss Muesli Mixed Cereals - 32 oz box", "en"))));
+   }
+
+   /**
+    * Test (mm:camelCaseEncode) directive.
+    * <p>
+    * Expected results:<br />
+    *    + Creating a class declaration axiom in CamelCase naming.
+    */
+   @Test
+   @Category(DirectiveTest.class)
+   public void TestCamelCaseEncodeInReference() throws Exception
+   {
+      Label cellA1 = createCell("Barbara's Puffins Honey-Rice Cereal - 10.5oz box", 1, 1);
+      Set<Label> cells = createCells(cellA1);
+
+      String expression = "Class: @A1(mm:camelCaseEncode)";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(1));
+      assertThat(axioms, containsInAnyOrder(Declaration(BARBARA_PUFFINS_CAMELCASE)));
+   }
+
+   /**
+    * Test (mm:snakeCaseEncode) directive.
+    * <p>
+    * Expected results:<br />
+    *    + Creating a class declaration axiom in Snake_Case naming.
+    */
+   @Test
+   @Category(DirectiveTest.class)
+   public void TestSnakeCaseEncodeInReference() throws Exception
+   {
+      Label cellA1 = createCell("Barbara's Puffins Honey-Rice Cereal - 10.5oz box", 1, 1);
+      Set<Label> cells = createCells(cellA1);
+
+      String expression = "Class: @A1(mm:snakeCaseEncode)";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(1));
+      assertThat(axioms, containsInAnyOrder(Declaration(BARBARA_PUFFINS_SNAKECASE)));
+   }
+
+   /**
+    * Test (mm:hashEncode) directive.
+    * <p>
+    * Expected results:<br />
+    *    + Creating a class declaration axiom in Snake_Case naming.
+    */
+   @Test
+   @Category(DirectiveTest.class)
+   public void TestHashEncodeInReference() throws Exception
+   {
+      Label cellA1 = createCell("Barbara's Puffins Honey-Rice Cereal - 10.5oz box", 1, 1);
+      Set<Label> cells = createCells(cellA1);
+
+      String expression = "Class: @A1(mm:hashEncode)";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(1));
+      assertThat(axioms, containsInAnyOrder(Declaration(BARBARA_PUFFINS_MD5)));
    }
 
    /**
