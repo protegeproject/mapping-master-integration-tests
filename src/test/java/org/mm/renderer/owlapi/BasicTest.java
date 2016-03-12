@@ -4,6 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.AnnotationAssertion;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.AnnotationProperty;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Class;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ClassAssertion;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataAllValuesFrom;
@@ -54,6 +56,7 @@ import org.mm.renderer.owlapi.AllRenderingTestSuite.ClassExpressionTest;
 import org.mm.renderer.owlapi.AllRenderingTestSuite.ClassTest;
 import org.mm.renderer.owlapi.AllRenderingTestSuite.NamedIndividualTest;
 import org.mm.rendering.owlapi.OWLRendering;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataProperty;
@@ -91,6 +94,8 @@ public class BasicTest extends IntegrationTestBase
    private static final OWLDataProperty HAS_ORIGIN = DataProperty(IRI(ONTOLOGY_ID, "hasOrigin"));
    private static final OWLDataProperty HAS_NAME = DataProperty(IRI(ONTOLOGY_ID, "hasName"));
    private static final OWLDataProperty HAS_AGE = DataProperty(IRI(ONTOLOGY_ID, "hasAge"));
+   private static final OWLAnnotationProperty SKOS_PREFLABEL = AnnotationProperty(IRI(Namespaces.SKOS + "prefLabel"));
+   private static final OWLAnnotationProperty FOAF_DEPICTION = AnnotationProperty(IRI(Namespaces.FOAF + "depiction"));
    private static final OWLNamedIndividual DOUBLE_HULL = NamedIndividual(IRI(ONTOLOGY_ID, "double-hull"));
    private static final OWLNamedIndividual MALE = NamedIndividual(IRI(ONTOLOGY_ID, "male"));
    private static final OWLNamedIndividual FEMALE = NamedIndividual(IRI(ONTOLOGY_ID, "female"));
@@ -1070,5 +1075,55 @@ public class BasicTest extends IntegrationTestBase
             Declaration(FRED),
             DifferentIndividuals(FRED, BOB),
             DifferentIndividuals(FRED, BOBBY)));
+   }
+
+   /**
+    * Test named individual declaration with literal annotation.
+    * <p>
+    * - Precondition: The target individual and annotation property must be predefined in the ontology.
+    */
+   @Test
+   @Category(NamedIndividualTest.class)
+   public void TestIndividualWithLiteralAnnotationDeclaration() throws Exception
+   {
+      setPrefix(ontology, "skos", "http://www.w3.org/2004/02/skos/core#");
+      declareOWLNamedIndividual(ontology, "fred");
+      declareOWLAnnotationProperty(ontology, "skos:prefLabel");
+
+      String expression = "Individual: fred Annotations: skos:prefLabel \"Alfred\"";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(2));
+      assertThat(axioms, containsInAnyOrder(
+            Declaration(FRED),
+            AnnotationAssertion(SKOS_PREFLABEL, IRI(ONTOLOGY_ID, "fred"), Literal("Alfred", XSD_STRING))));
+   }
+
+   /**
+    * Test named individual declaration with IRI annotation.
+    * <p>
+    * - Precondition: The target individual and annotation property must be predefined in the ontology.
+    */
+   @Test
+   @Category(NamedIndividualTest.class)
+   public void TestIndividualWithIRIAnnotationDeclaration() throws Exception
+   {
+      setPrefix(ontology, "foaf", "http://xmlns.com/foaf/0.1/");
+      declareOWLNamedIndividual(ontology, "fred");
+      declareOWLAnnotationProperty(ontology, "foaf:depiction");
+
+      String expression = "Individual: fred Annotations: foaf:depiction <https://image.freepik.com/free-icon/user-male-silhouette_318-55563.png>";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(2));
+      assertThat(axioms, containsInAnyOrder(
+            Declaration(FRED),
+            AnnotationAssertion(FOAF_DEPICTION, IRI(ONTOLOGY_ID, "fred"), IRI("https://image.freepik.com/free-icon/user-male-silhouette_318-55563.png"))));
    }
 }

@@ -75,6 +75,7 @@ public class ReferenceTest extends IntegrationTestBase
    private static final OWLAnnotationProperty RDFS_LABEL = AnnotationProperty(IRI(Namespaces.RDFS + "label"));
    private static final OWLAnnotationProperty RDFS_COMMENT = AnnotationProperty(IRI(Namespaces.RDFS + "comment"));
    private static final OWLAnnotationProperty SKOS_PREFLABEL = AnnotationProperty(IRI(Namespaces.SKOS + "prefLabel"));
+   private static final OWLAnnotationProperty FOAF_DEPICTION = AnnotationProperty(IRI(Namespaces.FOAF + "depiction"));
    private static final OWLDatatype RDF_PLAINLITERAL = Datatype(IRI(Namespaces.RDF + "PlainLiteral"));
    private static final OWLDatatype XSD_STRING = Datatype(IRI(Namespaces.XSD + "string"));
    private static final OWLDatatype XSD_BOOLEAN = Datatype(IRI(Namespaces.XSD + "boolean"));
@@ -258,6 +259,38 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(
             Declaration(FRED),
             AnnotationAssertion(HAS_AGE_ANNOTATION, IRI(ONTOLOGY_ID, "fred"), Literal("23", XSD_INTEGER))));
+   }
+
+   /**
+    * Test the IRI annotation value in individual assertion. By default, the system will recognize the annotation
+    * value as literal. To override the behavior use the (mm:IRI) directive.
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
+    *    + The target individuals must be predefined in the ontology,<br />
+    *    + The target annotation property must be predefined in the ontology.
+    */
+   @Test
+   @Category(NameResolutionTest.class)
+   public void TestIRIReferenceType() throws Exception
+   {
+      setPrefix(ontology, "foaf", "http://xmlns.com/foaf/0.1/");
+      declareOWLNamedIndividual(ontology, "fred");
+      declareOWLAnnotationProperty(ontology, "foaf:depiction");
+
+      Label cellA1 = createCell("https://image.freepik.com/free-icon/user-male-silhouette_318-55563.png", 1, 1);
+      Set<Label> cells = createCells(cellA1);
+
+      String expression = "Individual: fred Annotations: foaf:depiction @A1(mm:IRI)";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(2));
+      assertThat(axioms, containsInAnyOrder(
+            Declaration(FRED),
+            AnnotationAssertion(FOAF_DEPICTION, IRI(ONTOLOGY_ID, "fred"), IRI("https://image.freepik.com/free-icon/user-male-silhouette_318-55563.png"))));
    }
 
    /**
@@ -593,7 +626,7 @@ public class ReferenceTest extends IntegrationTestBase
       Label cellB1 = createCell("23", 2, 1);
       Set<Label> cells = createCells(cellA1, cellB1);
 
-      String expression = "Individual: @A1 Facts: hasAge @B1(xsd:int)";
+      String expression = "Individual: @A1 Facts: hasAge @B1(xsd:integer)";
 
       Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
       assertThat(result.isPresent(), is(true));
