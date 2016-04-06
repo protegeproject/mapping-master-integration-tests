@@ -389,6 +389,84 @@ public class ReferenceTest extends IntegrationTestBase
    }
 
    /**
+    * Test the individual declaration with class, property and annotation assertions.
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
+    *    + The target class must be predefined in the ontology,<br />
+    *    + The target data property must be predefined in the ontology,<br />
+    *    + The target annotation property must be predefined in the ontology,<br />
+    *    + No necessary predefined individuals in the ontology.
+    */
+   @Test
+   @Category(NameResolutionTest.class)
+   public void TestMultipleAssertionsReference() throws Exception
+   {
+      setPrefix(ontology, "skos", "http://www.w3.org/2004/02/skos/core#");
+
+      declareOWLClass(ontology, "Person");
+      declareOWLDataProperty(ontology, "hasName");
+      declareOWLAnnotationProperty(ontology, "skos:prefLabel");
+
+      Label cellA1 = createCell("fred", 1, 1);
+      Label cellA2 = createCell("Alfred", 1, 2);
+      Label cellA3 = createCell("Alfred Smith", 1, 3);
+      Set<Label> cells = createCells(cellA1, cellA2, cellA3);
+
+      String expression = "Individual: @A1 Types: Person Facts: hasName @A2 Annotations: skos:prefLabel @A3";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(4));
+      assertThat(axioms, containsInAnyOrder(
+            Declaration(FRED),
+            ClassAssertion(PERSON, FRED),
+            DataPropertyAssertion(HAS_NAME, FRED, Literal("Alfred", XSD_STRING)),
+            AnnotationAssertion(SKOS_PREFLABEL, IRI(ONTOLOGY_ID, "fred"), Literal("Alfred Smith", XSD_STRING))));
+   }
+
+   /**
+    * Test the individual declaration with class, property and annotation assertions (random order).
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
+    *    + The target class must be predefined in the ontology,<br />
+    *    + The target data property must be predefined in the ontology,<br />
+    *    + The target annotation property must be predefined in the ontology,<br />
+    *    + No necessary predefined individuals in the ontology.
+    */
+   @Test
+   @Category(NameResolutionTest.class)
+   public void TestMultipleAssertionsRandomOrderReference() throws Exception
+   {
+      setPrefix(ontology, "skos", "http://www.w3.org/2004/02/skos/core#");
+
+      declareOWLClass(ontology, "Person");
+      declareOWLDataProperty(ontology, "hasName");
+      declareOWLAnnotationProperty(ontology, "skos:prefLabel");
+
+      Label cellA1 = createCell("fred", 1, 1);
+      Label cellA2 = createCell("Alfred", 1, 2);
+      Label cellA3 = createCell("Alfred Smith", 1, 3);
+      Set<Label> cells = createCells(cellA1, cellA2, cellA3);
+
+      String expression = "Individual: @A1 Annotations: skos:prefLabel @A3 Facts: hasName @A2 Types: Person";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(4));
+      assertThat(axioms, containsInAnyOrder(
+            Declaration(FRED),
+            ClassAssertion(PERSON, FRED),
+            DataPropertyAssertion(HAS_NAME, FRED, Literal("Alfred", XSD_STRING)),
+            AnnotationAssertion(SKOS_PREFLABEL, IRI(ONTOLOGY_ID, "fred"), Literal("Alfred Smith", XSD_STRING))));
+   }
+
+   /**
     * Test literal reference, i.e., reference with enclosed quote signs (e.g., @"Car").
     * <p>
     * - Precondition:<br />
