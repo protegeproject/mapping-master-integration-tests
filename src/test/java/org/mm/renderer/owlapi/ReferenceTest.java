@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.is;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.AnnotationAssertion;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.AnnotationProperty;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Class;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ClassAssertion;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataProperty;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataPropertyAssertion;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Datatype;
@@ -49,6 +50,9 @@ public class ReferenceTest extends IntegrationTestBase
    private OWLOntology ontology;
    private ReferenceSettings settings;
 
+   private static final OWLClass PERSON = Class(IRI(ONTOLOGY_ID, "Person"));
+   private static final OWLClass STUDENT = Class(IRI(ONTOLOGY_ID, "Student"));
+   private static final OWLClass CAR_OWNER = Class(IRI(ONTOLOGY_ID, "CarOwner"));
    private static final OWLClass BMW = Class(IRI(ONTOLOGY_ID, "BMW"));
    private static final OWLClass CAR = Class(IRI(ONTOLOGY_ID, "Car"));
    private static final OWLClass BARBARA_PUFFINS_CAMELCASE = Class(IRI(ONTOLOGY_ID, "Barbara'sPuffinsHoney-RiceCereal-10.5ozBox"));
@@ -170,6 +174,66 @@ public class ReferenceTest extends IntegrationTestBase
       Set<OWLAxiom> axioms = result.get().getOWLAxioms();
       assertThat(axioms, hasSize(1));
       assertThat(axioms, containsInAnyOrder(Declaration(FRED)));
+   }
+
+   /**
+    * Test the individual declaration with class assertion.
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
+    *    + The target class must be predefined in the ontology,<br />
+    *    + No necessary predefined individuals in the ontology.
+    */
+   @Test
+   @Category(NameResolutionTest.class)
+   public void TestClassAssertionReference() throws Exception
+   {
+      declareOWLClass(ontology, "Person");
+
+      Label cellA1 = createCell("fred", 1, 1);
+      Set<Label> cells = createCells(cellA1);
+
+      String expression = "Individual: @A1 Types: Person";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(2));
+      assertThat(axioms, containsInAnyOrder(
+            Declaration(FRED),
+            ClassAssertion(PERSON, FRED)));
+   }
+
+   /**
+    * Test the individual declaration with multiple class assertions.
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
+    *    + The target classes must be predefined in the ontology,<br />
+    *    + No necessary predefined individuals in the ontology.
+    */
+   @Test
+   @Category(NameResolutionTest.class)
+   public void TestMultipleClassAssertionsReference() throws Exception
+   {
+      declareOWLClass(ontology, "Person");
+      declareOWLClass(ontology, "Student");
+      declareOWLClass(ontology, "CarOwner");
+
+      Label cellA1 = createCell("fred", 1, 1);
+      Set<Label> cells = createCells(cellA1);
+
+      String expression = "Individual: @A1 Types: Person, Student, CarOwner";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(4));
+      assertThat(axioms, containsInAnyOrder(
+            Declaration(FRED),
+            ClassAssertion(PERSON, FRED), ClassAssertion(STUDENT, FRED), ClassAssertion(CAR_OWNER, FRED)));
    }
 
    /**
