@@ -237,6 +237,35 @@ public class ReferenceTest extends IntegrationTestBase
    }
 
    /**
+    * Test the individual declaration with class assertion.
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
+    *    + The target class must be predefined in the ontology,<br />
+    *    + No necessary predefined individuals in the ontology.
+    */
+   @Test
+   @Category(NameResolutionTest.class)
+   public void TestAbsoluteClassReference() throws Exception
+   {
+      declareOWLNamedIndividual(ontology, "fred");
+
+      Label cellA1 = createCell("Person", 1, 1);
+      Set<Label> cells = createCells(cellA1);
+
+      String expression = "Individual: fred Types: @A1";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(2));
+      assertThat(axioms, containsInAnyOrder(
+            Declaration(FRED),
+            ClassAssertion(PERSON, FRED)));
+   }
+
+   /**
     * Test the data property reference in individual assertion. Note the individual entity is a constant.
     * <p>
     * - Precondition:<br />
