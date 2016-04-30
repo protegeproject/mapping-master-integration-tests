@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.mm.core.OWLAPIOntology;
 import org.mm.core.settings.ReferenceSettings;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ASTExpression;
@@ -163,8 +164,10 @@ public class IntegrationTestBase
    {
       SpreadSheetDataSource dataSource = createSpreadsheetDataSource(sheetName, cells);
       dataSource.setCurrentLocation(currentLocation);
-
-      OWLRenderer renderer = new OWLRenderer(ontology, dataSource);
+      
+      OWLAPIOntology ontologySource = new OWLAPIOntology(ontology);
+      
+      OWLRenderer renderer = new OWLRenderer(ontologySource, dataSource);
       MMExpressionNode mmExpressionNode = parseExpression(expression, settings);
       return renderer.render(mmExpressionNode);
    }
