@@ -418,6 +418,35 @@ public class ReferenceTest extends IntegrationTestBase
    }
 
    /**
+    * Test the individual creation with an rdfs:label annotation assertion.
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
+    *    + The rdfs:label annotation property must be predefined in the ontology<br />
+    */
+   @Test
+   @Category(NameResolutionTest.class)
+   public void TestRdfsLabelAnnotationProperty() throws Exception
+   {
+      declareOWLAnnotationProperty(ontology, "rdfs:label");
+
+      Label cellA1 = createCell("fred", 1, 1);
+      Label cellB1 = createCell("Alfred", 2, 1);
+      Set<Label> cells = createCells(cellA1, cellB1);
+
+      String expression = "Individual: @A1 Annotations: rdfs:label @B1";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(2));
+      assertThat(axioms, containsInAnyOrder(
+            Declaration(FRED),
+            AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "fred"), Literal("Alfred", XSD_STRING))));
+   }
+
+   /**
     * Test the individual declaration with class, property and annotation assertions.
     * <p>
     * - Precondition:<br />
