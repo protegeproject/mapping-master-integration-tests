@@ -78,6 +78,8 @@ public class ReferenceTest extends IntegrationTestBase
    private static final OWLAnnotationProperty HAS_AGE_ANNOTATION = AnnotationProperty(IRI(ONTOLOGY_ID, "hasAge"));
    private static final OWLAnnotationProperty RDFS_LABEL = AnnotationProperty(IRI(Namespaces.RDFS + "label"));
    private static final OWLAnnotationProperty RDFS_COMMENT = AnnotationProperty(IRI(Namespaces.RDFS + "comment"));
+   private static final OWLAnnotationProperty RDFS_SEE_ALSO = AnnotationProperty(IRI(Namespaces.RDFS + "seeAlso"));
+   private static final OWLAnnotationProperty OWL_VERSION_INFO = AnnotationProperty(IRI(Namespaces.OWL + "versionInfo"));
    private static final OWLAnnotationProperty SKOS_PREFLABEL = AnnotationProperty(IRI(Namespaces.SKOS + "prefLabel"));
    private static final OWLAnnotationProperty FOAF_DEPICTION = AnnotationProperty(IRI(Namespaces.FOAF + "depiction"));
    private static final OWLDatatype RDF_PLAINLITERAL = Datatype(IRI(Namespaces.RDF + "PlainLiteral"));
@@ -444,6 +446,36 @@ public class ReferenceTest extends IntegrationTestBase
       assertThat(axioms, containsInAnyOrder(
             Declaration(FRED),
             AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "fred"), Literal("Alfred", XSD_STRING))));
+   }
+
+   /**
+    * Test a OWL built-in annotation properties in individual assertion.
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty
+    */
+   @Test
+   @Category(NameResolutionTest.class)
+   public void TestOwlBuiltInAnnotationProperty() throws Exception
+   {
+      Label cellA1 = createCell("fred", 1, 1);
+      Label cellB1 = createCell("Alfred", 2, 1);
+      Label cellC1 = createCell("v2.2", 3, 1);
+      Set<Label> cells = createCells(cellA1, cellB1, cellC1);
+
+      String expression = "Individual: @A1 Annotations: rdfs:label @B1, rdfs:comment @B1, rdfs:seeAlso @B1, owl:versionInfo @C1";
+
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(5));
+      assertThat(axioms, containsInAnyOrder(
+            Declaration(FRED),
+            AnnotationAssertion(RDFS_LABEL, IRI(ONTOLOGY_ID, "fred"), Literal("Alfred", XSD_STRING)),
+            AnnotationAssertion(RDFS_COMMENT, IRI(ONTOLOGY_ID, "fred"), Literal("Alfred", XSD_STRING)),
+            AnnotationAssertion(RDFS_SEE_ALSO, IRI(ONTOLOGY_ID, "fred"), Literal("Alfred", XSD_STRING)),
+            AnnotationAssertion(OWL_VERSION_INFO, IRI(ONTOLOGY_ID, "fred"), Literal("v2.2", XSD_STRING))));
    }
 
    /**
