@@ -423,8 +423,7 @@ public class ReferenceTest extends IntegrationTestBase
     * Test the individual creation with an rdfs:label annotation assertion.
     * <p>
     * - Precondition:<br />
-    *    + The target sheet cell must not be empty,<br />
-    *    + The rdfs:label annotation property must be predefined in the ontology<br />
+    *    + The target sheet cell must not be empty
     */
    @Test
    @Category(NameResolutionTest.class)
@@ -449,7 +448,7 @@ public class ReferenceTest extends IntegrationTestBase
    }
 
    /**
-    * Test a OWL built-in annotation properties in individual assertion.
+    * Test OWL built-in annotation properties in individual assertion.
     * <p>
     * - Precondition:<br />
     *    + The target sheet cell must not be empty
