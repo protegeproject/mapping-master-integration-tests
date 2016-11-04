@@ -16,7 +16,7 @@ import org.mm.parser.ParseException;
 import org.mm.renderer.IntegrationTestBase;
 import org.mm.renderer.RendererException;
 import org.mm.rendering.text.TextRendering;
-import org.mm.workbook.SpreadsheetLocation;
+import org.mm.workbook.CellLocation;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 public class TextRendererIT extends IntegrationTestBase
@@ -418,7 +418,7 @@ public class TextRendererIT extends IntegrationTestBase
     String expectedRendering = "Class: Car";
     Label cellA1 = createCell("Car", 1, 1);
     Set<Label> cells = createCells(cellA1);
-    SpreadsheetLocation currentLocation = new SpreadsheetLocation(SHEET1, 1, 1);
+    CellLocation currentLocation = new CellLocation(SHEET1, 1, 1);
     Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression,
         settings);
 
@@ -432,7 +432,7 @@ public class TextRendererIT extends IntegrationTestBase
     String expectedRendering = "Class: Car";
     Label cellA1 = createCell("Car", 1, 1);
     Set<Label> cells = createCells(cellA1);
-    SpreadsheetLocation currentLocation = new SpreadsheetLocation(SHEET1, 1, 1);
+    CellLocation currentLocation = new CellLocation(SHEET1, 1, 1);
     Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, currentLocation, expression,
         settings);
 

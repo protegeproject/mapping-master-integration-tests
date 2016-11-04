@@ -25,7 +25,7 @@ import org.mm.renderer.owlapi.OWLRenderer;
 import org.mm.renderer.text.TextRenderer;
 import org.mm.rendering.owlapi.OWLRendering;
 import org.mm.rendering.text.TextRendering;
-import org.mm.workbook.SpreadsheetLocation;
+import org.mm.workbook.CellLocation;
 import org.mm.workbook.Workbook;
 import org.mm.workbook.WorkbookImpl;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -50,7 +50,7 @@ public class IntegrationTestBase
    protected static final String SHEET3 = "Sheet3";
    protected static final String DEFAULT_SHEET = SHEET1;
    protected static final Set<Label> EMPTY_CELL_SET = Collections.emptySet();
-   protected static final SpreadsheetLocation DEFAULT_CURRENT_LOCATION = new SpreadsheetLocation(SHEET1, 1, 1);
+   protected static final CellLocation DEFAULT_CURRENT_LOCATION = new CellLocation(SHEET1, 1, 1);
    protected static final String ONTOLOGY_ID = "http://protege.stanford.edu/mm-test/";
 
    protected PrefixManager prefixManager;
@@ -123,11 +123,11 @@ public class IntegrationTestBase
    }
 
    protected Optional<? extends TextRendering> createTextRendering(String sheetName, Set<Label> cells,
-         SpreadsheetLocation currentLocation, String expression, ReferenceSettings settings)
+         CellLocation currentLocation, String expression, ReferenceSettings settings)
          throws MappingMasterException, IOException, ParseException
    {
       Workbook workbook = createWorkbook(sheetName, cells);
-      workbook.setCurrentLocation(currentLocation);
+      workbook.setCurrentCellLocation(currentLocation);
 
       TextRenderer renderer = new TextRenderer(workbook);
       MMExpressionNode mmExpressionNode = parseExpression(expression, settings);
@@ -159,11 +159,11 @@ public class IntegrationTestBase
    }
 
    protected Optional<? extends OWLRendering> createOWLAPIRendering(OWLOntology ontology, String sheetName,
-         Set<Label> cells, SpreadsheetLocation currentLocation, String expression, ReferenceSettings settings)
+         Set<Label> cells, CellLocation currentLocation, String expression, ReferenceSettings settings)
                throws MappingMasterException, IOException, ParseException
    {
       Workbook workbook = createWorkbook(sheetName, cells);
-      workbook.setCurrentLocation(currentLocation);
+      workbook.setCurrentCellLocation(currentLocation);
       
       OWLAPIOntology ontologySource = new OWLAPIOntology(ontology);
       
