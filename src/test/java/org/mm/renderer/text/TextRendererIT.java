@@ -1,5 +1,9 @@
 package org.mm.renderer.text;
 
+import java.io.IOException;
+import java.util.Optional;
+import java.util.Set;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -12,12 +16,8 @@ import org.mm.parser.ParseException;
 import org.mm.renderer.IntegrationTestBase;
 import org.mm.renderer.RendererException;
 import org.mm.rendering.text.TextRendering;
-import org.mm.ss.SpreadsheetLocation;
+import org.mm.workbook.SpreadsheetLocation;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-
-import java.io.IOException;
-import java.util.Optional;
-import java.util.Set;
 
 public class TextRendererIT extends IntegrationTestBase
 {
@@ -461,7 +461,7 @@ public class TextRendererIT extends IntegrationTestBase
     Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression, settings);
 
     Assert.assertTrue(textRendering.isPresent());
-    //    Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
+    Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
   @Test public void TestObjectPropertyInQualifiedReference() throws MappingMasterException, ParseException, IOException
@@ -695,7 +695,7 @@ public class TextRendererIT extends IntegrationTestBase
     Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression, settings);
 
     Assert.assertTrue(textRendering.isPresent());
-    //    Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
+    Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
   @Test public void TestShiftDownInReference() throws MappingMasterException, ParseException, IOException

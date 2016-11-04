@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.mm.core.OWLAPIOntology;
 import org.mm.core.settings.ReferenceSettings;
@@ -26,8 +25,9 @@ import org.mm.renderer.owlapi.OWLRenderer;
 import org.mm.renderer.text.TextRenderer;
 import org.mm.rendering.owlapi.OWLRendering;
 import org.mm.rendering.text.TextRendering;
-import org.mm.ss.SpreadSheetDataSource;
-import org.mm.ss.SpreadsheetLocation;
+import org.mm.workbook.SpreadsheetLocation;
+import org.mm.workbook.Workbook;
+import org.mm.workbook.WorkbookImpl;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
@@ -83,9 +83,10 @@ public class IntegrationTestBase
       prefixManager.setPrefix(prefixName, prefix);
    }
 
-   protected Workbook createWorkbook(String sheetName, Set<Label> cells) throws IOException
+   private org.apache.poi.ss.usermodel.Workbook createExcelWorkbook(String sheetName, Set<Label> cells)
+         throws IOException
    {
-      Workbook workbook = new XSSFWorkbook();
+      org.apache.poi.ss.usermodel.Workbook workbook = new XSSFWorkbook();
       Sheet sheet = workbook.createSheet(sheetName);
 
       Map<Integer, Row> buffer = new HashMap<Integer, Row>();
@@ -101,14 +102,13 @@ public class IntegrationTestBase
       return workbook;
    }
 
-   protected SpreadSheetDataSource createSpreadsheetDataSource(String sheetName, Set<Label> cells)
+   protected Workbook createWorkbook(String sheetName, Set<Label> cells)
          throws IOException, MappingMasterException
    {
-      Workbook workbook = createWorkbook(sheetName, cells);
-      return new SpreadSheetDataSource(workbook);
+      return new WorkbookImpl(createExcelWorkbook(sheetName, cells));
    }
 
-   protected MMExpressionNode parseExpression(String expression, ReferenceSettings settings) throws ParseException
+   private MMExpressionNode parseExpression(String expression, ReferenceSettings settings) throws ParseException
    {
       MappingMasterParser parser = new MappingMasterParser(new ByteArrayInputStream(expression.getBytes()), settings, -1);
       SimpleNode simpleNode = parser.expression();
@@ -126,10 +126,10 @@ public class IntegrationTestBase
          SpreadsheetLocation currentLocation, String expression, ReferenceSettings settings)
          throws MappingMasterException, IOException, ParseException
    {
-      SpreadSheetDataSource dataSource = createSpreadsheetDataSource(sheetName, cells);
-      dataSource.setCurrentLocation(currentLocation);
+      Workbook workbook = createWorkbook(sheetName, cells);
+      workbook.setCurrentLocation(currentLocation);
 
-      TextRenderer renderer = new TextRenderer(dataSource);
+      TextRenderer renderer = new TextRenderer(workbook);
       MMExpressionNode mmExpressionNode = parseExpression(expression, settings);
       return renderer.render(mmExpressionNode);
    }
@@ -162,12 +162,12 @@ public class IntegrationTestBase
          Set<Label> cells, SpreadsheetLocation currentLocation, String expression, ReferenceSettings settings)
                throws MappingMasterException, IOException, ParseException
    {
-      SpreadSheetDataSource dataSource = createSpreadsheetDataSource(sheetName, cells);
-      dataSource.setCurrentLocation(currentLocation);
+      Workbook workbook = createWorkbook(sheetName, cells);
+      workbook.setCurrentLocation(currentLocation);
       
       OWLAPIOntology ontologySource = new OWLAPIOntology(ontology);
       
-      OWLRenderer renderer = new OWLRenderer(ontologySource, dataSource);
+      OWLRenderer renderer = new OWLRenderer(ontologySource, workbook);
       MMExpressionNode mmExpressionNode = parseExpression(expression, settings);
       return renderer.render(mmExpressionNode);
    }
