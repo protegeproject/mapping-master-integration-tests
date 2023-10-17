@@ -454,7 +454,7 @@ public class TextRendererIT extends IntegrationTestBase
 
   @Test public void TestIndividualInQualifiedReference() throws MappingMasterException, ParseException, IOException
   {
-    String expression = "Individual: @A1(mm:Location)";
+    String expression = "Individual: @A1(Individual)";
     String expectedRendering = "Individual: Car";
     Label cellA1 = createCell("Car", 1, 1);
     Set<Label> cells = createCells(cellA1);
@@ -685,7 +685,7 @@ public class TextRendererIT extends IntegrationTestBase
 
   @Test public void TestShiftUpInReference() throws MappingMasterException, ParseException, IOException
   {
-    String expression = "Class: @A4(mm:Location)";
+    String expression = "Class: @A4(mm:ShiftUp)";
     String expectedRendering = "Class: Car";
     Label cellA1 = createCell("Car", 1, 1);
     Label cellA2 = createCell("", 1, 2);
