@@ -916,6 +916,16 @@ public class TextRendererIT extends IntegrationTestBase
     Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
   }
 
+  @Test public void TestEmptyCapturingExpressionInReference() throws MappingMasterException, ParseException, IOException
+  {
+    String expression = "Class: @A1(rdfs:label=[\":(\\S+)\"])";
+    Label cellA1 = createCell("Pfizer:", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression, settings);
+
+    Assert.assertTrue(textRendering.isEmpty());
+  }
+
   @Test public void TestCapturingExpressionStandaloneInReference()
       throws MappingMasterException, ParseException, IOException
   {
@@ -935,6 +945,51 @@ public class TextRendererIT extends IntegrationTestBase
     String expression = "Class: @A1(rdfs:label=mm:capturing(\":(\\S+)\"))";
     String expectedRendering = "Class: Zyvox";
     Label cellA1 = createCell("Pfizer:Zyvox", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
+  }
+
+  @Test public void TestCapturingExpressionsInSubExpression()
+    throws MappingMasterException, ParseException, IOException
+  {
+    String expression = "Individual: Fred  " +
+      "Facts: " + "hasMin @A1(xsd:integer [\"(\\d+)\\s+\"]) " +
+      "Types: Person";
+    String expectedRendering = "Individual: Fred Facts: hasMin 23 Types: Person";
+    Label cellA1 = createCell("23 height", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
+  }
+
+  @Test public void TestEmptyCapturingExpressionsInSubExpression()
+    throws MappingMasterException, ParseException, IOException
+  {
+    String expression = "Individual: Fred  " +
+      "Facts: " + "hasMin @A1(xsd:integer [\"(\\d+)\\s+\"]) " +
+      "Types: Person";
+    String expectedRendering = "Individual: Fred Types: Person";
+    Label cellA1 = createCell("weight height", 1, 1);
+    Set<Label> cells = createCells(cellA1);
+    Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression, settings);
+
+    Assert.assertTrue(textRendering.isPresent());
+    Assert.assertEquals(expectedRendering, clean(textRendering.get().getRendering()));
+  }
+
+  @Test public void TestEmptyCapturingExpressionsInSubExpressionWithMMCapturingKeyWord()
+    throws MappingMasterException, ParseException, IOException
+  {
+    String expression = "Individual: Fred  " +
+      "Facts: " + "hasMin @A1(xsd:integer mm:capturing(\"(LK)\")) " +
+      "Types: Person";
+    String expectedRendering = "Individual: Fred Types: Person";
+    Label cellA1 = createCell("weight height", 1, 1);
     Set<Label> cells = createCells(cellA1);
     Optional<? extends TextRendering> textRendering = createTextRendering(SHEET1, cells, expression, settings);
 
