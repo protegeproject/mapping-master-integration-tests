@@ -25,7 +25,7 @@ public class TextRendererIT extends IntegrationTestBase
 
   @Rule public final ExpectedException thrown = ExpectedException.none();
 
-  @Before public void setUp() throws OWLOntologyCreationException
+  @Before public void setUp()
   {
     settings = new ReferenceSettings();
     settings.setValueEncodingSetting(ValueEncodingSetting.RDFS_LABEL);

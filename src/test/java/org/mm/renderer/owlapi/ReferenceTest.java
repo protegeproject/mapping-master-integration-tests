@@ -66,12 +66,14 @@ public class ReferenceTest extends IntegrationTestBase
    private static final OWLClass ZYVOX = Class(IRI(ONTOLOGY_ID, "Zyvox"));
    private static final OWLClass DEFAULT_NAME = Class(IRI(ONTOLOGY_ID, "DefaultName"));
    private static final OWLObjectProperty HAS_PARENT = ObjectProperty(IRI(ONTOLOGY_ID, "hasParent"));
+   private static final OWLObjectProperty HAS_RELATION = ObjectProperty(IRI(ONTOLOGY_ID, "hasRelation"));
    private static final OWLDataProperty HAS_SSN = DataProperty(IRI(ONTOLOGY_ID, "hasSSN"));
    private static final OWLDataProperty HAS_NAME = DataProperty(IRI(ONTOLOGY_ID, "hasName"));
    private static final OWLDataProperty HAS_AGE = DataProperty(IRI(ONTOLOGY_ID, "hasAge"));
    private static final OWLDataProperty HAS_SALARY = DataProperty(IRI(ONTOLOGY_ID, "hasSalary"));
    private static final OWLDataProperty HAS_DOB = DataProperty(IRI(ONTOLOGY_ID, "hasDOB"));
    private static final OWLDataProperty HAS_BEDTIME = DataProperty(IRI(ONTOLOGY_ID, "hasBedTime"));
+   private static final OWLDataProperty HAS_CODE = DataProperty(IRI(ONTOLOGY_ID, "hasCode"));
    private static final OWLNamedIndividual P1 = NamedIndividual(IRI(ONTOLOGY_ID, "p1"));
    private static final OWLNamedIndividual FRED = NamedIndividual(IRI(ONTOLOGY_ID, "fred"));
    private static final OWLNamedIndividual BOB = NamedIndividual(IRI(ONTOLOGY_ID, "bob"));
@@ -1723,6 +1725,60 @@ public class ReferenceTest extends IntegrationTestBase
       Set<OWLAxiom> axioms = result.get().getOWLAxioms();
       assertThat(axioms, hasSize(1));
       assertThat(axioms, containsInAnyOrder(Declaration(ZYVOX)));
+   }
+
+   /**
+    * Test (mm:capturing) function in subexpression.
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
+    *    + No necessary predefined classes in the ontology.
+    * <p>
+    * - Expected results:<br />
+    *    + Creating a class declaration axiom with name using the prepended value, instead of the cell value,
+    */
+   @Test
+   @Category(CellProcessingTest.class)
+   public void TestSubExpressionCapturingInReference() throws Exception
+   {
+      declareOWLDataProperty(ontology, "hasCode");
+
+      Label cellA1 = createCell("1000000;Productcode-00-A1-B2", 1, 1);
+      Set<Label> cells = createCells(cellA1);
+
+      String expression = "Individual: @A1 Facts: hasCode @A1(mm:SkipIfEmptyLiteral mm:capturing(\"(LK)\"))";
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(1));
+   }
+
+   /**
+    * Test (mm:capturing) function in subexpression.
+    * <p>
+    * - Precondition:<br />
+    *    + The target sheet cell must not be empty,<br />
+    *    + No necessary predefined classes in the ontology.
+    * <p>
+    * - Expected results:<br />
+    *    + Creating a class declaration axiom with name using the prepended value, instead of the cell value,
+    */
+   @Test
+   @Category(CellProcessingTest.class)
+   public void TestFactsSubExpressionCapturingInReference() throws Exception
+   {
+      declareOWLObjectProperty(ontology, "hasRelation");
+
+      Label cellA1 = createCell("1000000;Productcode-00-A1-B2", 1, 1);
+      Set<Label> cells = createCells(cellA1);
+
+      String expression = "Individual: @A1 Facts: hasRelation @A1(mm:SkipIfEmptyID mm:capturing(\"(LK)\"))";
+      Optional<? extends OWLRendering> result = createOWLAPIRendering(ontology, SHEET1, cells, expression, settings);
+      assertThat(result.isPresent(), is(true));
+
+      Set<OWLAxiom> axioms = result.get().getOWLAxioms();
+      assertThat(axioms, hasSize(1));
    }
 
    /**
